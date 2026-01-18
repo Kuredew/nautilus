@@ -1,0 +1,7 @@
+[INSTALL]
+Copy "nautilusAssets" folder and "Nautilus.jsx" file to:
+C:\Program Files\Adobe\Adobe After Effects (your version)\Support Files\Scripts\ScriptUI Panels\
+
+
+Thanks for using Nautilus
+The name Nautilus was inspired by Yorushika's song "Nautilus", one of Yorushika's great songs.

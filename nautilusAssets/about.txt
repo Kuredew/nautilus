@@ -1,0 +1,26 @@
+Nautilus is a script for creating delay based animation layers. It's very similar to TextEvo, but more flexible. Animation keyframes are separated based on transforms, rather than combined into a single strength property.
+
+Nautilus can also be used with GG_Bunkai, where GG_Bunkai is used to separate text into characters/paths, and Nautilus is used to animate text separated by GG_Bunkai.
+
+To use Nautilus, it's recommended to precomp the layers you want to apply Nautilus to (dont worry, GG_Bunkai also have precomp option).
+
+Currently, Nautilus has two animation modes:
+
+Normal: Like TextEvo, the direction of the transform animation depends on the transform value you've set.
+
+Alternate: If you've ever seen animated text in Vtuber JP's music videos, the animation in alternate mode in Nautilus follows them. The direction isn't random, but rather like this:
+- The first letter comes from the bottom,
+- The second letter comes from the left,
+- The third letter comes from the top,
+- The fourth letter comes from the right, and so on.
+
+
+Thanks for using Nautilus.
+
+Nautilus VERSION
+Kureichi<Kuredew> hibikumonogatari@gmail.com
+Instagram: @zeanlost
+Twitter: @kureichi_ts
+Fesnuk: zeanichi
+
+Want to contribute, report bugs, or simply suggest features? visit https://github.com/Kuredew/nautilus
