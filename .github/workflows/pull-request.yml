@@ -15,9 +15,13 @@ jobs:
       - name: Setup PNPM
         uses: pnpm/action-setup@v4
 
-      - name: Install deps, build and zip
+      - name: Install deps
         run: pnpm install
+
+      - name: Build
         run: pnpm run build
+
+      - name: Zip
         run: zip -r Nautilus.zip dist/
 
       - name: Upload build artifacts
