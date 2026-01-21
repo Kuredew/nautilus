@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  upload-assets:
+  build:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
