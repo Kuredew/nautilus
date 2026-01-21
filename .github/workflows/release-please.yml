@@ -41,7 +41,7 @@ jobs:
 
       - name: Zip
         shell: powershell
-        run: Compress-Archive -Path '.dist' -DestinationPath 'Nautilus.zip'
+        run: Compress-Archive -Path 'dist' -DestinationPath 'Nautilus.zip'
 
       - name: Upload Release Asset
         env:

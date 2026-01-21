@@ -6,7 +6,7 @@ const nautilusJSX = "Nautilus.jsx"
 const nautilusJSXBIN = "Nautilus.jsxbin"
 const otherFiles = ["HOW_TO_INSTALL.txt"]
 const assetsFolder = "nautilusAssets/"
-const outputFolder = ".dist/"
+const outputFolder = "dist/"
 
 const build = async (onLog = () => {}) => {
   const logInstance = new Logger(build.name)
