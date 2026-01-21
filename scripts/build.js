@@ -4,8 +4,19 @@ import jsxbin from "jsxbin"
 
 const nautilusJSX = "Nautilus.jsx"
 const nautilusJSXBIN = "Nautilus.jsxbin"
-const otherFiles = ["HOW_TO_INSTALL.txt"]
 const assetsFolder = "nautilusAssets/"
+
+const otherFiles = [
+  {
+    from: "HOW_TO_INSTALL.txt",
+    to: ""
+  },
+  {
+    from: "package.json",
+    to: assetsFolder
+  }
+]
+
 const outputFolder = "dist/"
 
 const build = async (onLog = () => {}) => {
@@ -22,7 +33,7 @@ const build = async (onLog = () => {}) => {
     fs.cpSync(assetsFolder, outputFolder + assetsFolder, { recursive: true })
 
     log("copying other files to .dist")
-    otherFiles.forEach(file => fs.cpSync(file, outputFolder + file))
+    otherFiles.forEach(file => fs.cpSync(file.from, outputFolder + file.to + "/" + file.from))
 
     log("copied!")
 
