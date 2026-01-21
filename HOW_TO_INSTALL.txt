@@ -1,5 +1,5 @@
 [INSTALL]
-Copy "nautilusAssets" folder and "Nautilus.jsx" file to:
+Copy "nautilusAssets" folder and "Nautilus.jsxbin" file to:
 C:\Program Files\Adobe\Adobe After Effects (your version)\Support Files\Scripts\ScriptUI Panels\
 
 
