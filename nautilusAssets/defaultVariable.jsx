@@ -1,11 +1,21 @@
 // Nautilus VERSION
 // Kureichi<Kuredew> (https://github.com/Kuredew)
 
-var ctrl = thisComp.layer("NULL_LAYER_NAME");
+// calculate real time
+var realTime = time
+var ownComp
+var ctrlComp = thisComp
+try {
+    ownComp = ctrlComp.layer("OWN_COMP_NAME")
+    realTime = time + ownComp.startTime
+} catch (e) {
+
+}
+
+var ctrl = ctrlComp.layer("NULL_LAYER_NAME");
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
 var totalIndex = thisComp.numLayers
 var realIndex = thisComp.numLayers - index
-var realTime = time
 
 // check mask
 var ctrlHasMask = false

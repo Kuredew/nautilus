@@ -1,7 +1,7 @@
 // For Scale
 if (!ctrlValue) { ctrlValue = [0, 0] }
 
-var ctrlScaleStrength = ctrlFx("Scale Strength").valueAtTime(time - delay);
+var ctrlScaleStrength = ctrlFx("Scale Strength").valueAtTime(realTime - delay);
 var ctrlScaleXStrength = ctrlScaleStrength;
 var ctrlScaleYStrength = ctrlScaleStrength;
 
