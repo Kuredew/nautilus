@@ -7,9 +7,12 @@
 function NautilusScript(ui_ref) {
   var nautilus = {
     EXPRESSION_FOLDER: "nautilusAssets",
+    effectName: "Nautilus",
+    firstPresetFileObj: null,
+    secondPresetFileObj: null,
     version: null,
     aboutStr: null,
-    applyToCompLayers: false,
+    applyToCompLayers: true,
     expression: {
       defaultVariable: null,
       position: null,
@@ -29,15 +32,20 @@ function NautilusScript(ui_ref) {
     },
     getFileObj: function (fileName) {
       var folderObj = utils.getPathToNautilusFolder();
+      var fileObj = new File(folderObj.fsName + "/" + fileName)
+      if (!fileObj.exists) {
+        throw new Error("[getFileObj] File '" + fileName + "' is not exists in '" + nautilus.EXPRESSION_FOLDER + "' folder, please install Nautilus correctly!")
+      }
 
-      return new File(folderObj.fsName + "/" + fileName)
+      return fileObj
     },
     readFile: function(fileName) {
       var code
-      var fileObj = utils.getFileObj(fileName)
-
-      if (!fileObj.exists) {
-        throw new Error("[readFile] File (" + fileName + ") is not exists, please install this script correctly!")
+      var fileObj
+      try {
+        var fileObj = utils.getFileObj(fileName)
+      } catch (e) {
+        throw new Error("[readFile] " + e.message)
       }
 
       try {
@@ -82,7 +90,7 @@ function NautilusScript(ui_ref) {
           defaultVariable = defaultVariable.replace("NAUTILUS_FX_NAME_LIST", finalListStr);
         }
 
-        var finalExp = defaultVariable + "\n\n" + expression
+        var finalExp = defaultVariable.replace("PROPERTY_EXPRESSION", expression)
         return finalExp
       } catch (e) {
         throw new Error("[replaceExpression] " + e.message)
@@ -93,28 +101,34 @@ function NautilusScript(ui_ref) {
 
       return buildInfo
     },
-    applyExpressionToLayer: function (layer, compName, nullName, effectName) {
+    applyExpressionToLayer: function (layer, compName, nullName, effectNameList) {
       try {
-        var posProp = layer.property("Transform").property("Position");
+        var trProp = layer.property("Transform")
+
+        var posProp = trProp.property("Position");
         posProp.dimensionSeparated = false;
 
-        var RotProp = layer.property("Transform").property("Rotation");
-        var RotXProp = layer.property("Transform").property("X Rotation");
-        var RotYProp = layer.property("Transform").property("Y Rotation");
-        var RotZProp = layer.property("Transform").property("Z Rotation");
-        var SclProp = layer.property("Transform").property("Scale");
-        var OpcProp = layer.property("Transform").property("Opacity"); 
+        var RotProp = trProp.property("Rotation");
+        var RotXProp = trProp.property("X Rotation");
+        var RotYProp = trProp.property("Y Rotation");
+        var RotZProp = trProp.property("Z Rotation");
+        var SclProp = trProp.property("Scale");
+        var OpcProp = trProp.property("Opacity"); 
 
-        posProp.expression = utils.replaceExpression(nautilus.expression.position, compName, nullName, effectName);
-        SclProp.expression = utils.replaceExpression(nautilus.expression.scale, compName, nullName, effectName);
-        OpcProp.expression = utils.replaceExpression(nautilus.expression.opacity, compName, nullName, effectName);
+        var executeReplaceExpression = function(expression) {
+          return utils.replaceExpression(expression, compName, nullName, effectNameList);
+        }
+
+        posProp.expression = executeReplaceExpression(nautilus.expression.position)
+        SclProp.expression = executeReplaceExpression(nautilus.expression.scale)
+        OpcProp.expression = executeReplaceExpression(nautilus.expression.opacity)
 
         if (layer.threeDLayer) {
-          RotXProp.expression = utils.replaceExpression(nautilus.expression.rotationX, compName, nullName, effectName);
-          RotYProp.expression = utils.replaceExpression(nautilus.expression.rotationY, compName, nullName, effectName);
-          RotZProp.expression = utils.replaceExpression(nautilus.expression.rotationZ, compName, nullName, effectName);
+          RotXProp.expression = executeReplaceExpression(nautilus.expression.rotationX)
+          RotYProp.expression = executeReplaceExpression(nautilus.expression.rotationY)
+          RotZProp.expression = executeReplaceExpression(nautilus.expression.rotationZ)
         } else {
-          RotProp.expression = utils.replaceExpression(nautilus.expression.rotationZ, compName, nullName, effectName);
+          RotProp.expression = executeReplaceExpression(nautilus.expression.rotationZ)
         }
       } catch (e) {
         throw new Error("[applyExpressionToLayer] " + e.message)
@@ -175,20 +189,27 @@ function NautilusScript(ui_ref) {
         return layer
       }
     },
-    getNautilusEffectName: function(ctrlNullLayer) {
-      // // alert("applied nautilus preset to layer");
-      // var ctrlNullLayerEffects = ctrlNullLayer.property("Effects");
+    applyNautilusEffect: function(ctrlNullLayer, isFirst) {
+      try {
+        var comp = ctrlNullLayer.containingComp
+        for (var i = 0; i < comp.selectedLayers.length; i++) {
+          comp.selectedLayers[i].selected = false;
+        }
 
-      // if (ctrlNullLayerEffects && ctrlNullLayerEffects.numProperties > 0) {
-      //   var lastEffectIndex = ctrlNullLayerEffects.numProperties
-      //   // alert(lastEffectIndex)
-      //   var lastEffect = ctrlNullLayer.property(lastEffectIndex);
-      //   return lastEffect.name
-      // }
+        for (var i = 0; i < comp.selectedLayers.length; i++) {
+          comp.selectedLayers[i].selected = false;
+        }
 
-      // those code is trash
+        ctrlNullLayer.selected = true
 
-      return "Nautilus"
+        if (isFirst) {
+          ctrlNullLayer.applyPreset(nautilus.firstPresetFileObj);
+        } else {
+          ctrlNullLayer.applyPreset(nautilus.secondPresetFileObj);
+        }
+      } catch (e) {
+        throw new Error("[applyNautilusEffect] " + e.message)
+      }
     },
     getAllNautilusEffect: function(layer) {
       var effectsArray = []
@@ -198,7 +219,7 @@ function NautilusScript(ui_ref) {
 
           for (var j = 1; j <= prop.numProperties; j++) {
             var effectName = prop.property(j).name
-            if (!effectName.includes("Nautilus")) { continue }
+            if (!effectName.includes(nautilus.effectName)) { continue }
 
             effectsArray.push(effectName);
           }
@@ -218,8 +239,6 @@ function NautilusScript(ui_ref) {
   var applyNautilus = function() {
     app.beginUndoGroup("Apply Nautilus");
     try {
-      var isFirstTime = false
-      
       var comp = app.project.activeItem;
       if (!(comp instanceof CompItem)) {
         throw new Error("Please select Composition!");
@@ -232,17 +251,14 @@ function NautilusScript(ui_ref) {
 
       var ctrlNull = utils.getNautilusNull(selectedLayers);
       if (!ctrlNull) {
-        var ctrlNull = comp.layers.addNull();
+        ctrlNull = comp.layers.addNull();
         ctrlNull.name = "Nautilus CTRL [" + ctrlNull.id + "]";
-        ctrlNull.applyPreset(utils.getFileObj("Nautilus.ffx"));
-        isFirstTime = true
+        utils.applyNautilusEffect(ctrlNull, true)
+      } else {
+        utils.applyNautilusEffect(ctrlNull, false)
       }
-      var ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull);
-      alert(ctrlNullEffectNameList)
 
-      // jangan apply klo ini bukan pertama kali
-      // aduh gw males anjir
-      if (!isFirstTime) { return }
+      var ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull);
       
       for (var i = 0; i < selectedLayers.length; i++) {
         var layer = selectedLayers[i]
@@ -268,15 +284,21 @@ function NautilusScript(ui_ref) {
   }
 
   function load() {
-    nautilus.version = utils.loadBuildInfo()["nautilusVersion"]
-    nautilus.aboutStr = utils.readFile("about.txt")
-    nautilus.expression.defaultVariable = utils.readFile("defaultVariable.jsx");
-    nautilus.expression.position = utils.readFile("position.jsx");
-    nautilus.expression.rotationX = utils.readFile("rotationX.jsx");
-    nautilus.expression.rotationY = utils.readFile("rotationY.jsx");
-    nautilus.expression.rotationZ = utils.readFile("rotationZ.jsx");
-    nautilus.expression.opacity = utils.readFile("opacity.jsx");
-    nautilus.expression.scale = utils.readFile("scale.jsx");
+    try {
+      nautilus.firstPresetFileObj = utils.getFileObj("Nautilus.ffx")
+      nautilus.secondPresetFileObj = utils.getFileObj("Nautilus2.ffx")
+      nautilus.version = utils.loadBuildInfo()["nautilusVersion"]
+      nautilus.aboutStr = utils.readFile("about.txt")
+      nautilus.expression.defaultVariable = utils.readFile("defaultVariable.jsx");
+      nautilus.expression.position = utils.readFile("position.jsx");
+      nautilus.expression.rotationX = utils.readFile("rotationX.jsx");
+      nautilus.expression.rotationY = utils.readFile("rotationY.jsx");
+      nautilus.expression.rotationZ = utils.readFile("rotationZ.jsx");
+      nautilus.expression.opacity = utils.readFile("opacity.jsx");
+      nautilus.expression.scale = utils.readFile("scale.jsx");
+    } catch (e) {
+      throw new Error("[load] " + e.message)
+    }
   }
 
   load()
@@ -284,7 +306,7 @@ function NautilusScript(ui_ref) {
 }
 
 function handleError(msg) {
-  alert("Nautilus encountered Error! : \n" + msg + "\n\n" + "if you have a problem, please open issue at \nhttps://github.com/Kuredew/nautilus \n\nNautilus is made and develop by Kureichi");
+  alert("Nautilus encountered Error! : \n" + msg + "\n\n" + "if you have a problem, please let me know by contacting me on instagram (@zeanlost)  \n\nNautilus is made by Kureichi");
 }
 
 try {

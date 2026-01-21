@@ -1,4 +1,6 @@
 // For Scale
+if (!ctrlValue) { ctrlValue = [0, 0] }
+
 var ctrlScaleStrength = ctrlFx("Scale Strength").valueAtTime(time - delay);
 var ctrlScaleXStrength = ctrlScaleStrength;
 var ctrlScaleYStrength = ctrlScaleStrength;
@@ -14,12 +16,16 @@ var layerScaleY = value[1];
 // follow mask, again
 if (ctrlHasMask) {
   var finalLength = (length(ctrlMaskTangentsIn) + length(ctrlMaskTangentsOut)) / 2;
-  layerScaleX = layerScaleX + finalLength;
-  layerScaleY = layerScaleY + finalLength;
+
+  layerValue = []
+  layerValue[0] = layerScaleX + finalLength;
+  layerValue[1] = layerScaleY + finalLength;
 }
 
 // calculate percent value
 var ctrlScaleX = ctrlFx("Scale X") * (ctrlScaleXStrength / 100);
 var ctrlScaleY = ctrlFx("Scale Y") * (ctrlScaleYStrength / 100);
 
-[layerScaleX + ctrlScaleX, layerScaleY + ctrlScaleY]
+// final
+ctrlValue = ctrlValue + [ctrlScaleX, ctrlScaleY]
+layerValue += ctrlValue

@@ -1,4 +1,5 @@
 // For position
+if (!ctrlValue) { ctrlValue = [0, 0, 0] }
 
 ///////////////////////
 // take strength first
@@ -28,15 +29,13 @@ var ctrlPosX = ctrlPosXValue * (ctrlPosXStrength / 100);
 var ctrlPosY = ctrlPosYValue * (ctrlPosYStrength / 100);
 var ctrlPosZ = ctrlPosZValue * (ctrlPosZStrength / 100);
 
-var layerPosX = value[0];
-var layerPosY = value[1];
-
 // follow mask 
 if (ctrlHasMask) {
   var finalPoint = ctrl.toComp(ctrlMaskPoint);
+  layerValue = []
 
-  layerPosX = finalPoint[0];
-  layerPosY = finalPoint[1];
+  layerValue[0] = finalPoint[0];
+  layerValue[1] = finalPoint[1];
 }
 
 // handle 2d/3d layer
@@ -49,9 +48,9 @@ if (value.length == 3) { layerPosZ = value[2] }
 var xDir = 0;
 var yDir = 0;
 
-var yPos = layerPosY + ctrlPosY;
-var xPos = layerPosX + ctrlPosX;
-var zPos = layerPosZ + ctrlPosZ;
+var yPos = ctrlPosY;
+var xPos = ctrlPosX;
+var zPos = ctrlPosZ;
 
 var p = (index - 1) % 4;
 if (p == 0) { yDir = -1; xDir = 0; } 
@@ -61,14 +60,10 @@ else if (p == 3) { yDir = 0; xDir = -1; }
 
 // only change animate type if "Mode" is set to "Alternate"
 if (ctrlMode == 2) {
-	var xPos = layerPosX + (ctrlPosX * xDir);
-	var yPos = layerPosY + (ctrlPosY * yDir);
-
-	// if x/yPos is 0, fallback to own pos
-	if (xPos == 0) { xPos = layerPosX; }
-	if (yPos == 0) { yPos = layerPosY; }
+	ctrlPosX = ctrlPosX * xDir;
+	ctrlPosY = ctrlPosY * yDir;
 }
 
-
 // final
-[xPos, yPos, zPos]
+ctrlValue += [ctrlPosX, ctrlPosY, ctrlPosZ];
+layerValue += ctrlValue

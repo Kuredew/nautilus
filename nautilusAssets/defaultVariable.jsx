@@ -1,15 +1,11 @@
 // Nautilus VERSION
-// Kureichi<Kuredew> (hibikumonogatari@gmail.com)
+// Kureichi<Kuredew> (https://github.com/Kuredew)
 
 var ctrl = thisComp.layer("NULL_LAYER_NAME");
-var ctrlFx = ctrl.effect("NAUTILUS_FX_NAME")
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
-var ctrlDirection = ctrlFx("Direction").value
-var ctrlMode = ctrlFx("Mode").value
-var ctrlDelay = ctrlFx("Delay") / 10
 var totalIndex = thisComp.numLayers
 var realIndex = thisComp.numLayers - index
-var finalIndex = realIndex
+var realTime = time
 
 // check mask
 var ctrlHasMask = false
@@ -28,12 +24,28 @@ try {
   // ignore dawg
 }
 
-// change direction to reversed if "Direction" is set to "Reversed"
-if (ctrlDirection == 2) { 
-	finalIndex = index - 1;
-}
-var delay = (finalIndex) * ctrlDelay;
+var layerValue = value;
+var ctrlValue
+for (var i = 0; i < ctrlFxList.length; i++) {
+  var ctrlFx = ctrl.effect(ctrlFxList[i])
 
-var ctrlIsSeparatePosition = ctrlFx("Separate Position?").value
-var ctrlIsSeparateRotation = ctrlFx("Separate Rotation?").value
-var ctrlIsSeparateScale = ctrlFx("Separate Scale?").value
+  var ctrlDirection = ctrlFx("Direction").value
+  var ctrlMode = ctrlFx("Mode").value
+  var ctrlDelay = ctrlFx("Delay") / 10
+  var finalIndex = realIndex
+
+  // change direction to reversed if "Direction" is set to "Reversed"
+  if (ctrlDirection == 2) { 
+    finalIndex = index - 1;
+  }
+  var delay = (finalIndex) * ctrlDelay;
+
+  var ctrlIsSeparatePosition = ctrlFx("Separate Position?").value
+  var ctrlIsSeparateRotation = ctrlFx("Separate Rotation?").value
+  var ctrlIsSeparateScale = ctrlFx("Separate Scale?").value
+
+
+  PROPERTY_EXPRESSION
+}
+
+layerValue
