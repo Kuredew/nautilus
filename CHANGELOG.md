@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/Kuredew/nautilus/compare/v1.0.0...v1.0.1) (2026-01-21)
+
+
+### Bug Fixes
+
+* tests ci ([#10](https://github.com/Kuredew/nautilus/issues/10)) ([1685521](https://github.com/Kuredew/nautilus/commit/168552143ed0a1fc42e042d32269e8e336105ce1))
+
 ## 1.0.0 (2026-01-21)
 
 
