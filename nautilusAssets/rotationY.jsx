@@ -1,4 +1,6 @@
 // For Rotation
+if (!ctrlValue) { ctrlValue = 0 }
+
 var ctrlRotationStrength = ctrlFx("Rotation Strength").valueAtTime(time - delay);
 
 if (ctrlIsSeparateRotation) {
@@ -10,4 +12,6 @@ var ctrlRotation = ctrlFx("Rotation Y") * (ctrlRotationStrength / 100);
 
 var layerRot = value;
 
-layerRot + ctrlRotation
+// final
+ctrlValue = ctrlValue + ctrlRotation
+layerValue += ctrlValue

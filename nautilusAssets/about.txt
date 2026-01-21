@@ -1,3 +1,5 @@
+Nautilus VERSION
+
 Nautilus is a script for creating delay based animation layers. It's very similar to TextEvo, but more flexible. Animation keyframes are separated based on transforms, rather than combined into a single strength property.
 
 Nautilus can also be used with GG_Bunkai, where GG_Bunkai is used to separate text into characters/paths, and Nautilus is used to animate text separated by GG_Bunkai.
@@ -17,10 +19,7 @@ Alternate: If you've ever seen animated text in Vtuber JP's music videos, the an
 
 Thanks for using Nautilus.
 
-Nautilus VERSION
-Kureichi<Kuredew> hibikumonogatari@gmail.com
+Kureichi<Kuredew> (https://github.com/Kuredew)
 Instagram: @zeanlost
-Twitter: @kureichi_ts
 Fesnuk: zeanichi
-
-Want to contribute, report bugs, or simply suggest features? visit https://github.com/Kuredew/nautilus
+Twitter: @kureichi_ts

@@ -2,6 +2,6 @@
 var ctrlOpacityStrength = ctrlFx("Opacity Strength").valueAtTime(time - delay);
 
 // calculate percent value
-var ctrlOpacity = value * (ctrlOpacityStrength / 100);
+// var ctrlOpacity = layerV * (ctrlOpacityStrength / 100);
 
-ctrlOpacity
+layerValue = layerValue - (100 - ctrlOpacityStrength)
