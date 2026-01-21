@@ -7,7 +7,7 @@ on:
 
 jobs:
   upload-assets:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +22,9 @@ jobs:
         run: pnpm run build
 
       - name: Zip
-        run: zip -r Nautilus.zip dist/
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r Nautilus.zip dist
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
