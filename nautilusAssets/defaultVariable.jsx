@@ -21,7 +21,6 @@ try {
   ctrlMaskTangentsOut = ctrlMaskPath.outTangents()[realIndex]
   ctrlHasMask = true
 } catch (e) {
-  // ignore dawg
 }
 
 var layerValue = value;
