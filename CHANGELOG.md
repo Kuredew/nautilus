@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Kuredew/nautilus/compare/v1.0.2...v1.1.0) (2026-01-21)
+
+
+### Features
+
+* bump version automatically ([c47b1f6](https://github.com/Kuredew/nautilus/commit/c47b1f6d9eef42f2e95a9dcb4655e27f27e47eda))
+
+
+### Bug Fixes
+
+* layer animation not follow effect keyframes correctly ([105e5d2](https://github.com/Kuredew/nautilus/commit/105e5d226a437e36f5d2963d3a84e4c147c42a88))
+
 ## [1.0.2](https://github.com/Kuredew/nautilus/compare/v1.0.1...v1.0.2) (2026-01-21)
 
 
