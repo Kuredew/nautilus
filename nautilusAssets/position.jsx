@@ -4,15 +4,15 @@ if (!ctrlValue) { ctrlValue = [0, 0, 0] }
 ///////////////////////
 // take strength first
 ///////////////////
-var ctrlPosStrength = ctrlFx("Position Strength").valueAtTime(time - delay);
+var ctrlPosStrength = ctrlFx("Position Strength").valueAtTime(realTime - delay);
 var ctrlPosXStrength = ctrlPosStrength
 var ctrlPosYStrength = ctrlPosStrength
 var ctrlPosZStrength = ctrlPosStrength
 
 if (ctrlIsSeparatePosition) {
-  ctrlPosXStrength = ctrlFx("Position X Strength").valueAtTime(time - delay);
-  ctrlPosYStrength = ctrlFx("Position Y Strength").valueAtTime(time - delay);
-  ctrlPosZStrength = ctrlFx("Position Z Strength").valueAtTime(time - delay);
+  ctrlPosXStrength = ctrlFx("Position X Strength").valueAtTime(realTime - delay);
+  ctrlPosYStrength = ctrlFx("Position Y Strength").valueAtTime(realTime - delay);
+  ctrlPosZStrength = ctrlFx("Position Z Strength").valueAtTime(realTime - delay);
 }
 
 ////////////////

@@ -62,7 +62,7 @@ function NautilusScript(ui_ref) {
     replaceVersion: function(str) {
       return str.replace("VERSION", nautilus.version)
     },
-    replaceExpression: function(expression, compName, nullName, effectNameList) {
+    replaceExpression: function(expression, ownCompName, compName, nullName, effectNameList) {
       try {
         var defaultVariable = utils.replaceVersion(nautilus.expression.defaultVariable)
         if (compName) {
@@ -90,6 +90,10 @@ function NautilusScript(ui_ref) {
           defaultVariable = defaultVariable.replace("NAUTILUS_FX_NAME_LIST", finalListStr);
         }
 
+        if (ownCompName) {
+          defaultVariable = defaultVariable.replace("OWN_COMP_NAME", ownCompName)
+        }
+
         var finalExp = defaultVariable.replace("PROPERTY_EXPRESSION", expression)
         return finalExp
       } catch (e) {
@@ -97,11 +101,11 @@ function NautilusScript(ui_ref) {
       }
     },
     loadBuildInfo: function () {
-      var buildInfo = JSON.parse(utils.readFile("build_info.json"));
+      var buildInfo = JSON.parse(utils.readFile("package.json"));
 
       return buildInfo
     },
-    applyExpressionToLayer: function (layer, compName, nullName, effectNameList) {
+    applyExpressionToLayer: function (layer, ownCompName, compName, nullName, effectNameList) {
       try {
         var trProp = layer.property("Transform")
 
@@ -116,7 +120,7 @@ function NautilusScript(ui_ref) {
         var OpcProp = trProp.property("Opacity"); 
 
         var executeReplaceExpression = function(expression) {
-          return utils.replaceExpression(expression, compName, nullName, effectNameList);
+          return utils.replaceExpression(expression, ownCompName, compName, nullName, effectNameList);
         }
 
         posProp.expression = executeReplaceExpression(nautilus.expression.position)
@@ -269,12 +273,12 @@ function NautilusScript(ui_ref) {
         if (layer.source instanceof CompItem && nautilus.applyToCompLayers) {
           var innerComp = layer.source;
           for (var j = 1; j <= innerComp.numLayers; j++) {
-            utils.applyExpressionToLayer(innerComp.layer(j), comp.name, ctrlNull.name, ctrlNullEffectNameList);
+            utils.applyExpressionToLayer(innerComp.layer(j), layer.name, comp.name, ctrlNull.name, ctrlNullEffectNameList);
           }
           continue
         }
 
-        utils.applyExpressionToLayer(layer, null, ctrlNull.name, ctrlNullEffectNameList);
+        utils.applyExpressionToLayer(layer, null, null, ctrlNull.name, ctrlNullEffectNameList);
       }
     } catch (e) {
       throw new Error("[applyNautilus] " + e.message)
@@ -287,7 +291,7 @@ function NautilusScript(ui_ref) {
     try {
       nautilus.firstPresetFileObj = utils.getFileObj("Nautilus.ffx")
       nautilus.secondPresetFileObj = utils.getFileObj("Nautilus2.ffx")
-      nautilus.version = utils.loadBuildInfo()["nautilusVersion"]
+      nautilus.version = utils.loadBuildInfo()["version"]
       nautilus.aboutStr = utils.readFile("about.txt")
       nautilus.expression.defaultVariable = utils.readFile("defaultVariable.jsx");
       nautilus.expression.position = utils.readFile("position.jsx");
