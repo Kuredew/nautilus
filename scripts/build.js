@@ -4,8 +4,9 @@ import jsxbin from "jsxbin"
 
 const nautilusJSX = "Nautilus.jsx"
 const nautilusJSXBIN = "Nautilus.jsxbin"
+const otherFiles = ["HOW_TO_INSTALL.txt"]
 const assetsFolder = "nautilusAssets/"
-const outputFolder = ".dist/"
+const outputFolder = "dist/"
 
 const build = async (onLog = () => {}) => {
   const logInstance = new Logger(build.name)
@@ -19,6 +20,10 @@ const build = async (onLog = () => {}) => {
 
     log("copying assets to .dist")
     fs.cpSync(assetsFolder, outputFolder + assetsFolder, { recursive: true })
+
+    log("copying other files to .dist")
+    otherFiles.forEach(file => fs.cpSync(file, outputFolder + file))
+
     log("copied!")
 
     log("building nautilus to .dist")
@@ -26,27 +31,28 @@ const build = async (onLog = () => {}) => {
 
     log("build complete")
   } catch (e) {
-    throw new Error("[build] " + e.message)
+    throw new Error(logInstance.parse(e.message))
   }
 }
 
-async function main() {
+async function main(onLog = () => {}) {
   const logInstance = new Logger(main.name) 
 
-  logInstance.log("script started")
-  logInstance.log("calling build function...")
+  try {
+    onLog(logInstance.parse("script started"))
+    onLog(logInstance.parse("calling build function..."))
 
-  await build((log) => {
-    logInstance.log(log)
-  })
+    await build((log) => {
+      onLog(logInstance.parse(log))
+    })
 
-  logInstance.log("done!")
+    onLog(logInstance.parse("done!"))
+  } catch (e) {
+    throw new Error(logInstance.parse(e.message))
+  }
 }
 
 const logInstance = new Logger("root")
 
-try {
-  main()
-} catch (e) {
-  console.error(logInstance.error(e.message))
-}
+
+main((log) => logInstance.log(log)).catch((e) => logInstance.error(e.message))
