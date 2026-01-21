@@ -21,12 +21,8 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Zip
-        shell: powershell
-        run: Compress-Archive -Path '.dist' -DestinationPath 'Nautilus.zip'
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Nautilus Build
-          path: Nautilus.zip
+          path: dist/
