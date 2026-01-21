@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/Kuredew/nautilus/compare/v1.0.1...v1.0.2) (2026-01-21)
+
+
+### Bug Fixes
+
+* **ci:** change name jobs typo ([#14](https://github.com/Kuredew/nautilus/issues/14)) ([9c33ccd](https://github.com/Kuredew/nautilus/commit/9c33ccd99313f6b24b50dcc095622ad3893fc578))
+* **ci:** upload assets no triggered ([#12](https://github.com/Kuredew/nautilus/issues/12)) ([163cbd0](https://github.com/Kuredew/nautilus/commit/163cbd0f234aab88355f100a768ae0c736b71cd3))
+
 ## [1.0.1](https://github.com/Kuredew/nautilus/compare/v1.0.0...v1.0.1) (2026-01-21)
 
 
