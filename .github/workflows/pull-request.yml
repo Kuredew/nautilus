@@ -1,0 +1,27 @@
+name: pull_request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  upload-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v4
+
+      - name: Install deps, build and zip
+        run: pnpm install
+        run: pnpm run build
+        run: zip -r Nautilus.zip dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nautilus Build
+          path: Nautilus.zip

@@ -1,2 +1,5 @@
 # ignore .dist folder 
 .dist
+
+# ignore modules
+node_modules
