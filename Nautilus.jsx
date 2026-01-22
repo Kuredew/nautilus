@@ -187,8 +187,14 @@ function NautilusScript(ui_ref) {
       for (var i = 0; i < selectedLayers.length; i++) {
         var layer = selectedLayers[i]
 
-        if (!(layer.nullLayer)) { continue }
-        if (!(utils.isNautilusNull(layer))) { continue }
+        if (!nautilus.applyToCompLayers) {
+          if (!(layer.nullLayer)) { continue }
+          if (!(utils.isNautilusNull(layer))) { continue }
+        } else {
+          if (!(layer instanceof CompItem)) {
+
+          }
+        }
 
         return layer
       }
@@ -257,12 +263,17 @@ function NautilusScript(ui_ref) {
       if (!ctrlNull) {
         ctrlNull = comp.layers.addNull();
         ctrlNull.name = "Nautilus CTRL [" + ctrlNull.id + "]";
+      }
+
+      var ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull);
+
+      if (ctrlNullEffectNameList.length === 0) {
         utils.applyNautilusEffect(ctrlNull, true)
       } else {
         utils.applyNautilusEffect(ctrlNull, false)
       }
 
-      var ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull);
+      ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull)
       
       for (var i = 0; i < selectedLayers.length; i++) {
         var layer = selectedLayers[i]
