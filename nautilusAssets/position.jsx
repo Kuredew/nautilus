@@ -31,7 +31,13 @@ var ctrlPosZ = ctrlPosZValue * (ctrlPosZStrength / 100);
 
 // follow mask 
 if (ctrlHasMask) {
-  var finalPoint = ctrl.toComp(ctrlMaskPoint);
+  var finalPoint
+  if (isLegacy) {
+    finalPoint = ctrl.toComp(ctrlMaskPoint);
+  } else {
+    finalPoint = ctrlMaskPoint
+  }
+
   layerValue = []
 
   layerValue[0] = finalPoint[0];

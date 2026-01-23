@@ -1,6 +1,8 @@
 // Nautilus VERSION
 // Kureichi<Kuredew> (https://github.com/Kuredew)
 
+var isLegacy = IS_LEGACY
+
 // calculate real time
 var realTime = time
 var ownComp
@@ -16,6 +18,10 @@ var ctrl = ctrlComp.layer("NULL_LAYER_NAME");
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
 var totalIndex = thisComp.numLayers
 var realIndex = thisComp.numLayers - index
+
+if (isLegacy) {
+  realIndex = index - ctrl.index -1
+}
 
 // check mask
 var ctrlHasMask = false
