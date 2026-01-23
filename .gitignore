@@ -3,3 +3,6 @@ dist
 
 # ignore modules
 node_modules
+
+ignore package json in nautilusAssets for development
+nautilusAssets/package.json
