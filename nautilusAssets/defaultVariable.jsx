@@ -36,7 +36,12 @@ try {
 var layerValue = value;
 var ctrlValue
 for (var i = 0; i < ctrlFxList.length; i++) {
-  var ctrlFx = ctrl.effect(ctrlFxList[i])
+  var ctrlFx
+  try {
+    ctrlFx = ctrl.effect(ctrlFxList[i])
+  } catch (e) {
+    continue
+  }
 
   var ctrlDirection = ctrlFx("Direction").value
   var ctrlMode = ctrlFx("Mode").value
