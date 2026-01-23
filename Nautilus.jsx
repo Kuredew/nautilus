@@ -65,6 +65,13 @@ function NautilusScript(ui_ref) {
     replaceExpression: function(expression, ownCompName, compName, nullName, effectNameList) {
       try {
         var defaultVariable = utils.replaceVersion(nautilus.expression.defaultVariable)
+
+        if (nautilus.applyToCompLayers) {
+          defaultVariable = defaultVariable.replace("IS_LEGACY", "false")
+        } else {
+          defaultVariable = defaultVariable.replace("IS_LEGACY", "true")
+        }
+
         if (compName) {
           defaultVariable = defaultVariable.replace("thisComp", 'comp("' + compName + '")');
         }
@@ -145,8 +152,8 @@ function NautilusScript(ui_ref) {
         nautilus.palette.alignChildren = ["center", "center"];
 
         nautilus.palette.add("statictext", undefined, "Nautilus " + nautilus.version);
-        var applyToCompLayers = nautilus.palette.add("checkbox", undefined, "Apply to layers in the selected comp");
-        applyToCompLayers.value = nautilus.applyToCompLayers;
+        var legacyMode = nautilus.palette.add("checkbox", undefined, "Legacy Mode?");
+        legacyMode.value = !nautilus.applyToCompLayers;
 
         var btnGroup = nautilus.palette.add("group", undefined, "ButtonGroup");
 
@@ -165,7 +172,12 @@ function NautilusScript(ui_ref) {
           }
         }
 
-        applyToCompLayers.onClick = function() { nautilus.applyToCompLayers = applyToCompLayers.value }
+        legacyMode.onClick = function() { 
+          nautilus.applyToCompLayers = !legacyMode.value 
+          if (legacyMode.value) {
+            alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
+          }
+        }
         applyButton.onClick = function () { executeFunc(applyNautilus) }
         helpButton.onClick = function() { executeFunc(help) }
 
@@ -180,16 +192,19 @@ function NautilusScript(ui_ref) {
         throw new Error("[createPalette] " + e.message)
       }
     },
+    // deprecated
     isNautilusNull: function(layer) {
       return layer.name.includes("Nautilus CTRL")
     },
-    getNautilusNull: function (selectedLayers) {
+    getNautilusCtrl: function (selectedLayers) {
       for (var i = 0; i < selectedLayers.length; i++) {
         var layer = selectedLayers[i]
 
         if (!nautilus.applyToCompLayers) {
+          // deprecated
           if (!(layer.nullLayer)) { continue }
           if (!(utils.isNautilusNull(layer))) { continue }
+
         } else {
           if (!(layer instanceof CompItem)) {
 
@@ -199,9 +214,36 @@ function NautilusScript(ui_ref) {
         return layer
       }
     },
-    applyNautilusEffect: function(ctrlNullLayer, isFirst) {
+    // deprecated
+    createNullCtrl: function(selectedLayers) {
       try {
-        var comp = ctrlNullLayer.containingComp
+        var comp = selectedLayers[0].containingComp
+
+        var ctrlLayer = comp.layers.addNull();
+        ctrlLayer.name = "Nautilus CTRL [" + ctrlLayer.id + "]";
+
+        var indexArray = []
+        for (var i = 0; i < selectedLayers.length; i++) {
+          var layer = selectedLayers[i]
+          indexArray.push(layer.index)
+        }
+
+        var lowestIndex = indexArray[0]
+        for (var i = 0; i < indexArray.length; i++) {
+          if (indexArray[i] < lowestIndex) {
+            lowestIndex = indexArray[i]
+          }
+        }
+
+        ctrlLayer.moveBefore(comp.layer(lowestIndex))
+        return ctrlLayer
+      } catch (e) {
+        throw new Error("[createNullCtrl] " + e.message)
+      }
+    },
+    applyNautilusEffect: function(ctrlLayer) {
+      try {
+        var comp = ctrlLayer.containingComp
         for (var i = 0; i < comp.selectedLayers.length; i++) {
           comp.selectedLayers[i].selected = false;
         }
@@ -210,13 +252,17 @@ function NautilusScript(ui_ref) {
           comp.selectedLayers[i].selected = false;
         }
 
-        ctrlNullLayer.selected = true
+        ctrlLayer.selected = true
 
-        if (isFirst) {
-          ctrlNullLayer.applyPreset(nautilus.firstPresetFileObj);
+        var ctrlLayerEffectNameList = utils.getAllNautilusEffect(ctrlLayer);
+
+        if (ctrlLayerEffectNameList.length === 0 && nautilus.applyToCompLayers) {
+          ctrlLayer.applyPreset(nautilus.firstPresetFileObj);
         } else {
-          ctrlNullLayer.applyPreset(nautilus.secondPresetFileObj);
+          ctrlLayer.applyPreset(nautilus.secondPresetFileObj);
         }
+
+        return utils.getAllNautilusEffect(ctrlLayer)
       } catch (e) {
         throw new Error("[applyNautilusEffect] " + e.message)
       }
@@ -259,21 +305,18 @@ function NautilusScript(ui_ref) {
         throw new Error("Please select atleast 1 layer/CompLayer!");
       }
 
-      var ctrlNull = utils.getNautilusNull(selectedLayers);
-      if (!ctrlNull) {
-        ctrlNull = comp.layers.addNull();
-        ctrlNull.name = "Nautilus CTRL [" + ctrlNull.id + "]";
+      var ctrlLayer
+      var ctrlLayerEffectNameList
+      if (!nautilus.applyToCompLayers) {
+        var ctrlLayer = utils.getNautilusCtrl(selectedLayers);
+        if (!ctrlLayer) {
+          ctrlLayer = utils.createNullCtrl(selectedLayers)
+        }
+
+        utils.applyNautilusEffect(ctrlLayer)
+        ctrlLayerEffectNameList = utils.getAllNautilusEffect(ctrlLayer)
       }
 
-      var ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull);
-
-      if (ctrlNullEffectNameList.length === 0) {
-        utils.applyNautilusEffect(ctrlNull, true)
-      } else {
-        utils.applyNautilusEffect(ctrlNull, false)
-      }
-
-      ctrlNullEffectNameList = utils.getAllNautilusEffect(ctrlNull)
       
       for (var i = 0; i < selectedLayers.length; i++) {
         var layer = selectedLayers[i]
@@ -281,15 +324,27 @@ function NautilusScript(ui_ref) {
         // ignore nautilus null ctrl
         if (utils.isNautilusNull(layer)) { continue }
 
-        if (layer.source instanceof CompItem && nautilus.applyToCompLayers) {
+        if (nautilus.applyToCompLayers) {
+          if (!(layer.source instanceof CompItem)) {
+            alert("Layer '" + layer.name + "'" +  " skipped because this layer is not instance of preComp/Comp Layer")
+            continue
+          }
+
+          ctrlLayer = layer
+
+          utils.applyNautilusEffect(ctrlLayer)
+          ctrlLayerEffectNameList = utils.getAllNautilusEffect(ctrlLayer)
+
           var innerComp = layer.source;
           for (var j = 1; j <= innerComp.numLayers; j++) {
-            utils.applyExpressionToLayer(innerComp.layer(j), layer.name, comp.name, ctrlNull.name, ctrlNullEffectNameList);
+            utils.applyExpressionToLayer(innerComp.layer(j), layer.name, comp.name, ctrlLayer.name, ctrlLayerEffectNameList);
           }
           continue
         }
 
-        utils.applyExpressionToLayer(layer, null, null, ctrlNull.name, ctrlNullEffectNameList);
+        if (!nautilus.applyToCompLayers) {
+          utils.applyExpressionToLayer(layer, null, null, ctrlLayer.name, ctrlLayerEffectNameList);
+        }
       }
     } catch (e) {
       throw new Error("[applyNautilus] " + e.message)
