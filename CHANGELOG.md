@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/Kuredew/nautilus/compare/v1.1.0...v1.2.0) (2026-01-24)
+
+
+### Features
+
+* nautilus effect applied to precomp support ([248a835](https://github.com/Kuredew/nautilus/commit/248a835599606d26392867ed1523cfb83f623770))
+
+
+### Bug Fixes
+
+* expression error if Nautilus effect deleted ([a345a62](https://github.com/Kuredew/nautilus/commit/a345a62348c86e93843ded2011b3fa3d4718a58f))
+
 ## [1.1.0](https://github.com/Kuredew/nautilus/compare/v1.0.2...v1.1.0) (2026-01-21)
 
 
