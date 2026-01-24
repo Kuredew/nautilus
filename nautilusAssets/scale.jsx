@@ -1,6 +1,14 @@
 // For Scale
 if (!ctrlValue) { ctrlValue = [0, 0] }
 
+if (ctrlIsWiggleScale) {
+  var ctrlWiggleScaleAmp = ctrlFx("Wiggle Scale Amp").value
+  var ctrlWiggleScaleFreq = ctrlFx("Wiggle Scale Freq").value
+
+  seedRandom(ctrlFx("Wiggle Scale Seed").value + index)
+  ctrlValue += (wiggle(ctrlWiggleScaleFreq, ctrlWiggleScaleAmp) - value)
+}
+
 var ctrlScaleStrength = ctrlFx("Scale Strength").valueAtTime(realTime - delay);
 var ctrlScaleXStrength = ctrlScaleStrength;
 var ctrlScaleYStrength = ctrlScaleStrength;

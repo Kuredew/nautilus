@@ -64,6 +64,10 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   var ctrlIsSeparateRotation = ctrlFx("Separate Rotation?").value
   var ctrlIsSeparateScale = ctrlFx("Separate Scale?").value
 
+  var ctrlIsWigglePosition = ctrlFx("Wiggle Position?").value
+  var ctrlIsWiggleRotation = ctrlFx("Wiggle Rotation?").value
+  var ctrlIsWiggleScale = ctrlFx("Wiggle Scale?").value
+
 
   PROPERTY_EXPRESSION
 }

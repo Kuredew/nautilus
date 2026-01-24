@@ -1,6 +1,14 @@
 // For position
 if (!ctrlValue) { ctrlValue = [0, 0, 0] }
 
+if (ctrlIsWigglePosition) {
+  var ctrlWigglePositionAmp = ctrlFx("Wiggle Pos Amp").value
+  var ctrlWigglePositionFreq = ctrlFx("Wiggle Pos Freq").value
+
+  seedRandom(ctrlFx("Wiggle Pos Seed").value + index)
+  ctrlValue += (wiggle(ctrlWigglePositionFreq, ctrlWigglePositionAmp) - value)
+}
+
 ///////////////////////
 // take strength first
 ///////////////////
