@@ -1,27 +1,14 @@
 {
-  "changelog-sections": [
-    {
-      "type": "feat",
-      "section": "new features"
-    },
-    {
-      "type": "fix",
-      "section": "bug fixes"
-    },
-    {
-      "type": "refactor",
-      "section": "refactors",
-      "hidden": false
-    },
-    {
-      "type": "chore",
-      "section": "maintenance",
-      "hidden": true
-    },
-    {
-      "type": "docs",
-      "section": "documentation",
-      "hidden": false
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "changelog-sections": [
+        { "type": "feat", "section": "New Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "refactor", "section": "Refactors", "hidden": false },
+        { "type": "docs", "section": "Documentation", "hidden": false },
+        { "type": "chore", "section": "Maintenance", "hidden": false }
+      ]
     }
-  ]
+  }
 }
