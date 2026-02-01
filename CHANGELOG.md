@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.2.0](https://github.com/Kuredew/nautilus/compare/v1.1.0...v1.2.0) (2026-02-01)
+
+
+### New Features
+
+* add support for more direction (inward, outward, and random) ([3a82800](https://github.com/Kuredew/nautilus/commit/3a8280016d901ad7e9c5dc96400df6dd920c744b))
+* add wiggle feature for position, rotation, and scale ([2cddd09](https://github.com/Kuredew/nautilus/commit/2cddd094e9380a1c64f19ee4d35ea757df9065dc))
+* nautilus effect applied to precomp support ([248a835](https://github.com/Kuredew/nautilus/commit/248a835599606d26392867ed1523cfb83f623770))
+
+
+### Bug Fixes
+
+* expression error if Nautilus effect deleted ([a345a62](https://github.com/Kuredew/nautilus/commit/a345a62348c86e93843ded2011b3fa3d4718a58f))
+
+
+### Refactors
+
+* add wiggle control to nauitlus effect ([96aeb5a](https://github.com/Kuredew/nautilus/commit/96aeb5ac3f74b06fa0f648be04d0bc6d57afd95f))
+* deprecate old nautilus mode ([f2082bb](https://github.com/Kuredew/nautilus/commit/f2082bbfa93a9e53667308cc5feefc696ea47990))
+
+
+### Maintenance
+
+* add release-please config ([33d3673](https://github.com/Kuredew/nautilus/commit/33d3673d193fb7a811164cd2b240f775d9a8c533))
+* **ci:** add include-component-in-tag configuration option ([b55bede](https://github.com/Kuredew/nautilus/commit/b55bede7b55a0a4adefbb7cc875cd779d03d8161))
+* **ci:** add release-please manifest ([6661d37](https://github.com/Kuredew/nautilus/commit/6661d37c18994bd443e746655fed492eb4ab1669))
+* **ci:** change project version to 1.1.0 ([895201e](https://github.com/Kuredew/nautilus/commit/895201e54b0aa08e890d801cbca618a937e5f7c7))
+* **ci:** refactor release-please config to usse manifest mode ([c759272](https://github.com/Kuredew/nautilus/commit/c759272b69a0b333d53b985feb33efcfc612f5ef))
+* **ci:** update release-please.yml file ([7dbe0c8](https://github.com/Kuredew/nautilus/commit/7dbe0c805642e218a3652d38da15787ec1553c33))
+* ignore ```package.json``` in nautilusAssets ([e380719](https://github.com/Kuredew/nautilus/commit/e3807192d229bf13fc49d83962a0ba90de23cd1f))
+* remove build-info cuz we dont use it anymore ([f07456a](https://github.com/Kuredew/nautilus/commit/f07456ab5b51bc2e6d04bb9df9073383dafd865c))
+
 ## [1.1.0](https://github.com/Kuredew/nautilus/compare/v1.0.2...v1.1.0) (2026-01-21)
 
 
