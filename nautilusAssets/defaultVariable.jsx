@@ -1,6 +1,7 @@
 // Nautilus VERSION
 // Kureichi<Kuredew> (https://github.com/Kuredew)
 
+seedRandom(index, true)
 var isLegacy = IS_LEGACY
 
 // calculate real time
@@ -54,10 +55,21 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   var ctrlDelay = ctrlFx("Delay") / 10
   var finalIndex = realIndex
 
-  // change direction to reversed if "Direction" is set to "Reversed"
+  /////////////////////
+  // direction logic
+  /////////////////////
   if (ctrlDirection == 2) { 
     finalIndex = index - 1;
+  } else if (ctrlDirection == 3) {
+    var middleIndex = Math.ceil(totalIndex / 2)
+    finalIndex = Math.abs(middleIndex - index)
+  } else if (ctrlDirection == 4) {
+    var middleIndex = Math.ceil(totalIndex / 2)
+    finalIndex = (middleIndex - Math.abs(middleIndex - index)) - 1
+  } else if (ctrlDirection == 5) {
+    finalIndex = random(totalIndex)
   }
+
   var delay = (finalIndex) * ctrlDelay;
 
   var ctrlIsSeparatePosition = ctrlFx("Separate Position?").value
