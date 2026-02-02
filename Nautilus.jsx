@@ -152,13 +152,18 @@ function NautilusScript(ui_ref) {
         nautilus.palette.alignChildren = ["center", "center"];
 
         nautilus.palette.add("statictext", undefined, "Nautilus " + nautilus.version);
-        var legacyMode = nautilus.palette.add("checkbox", undefined, "Legacy Mode?");
+
+        var mainPanel = nautilus.palette.add("panel", undefined, "main")
+        var legacyMode = mainPanel.add("checkbox", undefined, "Legacy Mode?");
         legacyMode.value = !nautilus.applyToCompLayers;
 
-        var btnGroup = nautilus.palette.add("group", undefined, "ButtonGroup");
+        var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
 
-        var applyButton = btnGroup.add("button", undefined, "Apply Nautilus!");
+        var applyButton = btnGroup.add("button", undefined, "Apply");
         var helpButton = btnGroup.add("button", undefined, "?");
+
+        var utilsPanel = nautilus.palette.add("panel", undefined, "utils")
+        var extractButton = utilsPanel.add("button", undefined, "Extract Text Layer");
 
         nautilus.palette.onResizing = nautilus.palette.onResize = function() {
           nautilus.palette.layout.resize();
@@ -179,6 +184,7 @@ function NautilusScript(ui_ref) {
           }
         }
         applyButton.onClick = function () { executeFunc(applyNautilus) }
+        extractButton.onClick = function() { executeFunc(extract) }
         helpButton.onClick = function() { executeFunc(help) }
 
         if (nautilus.palette instanceof Window) {
@@ -190,6 +196,22 @@ function NautilusScript(ui_ref) {
         }
       } catch (e) {
         throw new Error("[createPalette] " + e.message)
+      }
+    },
+    getCompItem: function() {
+      var comp = app.project.activeItem;
+      if (!(comp instanceof CompItem)) {
+        throw new Error("[getCompItem] Please select Composition!");
+      }
+
+      return comp
+    },
+    isTextLayer: function(layer) {
+      try {
+        var dummyVar = layer.text.sourceText; 
+        return true;
+      } catch (e) {
+        return false;
       }
     },
     // deprecated
@@ -281,6 +303,26 @@ function NautilusScript(ui_ref) {
           }
       }
       return effectsArray
+    },
+    precomposeLayers: function(layerIndices, name, inPoint, outPoint) {
+      try {
+        var comp = utils.getCompItem()
+
+        var preComp = comp.layers.precompose(
+          layerIndices,
+          name
+        );
+
+        preComp.duration = outPoint - inPoint
+        for (var j = 1; j <= preComp.numLayers; j++) {
+          preComp.layer(j).startTime -= inPoint;
+        }
+
+        comp.selectedLayers[0].startTime = inPoint;
+      } catch (e) {
+        throw new Error("[precomposeLayers] " + e.message)
+      }
+
     }
   };
 
@@ -295,10 +337,7 @@ function NautilusScript(ui_ref) {
   var applyNautilus = function() {
     app.beginUndoGroup("Apply Nautilus");
     try {
-      var comp = app.project.activeItem;
-      if (!(comp instanceof CompItem)) {
-        throw new Error("Please select Composition!");
-      }
+      var comp = utils.getCompItem()
 
       var selectedLayers = comp.selectedLayers;
       if (selectedLayers.length == 0) {
@@ -351,6 +390,79 @@ function NautilusScript(ui_ref) {
     }
 
     app.endUndoGroup();
+  }
+
+  var extract = function() {
+    app.beginUndoGroup("Extract")
+    try {
+      // checking if selectedLayers is valid
+      var comp = utils.getCompItem()
+      var selectedLayers = comp.selectedLayers
+      if (selectedLayers.length === 0 || selectedLayers.length > 1) {
+        throw new Error("Please only select 1 layer!")
+      }
+
+      if (!utils.isTextLayer(selectedLayers[0])) {
+        throw new Error("Please only select text layer!")
+      }
+      var textLayer = selectedLayers[0]
+
+      // create shapes from selected text layer
+      app.executeCommand(app.findMenuCommandId("Create Shapes from Text"));
+
+      // get shape layer from Create Shapes from Text
+      var comp = utils.getCompItem()
+      var mainShapeLayer = comp.selectedLayers[0];
+      var contents = mainShapeLayer.property("Contents");
+      var shapeCount = contents.numProperties;
+
+      // store group name reference
+      var groupNames = [];
+      for (var i = shapeCount; i >= 1; i--) {
+          groupNames.push(contents.property(i).name);
+      }
+
+      var layerIndices = []
+      // duplicate layer
+      for (var j = 1; j <= groupNames.length; j++) {
+          var charLayer = mainShapeLayer.duplicate();
+          charLayer.name = "Char_" + groupNames[j-1] + "_" + (j);
+          layerIndices.push(charLayer.index)
+          
+          var charContents = charLayer.property("Contents");
+          
+          // remove group except index group
+          for (var k = charContents.numProperties; k >= 1; k--) {
+              if (k === (groupNames.length - j + 1)) { continue }
+
+              charContents.property(k).remove();
+          }
+
+          var rect = charLayer.sourceRectAtTime(comp.time, false);
+          
+          var centerX = rect.left + rect.width / 2;
+          var centerY = rect.top + rect.height / 2;
+          
+          var currentAnchor = charLayer.transform.anchorPoint.value;
+          var currentPos = charLayer.transform.position.value;
+          
+          charLayer.transform.anchorPoint.setValue([centerX, centerY]);
+          
+          var newPosX = currentPos[0] + (centerX - currentAnchor[0]);
+          var newPosY = currentPos[1] + (centerY - currentAnchor[1]);
+          
+          charLayer.transform.position.setValue([newPosX, newPosY]);
+      }
+
+      // remove main shape layer
+      mainShapeLayer.remove();
+
+      // precompose extracted layers
+      utils.precomposeLayers(layerIndices, textLayer.name, textLayer.inPoint, textLayer.outPoint)
+    } catch (e) {
+      throw new Error("[extract] " + e.message)
+    }
+    app.endUndoGroup()
   }
 
   function load() {
