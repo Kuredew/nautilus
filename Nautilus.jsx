@@ -1,4 +1,4 @@
-// Nautilus 1.0.0
+// Nautilus Project
 // Kureichi<Kuredew> (hibikumonogatari@gmail.com)
 
 // fix json undefined because adobe dont want to include JSON natively
