@@ -4,8 +4,6 @@ Nautilus is a script for creating delay based animation layers. It's very simila
 
 Nautilus can also be used with GG_Bunkai, where GG_Bunkai is used to separate text into characters/paths, and Nautilus is used to animate text separated by GG_Bunkai.
 
-To use Nautilus, it's recommended to precomp the layers you want to apply Nautilus to (dont worry, GG_Bunkai also have precomp option).
-
 Currently, Nautilus has two animation modes:
 
 Normal: Like TextEvo, the direction of the transform animation depends on the transform value you've set.
