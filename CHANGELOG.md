@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/Kuredew/nautilus/compare/v1.2.0...v1.3.0) (2026-02-02)
+
+
+### New Features
+
+* add extract text layer feature ([eb41e17](https://github.com/Kuredew/nautilus/commit/eb41e17cc4c4f19eb4f0293983f95c87edbe5d62))
+
+
+### Maintenance
+
+* change nautilus info in above code ([5dffaa3](https://github.com/Kuredew/nautilus/commit/5dffaa3f61db543fcbf93a46f76724f41feec0b9))
+* make nautilus MUST be applied to precomp ([8457a4a](https://github.com/Kuredew/nautilus/commit/8457a4acf74d5c1eeb99ee689c57aec5c4c289cd))
+
 ## [1.2.0](https://github.com/Kuredew/nautilus/compare/v1.1.0...v1.2.0) (2026-02-01)
 
 
