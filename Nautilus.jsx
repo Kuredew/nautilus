@@ -642,13 +642,13 @@ function NautilusScript(ui_ref) {
       nautilus.secondPresetFileObj = utils.getFileObj("Nautilus2.ffx")
       nautilus.version = utils.loadBuildInfo()["version"]
       nautilus.aboutStr = utils.readFile("about.txt")
-      nautilus.expression.defaultVariable = utils.readFile("defaultVariable.jsx");
-      nautilus.expression.position = utils.readFile("position.jsx");
-      nautilus.expression.rotationX = utils.readFile("rotationX.jsx");
-      nautilus.expression.rotationY = utils.readFile("rotationY.jsx");
-      nautilus.expression.rotationZ = utils.readFile("rotationZ.jsx");
-      nautilus.expression.opacity = utils.readFile("opacity.jsx");
-      nautilus.expression.scale = utils.readFile("scale.jsx");
+      nautilus.expression.defaultVariable = utils.readFile("layer/defaultVariable.jsx");
+      nautilus.expression.position = utils.readFile("layer/position.jsx");
+      nautilus.expression.rotationX = utils.readFile("layer/rotationX.jsx");
+      nautilus.expression.rotationY = utils.readFile("layer/rotationY.jsx");
+      nautilus.expression.rotationZ = utils.readFile("layer/rotationZ.jsx");
+      nautilus.expression.opacity = utils.readFile("layer/opacity.jsx");
+      nautilus.expression.scale = utils.readFile("layer/scale.jsx");
 
       nautilus.nautiFlowPresetFileObj = utils.getFileObj("NautiFLow.ffx")
       nautilus.expression.text.defaultVariable = utils.readFile("text/defaultVariable.jsx")
