@@ -150,6 +150,8 @@ function NautilusScript(ui_ref) {
         nautilus.palette = (ui_ref instanceof Panel) ? ui_ref : new Window("palette", "Nautilus", undefined, {resizeable: true});
         nautilus.palette.orientation = "column"; 
         nautilus.palette.alignChildren = ["center", "center"];
+        nautilus.palette.spacing = 5
+        nautilus.palette.margins = 5
 
         nautilus.palette.add("statictext", undefined, "Nautilus " + nautilus.version);
 
@@ -159,11 +161,13 @@ function NautilusScript(ui_ref) {
 
         var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
 
-        var applyButton = btnGroup.add("button", undefined, "Apply");
-        var helpButton = btnGroup.add("button", undefined, "?");
+        var applyLayerButton = btnGroup.add("button", undefined, "Apply (Layer)");
+        var applyTextButton = btnGroup.add("button", undefined, "Apply (Text)");
 
         var utilsPanel = nautilus.palette.add("panel", undefined, "utils")
         var extractButton = utilsPanel.add("button", undefined, "Extract Text Layer");
+
+        var helpButton = nautilus.palette.add("button", undefined, "About");
 
         nautilus.palette.onResizing = nautilus.palette.onResize = function() {
           nautilus.palette.layout.resize();
@@ -183,7 +187,7 @@ function NautilusScript(ui_ref) {
             alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
           }
         }
-        applyButton.onClick = function () { executeFunc(applyNautilus) }
+        applyLayerButton.onClick = function () { executeFunc(applyNautilus) }
         extractButton.onClick = function() { executeFunc(extract) }
         helpButton.onClick = function() { executeFunc(help) }
 
