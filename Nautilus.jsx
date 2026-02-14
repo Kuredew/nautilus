@@ -10,10 +10,28 @@ function NautilusScript(ui_ref) {
     effectName: "Nautilus",
     firstPresetFileObj: null,
     secondPresetFileObj: null,
+    nautiFlowPresetFileObj: null,
     version: null,
     aboutStr: null,
     applyToCompLayers: true,
     expression: {
+      text: {
+        defaultVariable: null,
+        trackingMaskValue: null,
+        position: null,
+        positionValue: null,
+        positionMask: null,
+        positionMaskValue: null,
+        rotation: null,
+        rotationValue: null,
+        rotationMask: null,
+        rotationMaskValue: null,
+        scale: null,
+        scaleValue: null,
+        scaleMask: null,
+        scaleMaskValue: null,
+        opacity: null,
+      },
       defaultVariable: null,
       position: null,
       rotationX: null,
@@ -62,14 +80,19 @@ function NautilusScript(ui_ref) {
     replaceVersion: function(str) {
       return str.replace("VERSION", nautilus.version)
     },
-    replaceExpression: function(expression, ownCompName, compName, nullName, effectNameList) {
+    replaceExpression: function(defaultVariableExpression, propertyExpression, nautilusEffectName, ownCompName, compName, nullName, effectNameList) {
       try {
-        var defaultVariable = utils.replaceVersion(nautilus.expression.defaultVariable)
+        var defaultVariable = defaultVariableExpression
+        if (!defaultVariable) throw new Error("Default Variable Expression is required to replace expression")
 
         if (nautilus.applyToCompLayers) {
           defaultVariable = defaultVariable.replace("IS_LEGACY", "false")
         } else {
           defaultVariable = defaultVariable.replace("IS_LEGACY", "true")
+        }
+
+        if (nautilusEffectName) {
+          defaultVariable = defaultVariable.replace("NAUTILUS_FX_NAME", nautilusEffectName)
         }
 
         if (compName) {
@@ -101,7 +124,9 @@ function NautilusScript(ui_ref) {
           defaultVariable = defaultVariable.replace("OWN_COMP_NAME", ownCompName)
         }
 
-        var finalExp = defaultVariable.replace("PROPERTY_EXPRESSION", expression)
+        defaultVariable = utils.replaceVersion(defaultVariable)
+
+        var finalExp = defaultVariable.replace("PROPERTY_EXPRESSION", propertyExpression)
         return finalExp
       } catch (e) {
         throw new Error("[replaceExpression] " + e.message)
@@ -127,7 +152,15 @@ function NautilusScript(ui_ref) {
         var OpcProp = trProp.property("Opacity"); 
 
         var executeReplaceExpression = function(expression) {
-          return utils.replaceExpression(expression, ownCompName, compName, nullName, effectNameList);
+          return utils.replaceExpression(
+            nautilus.expression.defaultVariable, 
+            expression, 
+            null, 
+            ownCompName, 
+            compName, 
+            nullName, 
+            effectNameList
+          );
         }
 
         posProp.expression = executeReplaceExpression(nautilus.expression.position)
@@ -187,7 +220,8 @@ function NautilusScript(ui_ref) {
             alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
           }
         }
-        applyLayerButton.onClick = function () { executeFunc(applyNautilus) }
+        applyLayerButton.onClick = function () { executeFunc(applyLayer) }
+        applyTextButton.onClick = function () { executeFunc(applyText) }
         extractButton.onClick = function() { executeFunc(extract) }
         helpButton.onClick = function() { executeFunc(help) }
 
@@ -209,6 +243,16 @@ function NautilusScript(ui_ref) {
       }
 
       return comp
+    },
+    getSelectedLayer: function() {
+      var comp = utils.getCompItem()
+
+      var selectedLayers = comp.selectedLayers;
+      if (selectedLayers.length == 0) {
+        throw new Error("[getSelectedLayer] Please select atleast 1 layer/CompLayer!");
+      }
+
+      return selectedLayers
     },
     isTextLayer: function(layer) {
       try {
@@ -308,6 +352,13 @@ function NautilusScript(ui_ref) {
       }
       return effectsArray
     },
+    applyNautiFLowEffect: function(layer) {
+      try {
+        layer.applyPreset(nautilus.nautiFlowPresetFileObj);
+      } catch (e) {
+        throw new Error("[applyNautiFlowEffect] " + e.message)
+      }
+    },
     precomposeLayers: function(layerIndices, name, inPoint, outPoint) {
       try {
         var comp = utils.getCompItem()
@@ -327,7 +378,7 @@ function NautilusScript(ui_ref) {
         throw new Error("[precomposeLayers] " + e.message)
       }
 
-    }
+    },
   };
 
   var help = function() {
@@ -338,15 +389,12 @@ function NautilusScript(ui_ref) {
     }
   }
 
-  var applyNautilus = function() {
+  var applyLayer = function() {
     app.beginUndoGroup("Apply Nautilus");
     try {
       var comp = utils.getCompItem()
 
-      var selectedLayers = comp.selectedLayers;
-      if (selectedLayers.length == 0) {
-        throw new Error("Please select atleast 1 layer/CompLayer!");
-      }
+      var selectedLayers = utils.getSelectedLayer();
 
       var ctrlLayer
       var ctrlLayerEffectNameList
@@ -390,9 +438,128 @@ function NautilusScript(ui_ref) {
         }
       }
     } catch (e) {
-      throw new Error("[applyNautilus] " + e.message)
+      throw new Error("[applyLayer] " + e.message)
     }
 
+    app.endUndoGroup();
+  }
+
+
+  var applyText = function() {
+    app.beginUndoGroup("Apply Nautilus");
+
+    var addTextAnimator = function(name, layer, propertyType, selectorExpression, valueExpression) {
+      try {
+        var textProp = layer.property("ADBE Text Properties")
+        var animators = textProp.property("ADBE Text Animators")
+        var animatorGroup = animators.addProperty("ADBE Text Animator");
+        animatorGroup.name = name
+
+        var propGroup = animatorGroup.property("ADBE Text Animator Properties");
+
+        if (propertyType === "position") matchName = "ADBE Text Position 3D"
+        else if (propertyType === "rotation") matchName = "ADBE Text Rotation"
+        else if (propertyType === "opacity") matchName = "ADBE Text Opacity"
+        else if (propertyType === "scale") matchName = "ADBE Text Scale 3D"
+        else if (propertyType === "tracking") matchName = "ADBE Text Tracking Amount"
+
+        // stop if matchname not found
+        if (matchName === "") {
+          return
+        }
+
+        // Add Property based on PropertyType
+        var valueProperty = propGroup.addProperty(matchName);
+
+        // add expression to valueProperty if not opacity
+        if (valueExpression && propertyType !== "opacity") {
+          valueProperty.expression = valueExpression
+        } else {
+          // set value to 0 if opacity
+          valueProperty.setValue(0)
+        }
+
+        var selectorGroup = animatorGroup.property("ADBE Text Selectors");
+        var expSelector = selectorGroup.addProperty("ADBE Text Expressible Selector");
+        
+        if (selectorExpression) {
+          expSelector.property(2).expression = selectorExpression
+        }
+      } catch (e) {
+        throw new Error("[addTextAnimatorGroup] " + e.message)
+      }
+    }
+
+    var getExpression = function(propertyExpression, nautilusEffectName, isPropertyValue) {
+      var defaultVariable = nautilus.expression.text.defaultVariable
+
+      if (isPropertyValue) {
+        defaultVariable = "var ctrlFx = effect('" + nautilusEffectName + "');\n\nPROPERTY_EXPRESSION"
+      }
+
+      return utils.replaceExpression(
+        defaultVariable,
+        propertyExpression,
+        nautilusEffectName,
+      );
+    }
+
+    try {
+      var selectedLayers = utils.getSelectedLayer();
+     
+      for (var i = 0; i < selectedLayers.length; i++) {
+        var layer = selectedLayers[i]
+        if (!utils.isTextLayer(layer)) {
+          alert("Layer '" + layer.name + "'" +  " skipped because this layer is not text layer!")
+          continue
+        }
+
+        utils.applyNautilusEffect(layer)
+        var nautilusEffectList = utils.getAllNautilusEffect(layer)
+        var lastNautilusEffectName = nautilusEffectList[nautilusEffectList.length - 1]
+
+
+        var addAnimatorMaskUtil = function(name, propertyType) {
+          addTextAnimator(
+            name, 
+            layer, 
+            propertyType, 
+            nautilus.expression.text[propertyType + "Mask"], 
+            nautilus.expression.text[propertyType + "MaskValue"]
+          )
+        }
+
+        var addAnimatorUtil = function(name, propertyType) {
+          addTextAnimator(
+            name, 
+            layer, 
+            propertyType, 
+            getExpression(nautilus.expression.text[propertyType], lastNautilusEffectName), 
+            getExpression(nautilus.expression.text[propertyType + "Value"], lastNautilusEffectName, true)
+          )
+        }
+
+        if (nautilusEffectList.length === 1) {
+          utils.applyNautiFLowEffect(layer)
+
+          addAnimatorMaskUtil("NAUTILUS_MASK_POS", "position")
+          addAnimatorMaskUtil("NAUTILUS_MASK_ROT", "rotation")
+          addAnimatorMaskUtil("NAUTILUS_MASK_SCL", "scale")
+          addAnimatorMaskUtil("NAUTILUS_TRACKING", "tracking")
+        }
+
+        addAnimatorUtil("NAUTILUS_POS", "position")
+        addAnimatorUtil("NAUTILUS_ROT", "rotation")
+        addAnimatorUtil("NAUTILUS_SCL", "scale")
+        addAnimatorUtil("NAUTILUS_OPACITY", "opacity")
+      }
+
+
+    } catch (e) {
+      throw new Error("[applyText] " + e.message)
+    }
+
+    app.executeCommand(2387);
     app.endUndoGroup();
   }
 
@@ -482,6 +649,23 @@ function NautilusScript(ui_ref) {
       nautilus.expression.rotationZ = utils.readFile("rotationZ.jsx");
       nautilus.expression.opacity = utils.readFile("opacity.jsx");
       nautilus.expression.scale = utils.readFile("scale.jsx");
+
+      nautilus.nautiFlowPresetFileObj = utils.getFileObj("NautiFLow.ffx")
+      nautilus.expression.text.defaultVariable = utils.readFile("text/defaultVariable.jsx")
+      nautilus.expression.text.trackingMaskValue = utils.readFile("text/trackingMaskValue.jsx")
+      nautilus.expression.text.position = utils.readFile("text/position.jsx")
+      nautilus.expression.text.positionValue = utils.readFile("text/positionValue.jsx")
+      nautilus.expression.text.positionMask = utils.readFile("text/positionMask.jsx")
+      nautilus.expression.text.positionMaskValue = utils.readFile("text/positionMaskValue.jsx")
+      nautilus.expression.text.rotation = utils.readFile("text/rotation.jsx")
+      nautilus.expression.text.rotationValue = utils.readFile("text/rotationValue.jsx")
+      nautilus.expression.text.rotationMask = utils.readFile("text/rotationMask.jsx")
+      nautilus.expression.text.rotationMaskValue = utils.readFile("text/rotationMaskValue.jsx")
+      nautilus.expression.text.scale = utils.readFile("text/scale.jsx")
+      nautilus.expression.text.scaleValue = utils.readFile("text/scaleValue.jsx")
+      nautilus.expression.text.scaleMask = utils.readFile("text/scaleMask.jsx")
+      nautilus.expression.text.scaleMaskValue = utils.readFile("text/scaleMaskValue.jsx")
+      nautilus.expression.text.opacity = utils.readFile("text/opacity.jsx")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
