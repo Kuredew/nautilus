@@ -264,7 +264,7 @@ function NautilusScript(ui_ref) {
     },
     // deprecated
     isNautilusNull: function(layer) {
-      return layer.name.includes("Nautilus CTRL")
+      return layer.name.indexOf("Nautilus CTRL") !== -1
     },
     getNautilusCtrl: function (selectedLayers) {
       for (var i = 0; i < selectedLayers.length; i++) {
@@ -345,7 +345,7 @@ function NautilusScript(ui_ref) {
 
           for (var j = 1; j <= prop.numProperties; j++) {
             var effectName = prop.property(j).name
-            if (!effectName.includes(nautilus.effectName)) { continue }
+            if (effectName.indexOf(nautilus.effectName) === -1) { continue }
 
             effectsArray.push(effectName);
           }
