@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.4.0](https://github.com/Kuredew/nautilus/compare/v1.3.0...v1.4.0) (2026-02-22)
+
+
+### New Features
+
+* Add Apply text layer button ([94730a7](https://github.com/Kuredew/nautilus/commit/94730a71b3fb613622506e60e91aebe9c2698f93))
+* add apply text layer feature ([971610a](https://github.com/Kuredew/nautilus/commit/971610aa64932f7c26401cf1e17c7dce966b4c28))
+
+
+### Bug Fixes
+
+* effect preset backward compatibility ([a949baa](https://github.com/Kuredew/nautilus/commit/a949baae6f4ef621f2a13b7f19d0ef9da2ea003c))
+* includes function is undefined in after effect 2025+ ([84b1e74](https://github.com/Kuredew/nautilus/commit/84b1e743d81d4f7bd0991ed3df8b638bd5235826))
+* scale bug because value is accessed from actual scale layer ([777b84d](https://github.com/Kuredew/nautilus/commit/777b84d14f8d73b6568cbb5353483f7574fc7c56))
+
+
+### Refactors
+
+* move all layer expression to layer folder ([657a4a2](https://github.com/Kuredew/nautilus/commit/657a4a297c9cd531f8ac7202983ada36dc4db8c8))
+
+
+### Documentation
+
+* Revise README with installation and roadmap sections ([e12e6e7](https://github.com/Kuredew/nautilus/commit/e12e6e7701c90f3f490f1d79fcf1559513d3fd7d))
+
+
+### Maintenance
+
+* make the readme more informative and detailed ([dac8e27](https://github.com/Kuredew/nautilus/commit/dac8e2741f7d545315235ee6d8b92c048e2c4dc7))
+* make the readme more informative and detailed ([4bc07c3](https://github.com/Kuredew/nautilus/commit/4bc07c386ff0c7cee1349d279be996c3da6f9452))
+* remove unnecessary info in about ([5580b18](https://github.com/Kuredew/nautilus/commit/5580b18aabaf9910dab58c8860cf268a5f62cd7d))
+
 ## [1.3.0](https://github.com/Kuredew/nautilus/compare/v1.2.0...v1.3.0) (2026-02-02)
 
 
