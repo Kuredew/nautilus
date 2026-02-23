@@ -12,6 +12,10 @@ const otherFiles = [
     to: ""
   },
   {
+    from: "LICENSE.txt",
+    to: ""
+  },
+  {
     from: "package.json",
     to: assetsFolder
   }
