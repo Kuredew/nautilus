@@ -4,6 +4,7 @@
       "release-type": "node",
       "include-component-in-tag": false,
       "changelog-sections": [
+        { "type": "style", "section": "UI Changes" },
         { "type": "feat", "section": "New Features" },
         { "type": "fix", "section": "Bug Fixes" },
         { "type": "refactor", "section": "Refactors", "hidden": false },
