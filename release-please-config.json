@@ -4,12 +4,12 @@
       "release-type": "node",
       "include-component-in-tag": false,
       "changelog-sections": [
-        { "type": "style", "section": "UI Changes" },
-        { "type": "feat", "section": "New Features" },
-        { "type": "fix", "section": "Bug Fixes" },
-        { "type": "refactor", "section": "Refactors", "hidden": false },
-        { "type": "docs", "section": "Documentation", "hidden": false },
-        { "type": "chore", "section": "Maintenance", "hidden": false }
+        { "type": "feat", "section": "🎉 New Features" },
+        { "type": "style", "section": "✨ UI Changes" },
+        { "type": "fix", "section": "🔨 Bug Fixes" },
+        { "type": "refactor", "section": "🩹 Refactors", "hidden": false },
+        { "type": "docs", "section": "📃 Documentation", "hidden": false },
+        { "type": "chore", "section": "🎧 Maintenance", "hidden": false }
       ]
     }
   }
