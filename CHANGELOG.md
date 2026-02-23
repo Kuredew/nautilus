@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1](https://github.com/Kuredew/nautilus/compare/v1.4.0...v1.4.1) (2026-02-23)
+
+
+### Maintenance
+
+* add license to about ([91b2f24](https://github.com/Kuredew/nautilus/commit/91b2f24f85233aa89cd440f6ab6df89b0a750845))
+* add LICENSE.txt to release ([8a03f72](https://github.com/Kuredew/nautilus/commit/8a03f726db9c07691aeb3ca908358b96503a20f4))
+* add MIT License to the project ([ea6db73](https://github.com/Kuredew/nautilus/commit/ea6db731d5fa9cd0d058209e5d6981f177456889))
+* update build script ([0ab119a](https://github.com/Kuredew/nautilus/commit/0ab119a2a8270c6d647307670160efe01de8a31f))
+
 ## [1.4.0](https://github.com/Kuredew/nautilus/compare/v1.3.0...v1.4.0) (2026-02-22)
 
 
