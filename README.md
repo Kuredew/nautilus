@@ -6,7 +6,7 @@
   </p>
     <br />
     <img src="https://img.shields.io/badge/Status-Under%20Development-green?style=for-the-badge">
-    <img src="https://img.shields.io/badge/License-GNU/GPLv3-blue?style=for-the-badge">
+    <img src="https://img.shields.io/badge/License-MIT%20License-blue?style=for-the-badge">
     <img src="https://img.shields.io/badge/Build%20with-Extendscripts-yellow?style=for-the-badge">
     <br />
     <br />
