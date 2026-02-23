@@ -3,8 +3,12 @@ Nautilus VERSION
 Nautilus is a script for creating Japanese-like text animation. It's very similar to TextEvo, but more flexible. Animation keyframes are separated based on transforms, rather than combined into a single strength property.
 
 Thanks for using Nautilus.
+https://github.com/Kuredew/nautilus
 
+Creator :
 Kureichi<Kuredew> (https://github.com/Kuredew)
 Instagram: @zeanlost
 Facebook: zeanichi
 Twitter: @kureichi_ts
+
+Licensed under MIT License, see https://github.com/Kuredew/nautilus/blob/main/LICENSE.txt

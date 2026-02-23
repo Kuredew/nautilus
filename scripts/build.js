@@ -2,22 +2,31 @@ import fs from "fs"
 import Logger from "./utils/log.js"
 import jsxbin from "jsxbin"
 
-const nautilusJSX = "Nautilus.jsx"
-const nautilusJSXBIN = "Nautilus.jsxbin"
-const assetsFolder = "nautilusAssets/"
+const nautilusJSXName = "Nautilus.jsx"
+const assetsFolderName = "nautilusAssets"
+
+const outputFolder = "dist/"
+const nautilusJSXBINOutput = `${outputFolder}/Nautilus.jsxbin`
 
 const otherFiles = [
+  {
+    from: assetsFolderName,
+    to: ""
+  },
   {
     from: "HOW_TO_INSTALL.txt",
     to: ""
   },
   {
     from: "package.json",
-    to: assetsFolder
+    to: assetsFolderName
+  },
+  {
+    from: "LICENSE.txt",
+    to: ""
   }
 ]
 
-const outputFolder = "dist/"
 
 const build = async (onLog = () => {}) => {
   const logInstance = new Logger(build.name)
@@ -29,16 +38,18 @@ const build = async (onLog = () => {}) => {
   try {
     log("starting build...")
 
-    log("copying assets to .dist")
-    fs.cpSync(assetsFolder, outputFolder + assetsFolder, { recursive: true })
+    log(`copying other files`)
+    otherFiles.forEach(file => {
+      const finalOutput = `${outputFolder}${file.to ? `/${file.to}` : ''}/${file.from}`
 
-    log("copying other files to .dist")
-    otherFiles.forEach(file => fs.cpSync(file.from, outputFolder + file.to + "/" + file.from))
+      log(`copying ${file.from} to ${finalOutput}`)
+      fs.cpSync(file.from, finalOutput, { recursive: true })
+    })
 
     log("copied!")
 
-    log("building nautilus to .dist")
-    await jsxbin(nautilusJSX, outputFolder + nautilusJSXBIN)
+    log(`building nautilus to ${nautilusJSXBINOutput}`)
+    await jsxbin(nautilusJSXName, nautilusJSXBINOutput)
 
     log("build complete")
   } catch (e) {
