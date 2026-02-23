@@ -40,6 +40,12 @@ function NautilusScript(ui_ref) {
       scale: null,
       opacity: null
     },
+    icons: {
+      text: null,
+      comp: null,
+      about: null,
+      extract: null
+    },
     palette: null
   };
 
@@ -183,24 +189,29 @@ function NautilusScript(ui_ref) {
         nautilus.palette = (ui_ref instanceof Panel) ? ui_ref : new Window("palette", "Nautilus", undefined, {resizeable: true});
         nautilus.palette.orientation = "column"; 
         nautilus.palette.alignChildren = ["center", "center"];
-        nautilus.palette.spacing = 5
+        // nautilus.palette.spacing = 10
         nautilus.palette.margins = 5
 
-        nautilus.palette.add("statictext", undefined, "Nautilus " + nautilus.version);
 
-        var mainPanel = nautilus.palette.add("panel", undefined, "main")
+        var mainPanel = nautilus.palette.add("panel", undefined, "Nautilus " + nautilus.version);
         var legacyMode = mainPanel.add("checkbox", undefined, "Legacy Mode?");
         legacyMode.value = !nautilus.applyToCompLayers;
+        legacyMode.helpTip = "Activate legacy mode"
 
         var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
+        btnGroup.orientation = "row"
 
-        var applyLayerButton = btnGroup.add("button", undefined, "Apply (Layer)");
-        var applyTextButton = btnGroup.add("button", undefined, "Apply (Text)");
+        var applyTextButton = btnGroup.add("iconbutton", undefined, nautilus.icons.text);
+        applyTextButton.helpTip = "Apply Nautilus to Text Layer"
+        var applyLayerButton = btnGroup.add("iconbutton", undefined, nautilus.icons.comp);
+        applyLayerButton.helpTip = "Apply Nautilus to Comp/Precomp Layer"
 
-        var utilsPanel = nautilus.palette.add("panel", undefined, "utils")
-        var extractButton = utilsPanel.add("button", undefined, "Extract Text Layer");
+        // var utilsPanel = nautilus.palette.add("panel", undefined, "utils")
+        var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
+        extractButton.helpTip = "Extract letter from text layer into PreComp"
 
-        var helpButton = nautilus.palette.add("button", undefined, "About");
+        var helpButton = btnGroup.add("iconbutton", undefined, nautilus.icons.about);
+        helpButton.helpTip = "About Nautilus"
 
         nautilus.palette.onResizing = nautilus.palette.onResize = function() {
           nautilus.palette.layout.resize();
@@ -249,7 +260,7 @@ function NautilusScript(ui_ref) {
 
       var selectedLayers = comp.selectedLayers;
       if (selectedLayers.length == 0) {
-        throw new Error("[getSelectedLayer] Please select atleast 1 layer/CompLayer!");
+        throw new Error("[getSelectedLayer] Please select atleast 1 layer!");
       }
 
       return selectedLayers
@@ -567,9 +578,8 @@ function NautilusScript(ui_ref) {
     app.beginUndoGroup("Extract")
     try {
       // checking if selectedLayers is valid
-      var comp = utils.getCompItem()
-      var selectedLayers = comp.selectedLayers
-      if (selectedLayers.length === 0 || selectedLayers.length > 1) {
+      var selectedLayers = utils.getSelectedLayer();
+      if (selectedLayers.length > 1) {
         throw new Error("Please only select 1 layer!")
       }
 
@@ -666,6 +676,11 @@ function NautilusScript(ui_ref) {
       nautilus.expression.text.scaleMask = utils.readFile("text/scaleMask.jsx")
       nautilus.expression.text.scaleMaskValue = utils.readFile("text/scaleMaskValue.jsx")
       nautilus.expression.text.opacity = utils.readFile("text/opacity.jsx")
+
+      nautilus.icons.text = utils.getFileObj("icons/text.png")
+      nautilus.icons.comp = utils.getFileObj("icons/comp.png")
+      nautilus.icons.about = utils.getFileObj("icons/about.png")
+      nautilus.icons.extract = utils.getFileObj("icons/extract.png")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
