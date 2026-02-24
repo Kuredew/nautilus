@@ -7,6 +7,7 @@
 function NautilusScript(ui_ref) {
   var nautilus = {
     EXPRESSION_FOLDER: "nautilusAssets",
+    mode: "text",
     effectName: "Nautilus",
     firstPresetFileObj: null,
     secondPresetFileObj: null,
@@ -44,7 +45,8 @@ function NautilusScript(ui_ref) {
       text: null,
       comp: null,
       about: null,
-      extract: null
+      extract: null,
+      apply: null
     },
     palette: null
   };
@@ -201,12 +203,13 @@ function NautilusScript(ui_ref) {
         var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
         btnGroup.orientation = "row"
 
-        var applyTextButton = btnGroup.add("iconbutton", undefined, nautilus.icons.text);
-        applyTextButton.helpTip = "Apply Nautilus to Text Layer"
-        var applyLayerButton = btnGroup.add("iconbutton", undefined, nautilus.icons.comp);
-        applyLayerButton.helpTip = "Apply Nautilus to Comp/Precomp Layer"
+        var applyButton = btnGroup.add("iconbutton", undefined, nautilus.icons.apply);
+        applyButton.helpTip = "Apply Nautilus"
+        var changeModeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.text);
+        var textModeTip = "Apply Nautilus to Text Layer"
+        var compModeTip = "Apply Nautilus to Comp/Precomp Layer"
+        changeModeButton.helpTip = textModeTip
 
-        // var utilsPanel = nautilus.palette.add("panel", undefined, "utils")
         var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
         extractButton.helpTip = "Extract letter from text layer into PreComp"
 
@@ -224,16 +227,46 @@ function NautilusScript(ui_ref) {
             handleError("[execute] " + e.message);
           }
         }
+        
+        function resetButton(button) {
+          button.active = true
+          button.active = false
+        }
 
         legacyMode.onClick = function() { 
           nautilus.applyToCompLayers = !legacyMode.value 
           if (legacyMode.value) {
             alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
           }
+
+          resetButton(this)
         }
-        applyLayerButton.onClick = function () { executeFunc(applyLayer) }
-        applyTextButton.onClick = function () { executeFunc(applyText) }
-        extractButton.onClick = function() { executeFunc(extract) }
+        applyButton.onClick = function () { 
+          if (nautilus.mode == "text") {
+            executeFunc(applyText) 
+          } else if (nautilus.mode == "comp") {
+            executeFunc(applyLayer)
+          }
+
+          resetButton(this)
+        }
+        changeModeButton.onClick = function () { 
+          var finalMode
+          if (nautilus.mode == "text") {
+            finalMode = "comp"
+            this.helpTip = compModeTip
+          } else if (nautilus.mode == "comp") {
+            finalMode = "text"
+            this.helpTip = textModeTip
+          }
+
+            
+          this.image = nautilus.icons[finalMode]
+          nautilus.mode = finalMode
+
+          resetButton(this)
+        }
+        extractButton.onClick = function() { executeFunc(extract); resetButton(this) }
         helpButton.onClick = function() { executeFunc(help) }
 
         if (nautilus.palette instanceof Window) {
@@ -681,6 +714,7 @@ function NautilusScript(ui_ref) {
       nautilus.icons.comp = utils.getFileObj("icons/comp.png")
       nautilus.icons.about = utils.getFileObj("icons/about.png")
       nautilus.icons.extract = utils.getFileObj("icons/extract.png")
+      nautilus.icons.apply = utils.getFileObj("icons/apply.png")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
