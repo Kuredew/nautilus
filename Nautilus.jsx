@@ -9,6 +9,7 @@ function NautilusScript(ui_ref) {
     EXPRESSION_FOLDER: "nautilusAssets",
     mode: "text",
     effectName: "Nautilus",
+    nautiFlowEffectName: "NautiFlow",
     firstPresetFileObj: null,
     secondPresetFileObj: null,
     nautiFlowPresetFileObj: null,
@@ -46,7 +47,8 @@ function NautilusScript(ui_ref) {
       comp: null,
       about: null,
       extract: null,
-      apply: null
+      apply: null,
+      basedOn: null
     },
     palette: null
   };
@@ -210,6 +212,8 @@ function NautilusScript(ui_ref) {
         var compModeTip = "Apply Nautilus to Comp/Precomp Layer"
         changeModeButton.helpTip = textModeTip
 
+        var basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn);
+
         var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
         extractButton.helpTip = "Extract letter from text layer into PreComp"
 
@@ -255,9 +259,11 @@ function NautilusScript(ui_ref) {
           if (nautilus.mode == "text") {
             finalMode = "comp"
             this.helpTip = compModeTip
+            basedOnButton.enabled = false
           } else if (nautilus.mode == "comp") {
             finalMode = "text"
             this.helpTip = textModeTip
+            basedOnButton.enabled = true
           }
 
             
@@ -266,6 +272,41 @@ function NautilusScript(ui_ref) {
 
           resetButton(this)
         }
+        basedOnButton.onClick = function () {
+          nautilus.basedOnPanel = new Window("palette", "Based On", undefined, { resizeable: true })
+          nautilus.basedOnPanel.alignChildren = ["fill", "center"]
+
+          var executeBasedOn = function(basedOnIndex) {
+            try {
+              changeBasedOn(basedOnIndex)
+              nautilus.basedOnPanel.close()
+            } catch (e) {
+              handleError("[executeBasedOn] " + e.message)
+            }
+          }
+
+          // Create button
+          var characterButton = nautilus.basedOnPanel.add("button", undefined, "Character")
+          characterButton.onClick = function () { executeBasedOn(1) }
+
+          var characterSpacelessButton = nautilus.basedOnPanel.add("button", undefined, "Character Spaceless")
+          characterSpacelessButton.onClick = function () { executeBasedOn(2) }
+
+          var wordsButton = nautilus.basedOnPanel.add("button", undefined, "Words")
+          wordsButton.onClick = function () { executeBasedOn(3) }
+
+          var linesButton = nautilus.basedOnPanel.add("button", undefined, "Lines")
+          linesButton.onClick = function () { executeBasedOn(4) }
+
+          nautilus.basedOnPanel.add("statictext", undefined, "Dont forget to select Nautilus/NautiFlow effect first.")
+
+          // Show window
+          nautilus.basedOnPanel.center()
+          nautilus.basedOnPanel.show()
+
+          resetButton(this)
+        }
+
         extractButton.onClick = function() { executeFunc(extract); resetButton(this) }
         helpButton.onClick = function() { executeFunc(help) }
 
@@ -279,6 +320,23 @@ function NautilusScript(ui_ref) {
       } catch (e) {
         throw new Error("[createPalette] " + e.message)
       }
+    },
+    createDialog: function(title, text) {
+      nautilus.dialog = new Window("dialog", title, undefined, {resizeable: true})
+      nautilus.dialog.spacing = 10
+      nautilus.dialog.margin = 0
+      nautilus.dialog.alignChildren = ["left", "left"]
+
+      nautilus.dialog.add("statictext", undefined, text, {multiline: true})
+      var button = nautilus.dialog.add("button", undefined, "Okay")
+      button.alignment = ["right", "right"]
+
+      button.onClick = function() { nautilus.dialog.close() }
+
+      nautilus.dialog.onResize = function() { nautilus.dialog.layout.resize() }
+
+      nautilus.dialog.center()
+      nautilus.dialog.show()
     },
     getCompItem: function() {
       var comp = app.project.activeItem;
@@ -355,6 +413,21 @@ function NautilusScript(ui_ref) {
         throw new Error("[createNullCtrl] " + e.message)
       }
     },
+    getAllEffectName: function(layer, effectName) {
+      var effectsArray = []
+      for (var i = 1; i <= layer.numProperties; i++) {
+          var prop = layer.property(i);
+          if (!(prop.matchName === "ADBE Effect Parade")) { continue }
+
+          for (var j = 1; j <= prop.numProperties; j++) {
+            var effectName = prop.property(j).name
+            if (effectName.indexOf(effectName) === -1) { continue }
+
+            effectsArray.push(effectName);
+          }
+      }
+      return effectsArray
+    },
     applyNautilusEffect: function(ctrlLayer) {
       try {
         var comp = ctrlLayer.containingComp
@@ -382,19 +455,10 @@ function NautilusScript(ui_ref) {
       }
     },
     getAllNautilusEffect: function(layer) {
-      var effectsArray = []
-      for (var i = 1; i <= layer.numProperties; i++) {
-          var prop = layer.property(i);
-          if (!(prop.matchName === "ADBE Effect Parade")) { continue }
-
-          for (var j = 1; j <= prop.numProperties; j++) {
-            var effectName = prop.property(j).name
-            if (effectName.indexOf(nautilus.effectName) === -1) { continue }
-
-            effectsArray.push(effectName);
-          }
-      }
-      return effectsArray
+      return utils.getAllEffectName(layer, nautilus.effectName)
+    },
+    isNautilusEffect: function(property) {
+      return property.name.indexOf(nautilus.effectName) !== -1
     },
     applyNautiFLowEffect: function(layer) {
       try {
@@ -402,6 +466,9 @@ function NautilusScript(ui_ref) {
       } catch (e) {
         throw new Error("[applyNautiFlowEffect] " + e.message)
       }
+    },
+    getAllNautiFlowEffect: function(layer) {
+      return utils.getAllEffectName(layer, nautilus.nautiFlowEffectName)
     },
     precomposeLayers: function(layerIndices, name, inPoint, outPoint) {
       try {
@@ -427,7 +494,7 @@ function NautilusScript(ui_ref) {
 
   var help = function() {
     try {
-      alert(utils.replaceVersion(nautilus.aboutStr))
+      utils.createDialog("About", utils.replaceVersion(nautilus.aboutStr))
     } catch (e) {
       throw new Error("[help] " + e.message)
     }
@@ -548,6 +615,12 @@ function NautilusScript(ui_ref) {
       );
     }
 
+    var getMaskExpression = function(propertyExpression, nautiFlowEffectName) {
+      if (!propertyExpression) return ""
+
+      return propertyExpression.replace("NAUTIFLOW_FX_NAME", nautiFlowEffectName)
+    }
+
     try {
       var selectedLayers = utils.getSelectedLayer();
      
@@ -562,13 +635,13 @@ function NautilusScript(ui_ref) {
         var nautilusEffectList = utils.getAllNautilusEffect(layer)
         var lastNautilusEffectName = nautilusEffectList[nautilusEffectList.length - 1]
 
-
+        var lastNautiFlowEffectName
         var addAnimatorMaskUtil = function(name, propertyType) {
           addTextAnimator(
             name, 
             layer, 
             propertyType, 
-            nautilus.expression.text[propertyType + "Mask"], 
+            getMaskExpression(nautilus.expression.text[propertyType + "Mask"], lastNautiFlowEffectName), 
             nautilus.expression.text[propertyType + "MaskValue"]
           )
         }
@@ -585,6 +658,8 @@ function NautilusScript(ui_ref) {
 
         if (nautilusEffectList.length === 1) {
           utils.applyNautiFLowEffect(layer)
+          var nautiFlowEffectList = utils.getAllNautiFlowEffect(layer)
+          lastNautiFlowEffectName = nautiFlowEffectList[nautiFlowEffectList.length - 1]
 
           addAnimatorMaskUtil("NAUTILUS_MASK_POS", "position")
           addAnimatorMaskUtil("NAUTILUS_MASK_ROT", "rotation")
@@ -605,6 +680,45 @@ function NautilusScript(ui_ref) {
 
     app.executeCommand(2387);
     app.endUndoGroup();
+  }
+
+  var changeBasedOn = function(basedOnIndex) {
+    app.beginUndoGroup("changeBasedOn")
+
+    try {
+      var selectedLayers = utils.getSelectedLayer()
+
+      for (var i = 0; i < selectedLayers.length; i++) {
+        var layer = selectedLayers[i]
+
+        var selectedEffect = layer.selectedProperties
+        if (selectedEffect.length === 0) {
+          throw new Error("Please select atleast one Nautilus Effect!")
+        }
+
+        for (var j = 0; j < selectedEffect.length; j++) {
+          var effect = selectedEffect[j]
+
+          var textProp = layer.property("ADBE Text Properties")
+          var animatorsGroup = textProp.property("ADBE Text Animators")
+
+          for (var k = 1; k <= animatorsGroup.numProperties; k++) {
+            var animator = animatorsGroup.property(k)
+            var selectorGroup = animator.property("ADBE Text Selectors")
+            var selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
+            var selectorExpressionAmount = selectorExpression.property(2)
+
+            if (selectorExpressionAmount.expression.indexOf('("' + effect.name + '")') === -1) { continue }
+
+            var selectorExpressionBasedOn = selectorExpression.property(1)
+            selectorExpressionBasedOn.setValue(basedOnIndex)
+          }
+        }
+      }
+    } catch (e) {
+      throw new Error("[changeBasedOn] " + e.message)
+    }
+    app.endUndoGroup()
   }
 
   var extract = function() {
@@ -715,6 +829,7 @@ function NautilusScript(ui_ref) {
       nautilus.icons.about = utils.getFileObj("icons/about.png")
       nautilus.icons.extract = utils.getFileObj("icons/extract.png")
       nautilus.icons.apply = utils.getFileObj("icons/apply.png")
+      nautilus.icons.basedOn = utils.getFileObj("icons/based-on.png")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
@@ -722,14 +837,18 @@ function NautilusScript(ui_ref) {
 
   load()
   utils.createPalette(ui_ref);
+
+  function handleError(msg) {
+    alert("One function of Nautilus gives an Error.\n\nDetail:\n" + msg + "\n\nYou can open an issue at\nhttps://github.com/Kuredew/nautilus\nif the problem persist.");
+  }
 }
 
-function handleError(msg) {
-  alert("Nautilus encountered Error! : \n" + msg + "\n\n" + "if you have a problem, please let me know by contacting me on instagram (@zeanlost)  \n\nNautilus is made by Kureichi");
+function handleLoadError(msg) {
+  alert("There was a problem loading Nautilus into After Effects.\n\nDetail:\n" + msg + "\n\nOpen an issue at\nhttps://github.com/Kuredew/nautilus\nif the problem persist.")
 }
 
 try {
   NautilusScript(this);
 } catch (e) {
-  handleError(e.message)
+  handleLoadError(e.message)
 }
