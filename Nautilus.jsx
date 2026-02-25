@@ -321,6 +321,23 @@ function NautilusScript(ui_ref) {
         throw new Error("[createPalette] " + e.message)
       }
     },
+    createDialog: function(title, text) {
+      nautilus.dialog = new Window("dialog", title, undefined, {resizeable: true})
+      nautilus.dialog.spacing = 10
+      nautilus.dialog.margin = 0
+      nautilus.dialog.alignChildren = ["left", "left"]
+
+      nautilus.dialog.add("statictext", undefined, text, {multiline: true})
+      var button = nautilus.dialog.add("button", undefined, "Okay")
+      button.alignment = ["right", "right"]
+
+      button.onClick = function() { nautilus.dialog.close() }
+
+      nautilus.dialog.onResize = function() { nautilus.dialog.layout.resize() }
+
+      nautilus.dialog.center()
+      nautilus.dialog.show()
+    },
     getCompItem: function() {
       var comp = app.project.activeItem;
       if (!(comp instanceof CompItem)) {
@@ -477,7 +494,7 @@ function NautilusScript(ui_ref) {
 
   var help = function() {
     try {
-      alert(utils.replaceVersion(nautilus.aboutStr))
+      utils.createDialog("About", utils.replaceVersion(nautilus.aboutStr))
     } catch (e) {
       throw new Error("[help] " + e.message)
     }
