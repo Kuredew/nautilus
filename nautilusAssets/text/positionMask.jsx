@@ -6,7 +6,7 @@ try {
 
   [x, y]
 } catch (e) {
-  value
+  [0, 0]
 }
 
 // ("NAUTIFLOW_FX_NAME")
