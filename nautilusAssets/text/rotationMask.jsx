@@ -6,7 +6,7 @@ try {
   
   (maskDegrees / 180) * 100
 } catch (e) {
-  value
+  [0, 0]
 }
 
 // ("NAUTIFLOW_FX_NAME")
