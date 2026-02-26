@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.5.0](https://github.com/Kuredew/nautilus/compare/v1.4.1...v1.5.0) (2026-02-26)
+
+
+### 🎉 New Features
+
+* Add Based On text animator switcher ([777b063](https://github.com/Kuredew/nautilus/commit/777b0636e24e19e5a490177bc340e3c2ac47507e))
+* Add remove nautilus feature to remove nautilus from Text/Comp/Precomp layer ([ccec91e](https://github.com/Kuredew/nautilus/commit/ccec91e6f389f1afff56b38ce66375d50aee7ff5))
+
+
+### ✨ UI Changes
+
+* Add switch mode between Text layer and Comp Layer ([16296dd](https://github.com/Kuredew/nautilus/commit/16296ddf39d6b6bf827ec90a3db432626d59f1c3))
+* Change about alert to use After Effect Window Dialog ([8c17f2a](https://github.com/Kuredew/nautilus/commit/8c17f2abf7f5c32bbe65fe875e42186886c72996))
+* Change button to iconbutton and adjust the layout ([04d5d56](https://github.com/Kuredew/nautilus/commit/04d5d5696dd8a2e07844a929f8842416eb826d86))
+* Separate nautilus function error from global handleError function ([ca5cf7d](https://github.com/Kuredew/nautilus/commit/ca5cf7da4b66fdf882cb3d86bbd975cb9b557cfe))
+
+
+### 🔨 Bug Fixes
+
+* Difficult to reduce the scale of letters in the text layer ([176c1b6](https://github.com/Kuredew/nautilus/commit/176c1b6545a1ab033e1ed9e7490763b74d80e276))
+* Other letters disappear if they are not attached by a point mask ([d9e15c9](https://github.com/Kuredew/nautilus/commit/d9e15c9e3756b07ba5cf701c5573b8f81b29bf4f))
+
+
+### 📃 Documentation
+
+* change license badge from GPLv3 to MIT License ([a7b8aa4](https://github.com/Kuredew/nautilus/commit/a7b8aa4200728c3b5d82ce9fd125e186a0e4b8ab))
+
+
+### 🎧 Maintenance
+
+* Add emoji to section changelog ([ba8ea97](https://github.com/Kuredew/nautilus/commit/ba8ea97f3e67f7b5243fe5c031c9ab43132e505a))
+* Add UI Changes section in changelog ([ef56816](https://github.com/Kuredew/nautilus/commit/ef56816cb9bbdcbb6ccb47afe3db16cadb782209))
+
 ## [1.4.1](https://github.com/Kuredew/nautilus/compare/v1.4.0...v1.4.1) (2026-02-23)
 
 
