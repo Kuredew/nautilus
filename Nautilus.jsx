@@ -20,6 +20,7 @@ function NautilusScript(ui_ref) {
       text: {
         defaultVariable: null,
         trackingMaskValue: null,
+        trackingMask: null,
         position: null,
         positionValue: null,
         positionMask: null,
@@ -48,7 +49,8 @@ function NautilusScript(ui_ref) {
       about: null,
       extract: null,
       apply: null,
-      basedOn: null
+      basedOn: null,
+      remove: null
     },
     palette: null
   };
@@ -188,6 +190,36 @@ function NautilusScript(ui_ref) {
         throw new Error("[applyExpressionToLayer] " + e.message)
       }
     },
+    clearExpressionFromLayer: function(layer) {
+      try {
+        var trProp = layer.property("Transform")
+
+        var posProp = trProp.property("Position");
+        posProp.dimensionSeparated = false;
+
+        var RotProp = trProp.property("Rotation");
+        var RotXProp = trProp.property("X Rotation");
+        var RotYProp = trProp.property("Y Rotation");
+        var RotZProp = trProp.property("Z Rotation");
+        var SclProp = trProp.property("Scale");
+        var OpcProp = trProp.property("Opacity");
+
+        posProp.expression = ""
+        SclProp.expression = ""
+        OpcProp.expression = ""
+
+        if (layer.threeDLayer) {
+          RotXProp.expression = ""
+          RotYProp.expression = ""
+          RotZProp.expression = ""
+        } else {
+          RotProp.expression = ""
+        }
+      } catch (e) {
+        throw new Error("[clearExpressionFromLayer] " + e.message)
+      }
+
+    },
     createPalette: function(ui_ref) {
       try {
         nautilus.palette = (ui_ref instanceof Panel) ? ui_ref : new Window("palette", "Nautilus", undefined, {resizeable: true});
@@ -213,6 +245,9 @@ function NautilusScript(ui_ref) {
         changeModeButton.helpTip = textModeTip
 
         var basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn);
+        basedOnButton.helpTip = "Change Based On text animator\n(Please note this only works for text layer)"
+        var removeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.remove);
+        removeButton.helpTip = "Remove Nautilus from Text/Comp/Precomp Layer"
 
         var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
         extractButton.helpTip = "Extract letter from text layer into PreComp"
@@ -307,6 +342,7 @@ function NautilusScript(ui_ref) {
           resetButton(this)
         }
 
+        removeButton.onClick = function () { executeFunc(removeNautilus); resetButton(this) }
         extractButton.onClick = function() { executeFunc(extract); resetButton(this) }
         helpButton.onClick = function() { executeFunc(help) }
 
@@ -672,8 +708,6 @@ function NautilusScript(ui_ref) {
         addAnimatorUtil("NAUTILUS_SCL", "scale")
         addAnimatorUtil("NAUTILUS_OPACITY", "opacity")
       }
-
-
     } catch (e) {
       throw new Error("[applyText] " + e.message)
     }
@@ -712,6 +746,68 @@ function NautilusScript(ui_ref) {
 
             var selectorExpressionBasedOn = selectorExpression.property(1)
             selectorExpressionBasedOn.setValue(basedOnIndex)
+          }
+        }
+      }
+    } catch (e) {
+      throw new Error("[changeBasedOn] " + e.message)
+    }
+    app.endUndoGroup()
+  }
+
+  var removeNautilus = function() {
+    app.beginUndoGroup("removeNautilus")
+
+    try {
+      var comp = utils.getCompItem()
+      var selectedLayers = utils.getSelectedLayer()
+
+      for (var i = 0; i < selectedLayers.length; i++) {
+        var layer = selectedLayers[i]
+
+        var selectedEffect = layer.selectedProperties
+        if (selectedEffect.length === 0) {
+          throw new Error("Please select atleast one Nautilus Effect!")
+        }
+
+        var effectNameToRemove = []
+        for (var j = 0; j < selectedEffect.length; j++) {
+          effectNameToRemove.push(selectedEffect[j].name)
+        }
+
+        
+        for (var k = 0; k < effectNameToRemove.length; k++) {
+          var effectName = effectNameToRemove[k]
+          var effect = layer.property("ADBE Effect Parade").property(effectName);
+
+          if (utils.isTextLayer(layer)) {
+            var textProp = layer.property("ADBE Text Properties")
+            var animatorsGroup = textProp.property("ADBE Text Animators")
+
+            for (var m = animatorsGroup.numProperties; m >= 1; m--) {
+              var animator = animatorsGroup.property(m)
+              var selectorGroup = animator.property("ADBE Text Selectors")
+              var selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
+              var selectorExpressionAmount = selectorExpression.property(2)
+
+              if (selectorExpressionAmount.expression.indexOf('("' + effect.name + '")') === -1) { continue }
+              
+              animator.remove()
+            }
+
+            effect.remove()
+          } else if (layer.source instanceof CompItem) {
+            effect.remove()
+
+            var ctrlLayerEffectNameList = utils.getAllNautilusEffect(layer)
+            var innerComp = layer.source
+            for (var l = 1; l <= innerComp.numLayers; l++) {
+              if (ctrlLayerEffectNameList.length === 0) {
+                utils.clearExpressionFromLayer(innerComp.layer(l))
+              } else {
+                utils.applyExpressionToLayer(innerComp.layer(l), layer.name, comp.name, layer.name, ctrlLayerEffectNameList);
+              }
+            }
           }
         }
       }
@@ -810,6 +906,7 @@ function NautilusScript(ui_ref) {
       nautilus.nautiFlowPresetFileObj = utils.getFileObj("NautiFLow.ffx")
       nautilus.expression.text.defaultVariable = utils.readFile("text/defaultVariable.jsx")
       nautilus.expression.text.trackingMaskValue = utils.readFile("text/trackingMaskValue.jsx")
+      nautilus.expression.text.trackingMask = utils.readFile("text/trackingMask.jsx")
       nautilus.expression.text.position = utils.readFile("text/position.jsx")
       nautilus.expression.text.positionValue = utils.readFile("text/positionValue.jsx")
       nautilus.expression.text.positionMask = utils.readFile("text/positionMask.jsx")
@@ -830,6 +927,7 @@ function NautilusScript(ui_ref) {
       nautilus.icons.extract = utils.getFileObj("icons/extract.png")
       nautilus.icons.apply = utils.getFileObj("icons/apply.png")
       nautilus.icons.basedOn = utils.getFileObj("icons/based-on.png")
+      nautilus.icons.remove = utils.getFileObj("icons/remove.png")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
