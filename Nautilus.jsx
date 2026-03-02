@@ -239,25 +239,25 @@ function NautilusScript(ui_ref) {
         var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
         btnGroup.orientation = "row"
 
-        var applyButton = btnGroup.add("iconbutton", undefined, nautilus.icons.apply);
+        var applyButton = btnGroup.add("iconbutton", undefined, nautilus.icons.apply, { style: "toolbutton" });
         applyButton.helpTip = "Apply Nautilus"
-        var changeModeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.text);
+        var changeModeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.text, { style: "toolbutton" });
         var textModeTip = "Apply Nautilus to Text Layer"
         var compModeTip = "Apply Nautilus to Comp/Precomp Layer"
         changeModeButton.helpTip = textModeTip
 
-        var basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn);
+        var basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn, { style: "toolbutton" });
         basedOnButton.helpTip = "Change Based On text animator\n(Please note this only works for text layer)"
-        var removeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.remove);
+        var removeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.remove, { style: "toolbutton" });
         removeButton.helpTip = "Remove Nautilus from Text/Comp/Precomp Layer"
 
-        var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
+        var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract, { style: "toolbutton" });
         extractButton.helpTip = "Extract letter from text layer into PreComp"
 
         var settingsButton = btnGroup.add("iconbutton", undefined, nautilus.icons.settings, { style: "toolbutton" });
         settingsButton.helpTip = "Settings"
 
-        var helpButton = btnGroup.add("iconbutton", undefined, nautilus.icons.about);
+        var helpButton = btnGroup.add("iconbutton", undefined, nautilus.icons.about, { style: "toolbutton" });
         helpButton.helpTip = "About Nautilus"
 
         nautilus.palette.onResizing = nautilus.palette.onResize = function() {
