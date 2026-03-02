@@ -229,15 +229,13 @@ function NautilusScript(ui_ref) {
       try {
         nautilus.palette = (ui_ref instanceof Panel) ? ui_ref : new Window("palette", "Nautilus", undefined, {resizeable: true});
         nautilus.palette.orientation = "column"; 
-        nautilus.palette.alignChildren = ["center", "center"];
-        // nautilus.palette.spacing = 10
+        nautilus.palette.alignChildren = ["fill", "fill"];
         nautilus.palette.margins = 5
 
-
-        var mainPanel = nautilus.palette.add("panel", undefined, "Nautilus " + nautilus.version);
-
-        var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
+        var btnGroup = nautilus.palette.add("group", undefined, "ButtonGroup");
         btnGroup.orientation = "row"
+        btnGroup.alignChildren = ["fill", "fill"];
+        var btnGroupWidth = btnGroup.preferredSize.width + 20
 
         var applyButton = btnGroup.add("iconbutton", undefined, nautilus.icons.apply, { style: "toolbutton" });
         applyButton.helpTip = "Apply Nautilus"
@@ -262,6 +260,19 @@ function NautilusScript(ui_ref) {
 
         nautilus.palette.onResizing = nautilus.palette.onResize = function() {
           nautilus.palette.layout.resize();
+
+          if (nautilus.palette.size.width < 200) {
+            if (btnGroup.orientation === "column") { return }
+
+            btnGroup.orientation = "column"
+            nautilus.palette.layout.layout(true)
+          } else {
+            if (btnGroup.orientation === "row") { return }
+
+            btnGroup.orientation = "row"
+            nautilus.palette.layout.layout(true)
+          }
+
         };
 
         function executeFunc(func) {
