@@ -50,7 +50,8 @@ function NautilusScript(ui_ref) {
       extract: null,
       apply: null,
       basedOn: null,
-      remove: null
+      remove: null,
+      settings: null
     },
     palette: null
   };
@@ -220,6 +221,10 @@ function NautilusScript(ui_ref) {
       }
 
     },
+    resetButton: function(button) {
+      button.active = true
+      button.active = false
+    },
     createPalette: function(ui_ref) {
       try {
         nautilus.palette = (ui_ref instanceof Panel) ? ui_ref : new Window("palette", "Nautilus", undefined, {resizeable: true});
@@ -230,9 +235,6 @@ function NautilusScript(ui_ref) {
 
 
         var mainPanel = nautilus.palette.add("panel", undefined, "Nautilus " + nautilus.version);
-        var legacyMode = mainPanel.add("checkbox", undefined, "Legacy Mode?");
-        legacyMode.value = !nautilus.applyToCompLayers;
-        legacyMode.helpTip = "Activate legacy mode"
 
         var btnGroup = mainPanel.add("group", undefined, "ButtonGroup");
         btnGroup.orientation = "row"
@@ -252,6 +254,9 @@ function NautilusScript(ui_ref) {
         var extractButton = btnGroup.add("iconbutton", undefined, nautilus.icons.extract);
         extractButton.helpTip = "Extract letter from text layer into PreComp"
 
+        var settingsButton = btnGroup.add("iconbutton", undefined, nautilus.icons.settings, { style: "toolbutton" });
+        settingsButton.helpTip = "Settings"
+
         var helpButton = btnGroup.add("iconbutton", undefined, nautilus.icons.about);
         helpButton.helpTip = "About Nautilus"
 
@@ -266,20 +271,7 @@ function NautilusScript(ui_ref) {
             handleError("[execute] " + e.message);
           }
         }
-        
-        function resetButton(button) {
-          button.active = true
-          button.active = false
-        }
 
-        legacyMode.onClick = function() { 
-          nautilus.applyToCompLayers = !legacyMode.value 
-          if (legacyMode.value) {
-            alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
-          }
-
-          resetButton(this)
-        }
         applyButton.onClick = function () { 
           if (nautilus.mode == "text") {
             executeFunc(applyText) 
@@ -287,7 +279,7 @@ function NautilusScript(ui_ref) {
             executeFunc(applyLayer)
           }
 
-          resetButton(this)
+          utils.resetButton(this)
         }
         changeModeButton.onClick = function () { 
           var finalMode
@@ -305,7 +297,7 @@ function NautilusScript(ui_ref) {
           this.image = nautilus.icons[finalMode]
           nautilus.mode = finalMode
 
-          resetButton(this)
+          utils.resetButton(this)
         }
         basedOnButton.onClick = function () {
           nautilus.basedOnPanel = new Window("palette", "Based On", undefined, { resizeable: true })
@@ -339,11 +331,12 @@ function NautilusScript(ui_ref) {
           nautilus.basedOnPanel.center()
           nautilus.basedOnPanel.show()
 
-          resetButton(this)
+          utils.resetButton(this)
         }
+        settingsButton.onClick = function () { executeFunc(settings); utils.resetButton(this) }
 
-        removeButton.onClick = function () { executeFunc(removeNautilus); resetButton(this) }
-        extractButton.onClick = function() { executeFunc(extract); resetButton(this) }
+        removeButton.onClick = function () { executeFunc(removeNautilus); utils.resetButton(this) }
+        extractButton.onClick = function() { executeFunc(extract); utils.resetButton(this) }
         helpButton.onClick = function() { executeFunc(help) }
 
         if (nautilus.palette instanceof Window) {
@@ -889,8 +882,32 @@ function NautilusScript(ui_ref) {
     app.endUndoGroup()
   }
 
+  var settings = function() {
+    nautilus.settingsDialog = new Window("dialog", "Settings", undefined, {resizeable: true})
+
+    var deprecatedPanel = nautilus.settingsDialog.add("panel", undefined, "Deprecated")
+
+    var legacyMode = deprecatedPanel.add("checkbox", undefined, "Legacy Mode?");
+    legacyMode.value = !nautilus.applyToCompLayers;
+    legacyMode.helpTip = "Activate legacy mode"
+    legacyMode.onClick = function() { 
+      nautilus.applyToCompLayers = !legacyMode.value 
+      if (legacyMode.value) {
+        alert("This mode is deprecated! \n\nThis checkbox was previously 'Apply to layers in the selected comp,' which enabled Nautilus to apply expressions to all layers within the selected precomp/comp.\n\nBut now that mode is the default for Nautilus, and the previous default Nautilus mode is marked as deprecated and called 'legacy mode.'\n\nThis is due to performance issues, and finding layer indexes can be very difficult in that mode.\n\nIn this mode, most animation functions are broken, and only the mask path feature works (this is beneficial for those who want to use the mask path position feature without animation and don't want to use precomp).")
+      }
+
+      utils.resetButton(this)
+    }
+
+
+
+    nautilus.settingsDialog.center()
+    nautilus.settingsDialog.show()
+  }
+
   function load() {
     try {
+      // Load expression for Comp Mode
       nautilus.firstPresetFileObj = utils.getFileObj("Nautilus.ffx")
       nautilus.secondPresetFileObj = utils.getFileObj("Nautilus2.ffx")
       nautilus.version = utils.loadBuildInfo()["version"]
@@ -903,6 +920,7 @@ function NautilusScript(ui_ref) {
       nautilus.expression.opacity = utils.readFile("layer/opacity.jsx");
       nautilus.expression.scale = utils.readFile("layer/scale.jsx");
 
+      // Load expression for Text layer mode
       nautilus.nautiFlowPresetFileObj = utils.getFileObj("NautiFLow.ffx")
       nautilus.expression.text.defaultVariable = utils.readFile("text/defaultVariable.jsx")
       nautilus.expression.text.trackingMaskValue = utils.readFile("text/trackingMaskValue.jsx")
@@ -920,7 +938,8 @@ function NautilusScript(ui_ref) {
       nautilus.expression.text.scaleMask = utils.readFile("text/scaleMask.jsx")
       nautilus.expression.text.scaleMaskValue = utils.readFile("text/scaleMaskValue.jsx")
       nautilus.expression.text.opacity = utils.readFile("text/opacity.jsx")
-
+      
+      // Load button Icon
       nautilus.icons.text = utils.getFileObj("icons/text.png")
       nautilus.icons.comp = utils.getFileObj("icons/comp.png")
       nautilus.icons.about = utils.getFileObj("icons/about.png")
@@ -928,6 +947,7 @@ function NautilusScript(ui_ref) {
       nautilus.icons.apply = utils.getFileObj("icons/apply.png")
       nautilus.icons.basedOn = utils.getFileObj("icons/based-on.png")
       nautilus.icons.remove = utils.getFileObj("icons/remove.png")
+      nautilus.icons.settings = utils.getFileObj("icons/settings.png")
     } catch (e) {
       throw new Error("[load] " + e.message)
     }
