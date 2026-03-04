@@ -1,83 +1,114 @@
-// For position
-if (!ctrlValue) { ctrlValue = [0, 0, 0] }
+/**
+ * Position Function
+ * Created for Nautilus Project
+ */
 
-if (ctrlIsWigglePosition) {
-  var ctrlWigglePositionAmp = ctrlFx("Wiggle Pos Amp").value
-  var ctrlWigglePositionFreq = ctrlFx("Wiggle Pos Freq").value
 
-  seedRandom(ctrlFx("Wiggle Pos Seed").value + index)
-  ctrlValue += (wiggle(ctrlWigglePositionFreq, ctrlWigglePositionAmp) - value)
+/**
+ * Variable Cache
+ */
+var cache = {
+  isTurnOn: ctrlFx(11).value,
+  strength: ctrlFx(12).valueAtTime(lookAtTime),
+  isSeparate: ctrlFx(14).value,
+  strengthSep: [
+    ctrlFx(15).valueAtTime(lookAtTime),
+    ctrlFx(16).valueAtTime(lookAtTime),
+    ctrlFx(17).valueAtTime(lookAtTime),
+  ],
+  modeId: ctrlFx(20).value,
+  mirrorIndex: ctrlFx(21).value,
+  isWiggle: ctrlFx(24).value,
+  wiggleSeed: ctrlFx(25).value,
+  wiggleAmp: ctrlFx(26).value,
+  wiggleFreq: ctrlFx(27).value,
+  propValue: [
+    ctrlFx(96).value,
+    ctrlFx(97).value,
+    ctrlFx(98).value,
+  ]
 }
 
-///////////////////////
-// take strength first
-///////////////////
-var ctrlPosStrength = ctrlFx("Position Strength").valueAtTime(realTime - delay);
-var ctrlPosXStrength = ctrlPosStrength
-var ctrlPosYStrength = ctrlPosStrength
-var ctrlPosZStrength = ctrlPosStrength
 
-if (ctrlIsSeparatePosition) {
-  ctrlPosXStrength = ctrlFx("Position X Strength").valueAtTime(realTime - delay);
-  ctrlPosYStrength = ctrlFx("Position Y Strength").valueAtTime(realTime - delay);
-  ctrlPosZStrength = ctrlFx("Position Z Strength").valueAtTime(realTime - delay);
+/**
+ * Utility
+ */
+var utils = {
+  createWiggle: function (seed, freq, amp, propValue) {
+    seedRandom(seed, index)
+    return wiggle(freq, amp) - propValue
+  },
+  getValue: function (propValue, strength) {
+    return [
+      propValue[0] * (strength[0] / 100),
+      propValue[1] * (strength[1] / 100),
+      propValue[2] * (strength[2] / 100)
+    ]
+  },
+  calculateMode: function (modeId, strength) {
+    switch (modeId) {
+      /**
+       * Alternate Mode
+       */
+      case 2:
+        var p = (index - 1) % 4;
+        switch (p) {
+          case 0:
+            strength[0] *= -1; 
+            strength[1] *= 0;
+            break;
+          case 1:
+            strength[0] *= 0; 
+            strength[1] *= 1;
+            break;
+          case 2:
+            strength[0] *= 1; 
+            strength[1] *= 0;
+            break;
+          case 3:
+            strength[0] *= 0; 
+            strength[1] *= -1;
+            break;
+        }
+        break;
+    }
+
+    return strength
+  }
 }
 
-////////////////
-// take value
-///////////////
-var ctrlPosXValue = ctrlFx("Position X")
-var ctrlPosYValue = ctrlFx("Position Y")
-var ctrlPosZValue = ctrlFx("Position Z")
 
-//////////////////
-// calculate strength
-/////////////////
-var ctrlPosX = ctrlPosXValue * (ctrlPosXStrength / 100);
-var ctrlPosY = ctrlPosYValue * (ctrlPosYStrength / 100);
-var ctrlPosZ = ctrlPosZValue * (ctrlPosZStrength / 100);
-
-// follow mask 
-if (ctrlHasMask) {
-  var finalPoint
-  if (isLegacy) {
-    finalPoint = ctrl.toComp(ctrlMaskPoint);
-  } else {
-    finalPoint = ctrlMaskPoint
+/**
+ * Main Function
+ */
+function main() {
+  /**
+   * Follow Mask
+   */
+  if (maskInfo.isAvalaible) {
+    initialValue = maskInfo.point
   }
 
-  layerValue = []
+  /**
+   * Calculate mode (get modified strength)
+   */
+  var strength
+  if (cache.isTurnOn) {
+    if (cache.isSeparate) {
+      strength = utils.calculateMode(cache.modeId, cache.strengthSep)
+    } else {
+      strength = utils.calculateMode(globalProp.modeId, 
+        [cache.strength, cache.strength, cache.strength]
+      )
+    }
+  } else {
+    strength = utils.calculateMode(globalProp.modeId, 
+      [globalProp.strength, globalProp.strength, globalProp.strength]
+    )
+  }
 
-  layerValue[0] = finalPoint[0];
-  layerValue[1] = finalPoint[1];
+  /**
+   * final
+   */
+  return utils.getValue(cache.propValue, strength)
 }
-
-// handle 2d/3d layer
-var layerPosZ = 0
-if (value.length == 3) { layerPosZ = value[2] }
-
-//////////////////
-// Calculate modulo 4 (for alternate mode yeah)
-//////////////////
-var xDir = 0;
-var yDir = 0;
-
-var yPos = ctrlPosY;
-var xPos = ctrlPosX;
-var zPos = ctrlPosZ;
-
-var p = (index - 1) % 4;
-if (p == 0) { yDir = -1; xDir = 0; } 
-else if (p == 1) { yDir = 0; xDir = 1; }
-else if (p == 2) { yDir = 1; xDir = 0; }
-else if (p == 3) { yDir = 0; xDir = -1; }
-
-// only change animate type if "Mode" is set to "Alternate"
-if (ctrlMode == 2) {
-	ctrlPosX = ctrlPosX * xDir;
-	ctrlPosY = ctrlPosY * yDir;
-}
-
-// final
-ctrlValue += [ctrlPosX, ctrlPosY, ctrlPosZ];
-layerValue += ctrlValue

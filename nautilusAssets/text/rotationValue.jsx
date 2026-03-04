@@ -1,3 +1,3 @@
-var rotation = ctrlFx("Rotation Z").value;
+var rotation = ctrlFx(107).value;
 
 [rotation]

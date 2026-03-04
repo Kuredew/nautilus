@@ -34,6 +34,7 @@ function NautilusScript(ui_ref) {
         scaleMask: null,
         scaleMaskValue: null,
         opacity: null,
+        opacityValue: null,
       },
       defaultVariable: null,
       position: null,
@@ -622,12 +623,11 @@ function NautilusScript(ui_ref) {
         // Add Property based on PropertyType
         var valueProperty = propGroup.addProperty(matchName);
 
-        // add expression to valueProperty if not opacity
-        if (valueExpression && propertyType !== "opacity") {
+        // add expression to valueProperty
+        if (valueExpression) {
           valueProperty.expression = valueExpression
         } else {
-          // set value to 0 if opacity
-          valueProperty.setValue(0)
+          alert("ValueExpression is empty!")
         }
 
         var selectorGroup = animatorGroup.property("ADBE Text Selectors");
@@ -949,6 +949,7 @@ function NautilusScript(ui_ref) {
       nautilus.expression.text.scaleMask = utils.readFile("text/scaleMask.jsx")
       nautilus.expression.text.scaleMaskValue = utils.readFile("text/scaleMaskValue.jsx")
       nautilus.expression.text.opacity = utils.readFile("text/opacity.jsx")
+      nautilus.expression.text.opacityValue = utils.readFile("text/opacityValue.jsx")
       
       // Load button Icon
       nautilus.icons.text = utils.getFileObj("icons/text.png")

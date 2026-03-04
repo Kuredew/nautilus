@@ -1,39 +1,102 @@
-// For Scale
-if (!ctrlValue) { ctrlValue = [0, 0] }
+/**
+ * Scale Function
+ * Created for Nautilus Project
+ */
 
-if (ctrlIsWiggleScale) {
-  var ctrlWiggleScaleAmp = ctrlFx("Wiggle Scale Amp").value
-  var ctrlWiggleScaleFreq = ctrlFx("Wiggle Scale Freq").value
 
-  seedRandom(ctrlFx("Wiggle Scale Seed").value + index)
-  ctrlValue += (wiggle(ctrlWiggleScaleFreq, ctrlWiggleScaleAmp) - value)
+/**
+ * Variable Cache
+ */
+var cache = {
+  isTurnOn: ctrlFx(31).value,
+  strength: ctrlFx(32).valueAtTime(lookAtTime),
+  isSeparate: ctrlFx(34).value,
+  strengthSep: [
+    ctrlFx(35).valueAtTime(lookAtTime),
+    ctrlFx(36).valueAtTime(lookAtTime),
+  ],
+  modeId: ctrlFx(39).value,
+  mirrorIndex: ctrlFx(40).value,
+  isWiggle: ctrlFx(43).value,
+  wiggleSeed: ctrlFx(44).value,
+  wiggleAmp: ctrlFx(45).value,
+  wiggleFreq: ctrlFx(46).value,
+  propValue: [
+    ctrlFx(101).value,
+    ctrlFx(102).value,
+  ]
 }
 
-var ctrlScaleStrength = ctrlFx("Scale Strength").valueAtTime(realTime - delay);
-var ctrlScaleXStrength = ctrlScaleStrength;
-var ctrlScaleYStrength = ctrlScaleStrength;
 
-if (ctrlIsSeparateScale) {
-  ctrlScaleXStrength = ctrlFx("Scale X Strength");
-  ctrlScaleYStrength = ctrlFx("Scale Y Strength");
+/**
+ * Utility
+ */
+var utils = {
+  createWiggle: function (seed, freq, amp, propValue) {
+    seedRandom(seed, index)
+    return wiggle(freq, amp) - propValue
+  },
+  getValue: function (propValue, strength) {
+    return [
+      propValue[0] * (strength[0] / 100),
+      propValue[1] * (strength[1] / 100),
+    ]
+  },
+  calculateMode: function (modeId, strength) {
+    switch (modeId) {
+      /**
+       * Mirror Mode
+       */
+      case 3:
+        break;
+    }
+
+    return strength
+  }
 }
 
-var layerScaleX = value[0];
-var layerScaleY = value[1];
 
-// follow mask, again
-if (ctrlHasMask) {
-  var finalLength = (length(ctrlMaskTangentsIn) + length(ctrlMaskTangentsOut)) / 2;
+/**
+ * Main Function
+ */
+function main() {
+  /**
+   * Follow Mask
+   */
+  if (maskInfo.isAvalaible) {
+    var maskScale = (length(maskInfo.tangentsIn) + length(maskInfo.tangentsOut) / 2)
+    initialValue = [maskScale, maskScale]
+  }
 
-  layerValue = []
-  layerValue[0] = layerScaleX + finalLength;
-  layerValue[1] = layerScaleY + finalLength;
+  /**
+   * Calculate mode (get modified strength)
+   */
+  var strength
+  if (cache.isTurnOn) {
+    if (cache.isSeparate) {
+      strength = utils.calculateMode(cache.modeId, cache.strengthSep)
+    } else {
+      strength = utils.calculateMode(globalProp.modeId, 
+        [cache.strength, cache.strength, cache.strength]
+      )
+    }
+  } else {
+    strength = utils.calculateMode(globalProp.modeId, 
+      [globalProp.strength, globalProp.strength, globalProp.strength]
+    )
+  }
+
+  /**
+   * final
+   */
+  return utils.getValue(cache.propValue, strength)
 }
 
-// calculate percent value
-var ctrlScaleX = ctrlFx("Scale X") * (ctrlScaleXStrength / 100);
-var ctrlScaleY = ctrlFx("Scale Y") * (ctrlScaleYStrength / 100);
+// // follow mask, again
+// if (ctrlHasMask) {
+//   var finalLength = (length(ctrlMaskTangentsIn) + length(ctrlMaskTangentsOut)) / 2;
 
-// final
-ctrlValue = ctrlValue + [ctrlScaleX, ctrlScaleY]
-layerValue += ctrlValue
+//   layerValue = []
+//   layerValue[0] = layerScaleX + finalLength;
+//   layerValue[1] = layerScaleY + finalLength;
+// }

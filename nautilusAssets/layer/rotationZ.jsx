@@ -1,30 +1,60 @@
-// For Rotation
-if (!ctrlValue) { ctrlValue = 0 }
+/**
+ * Rotation Z Function
+ * Created for Nautilus Project
+ */
 
-if (ctrlIsWiggleRotation) {
-  var ctrlWiggleRotationAmp = ctrlFx("Wiggle Rot Amp").value
-  var ctrlWiggleRotationFreq = ctrlFx("Wiggle Rot Freq").value
 
-  seedRandom(ctrlFx("Wiggle Rot Seed").value + index)
-  ctrlValue += (wiggle(ctrlWiggleRotationFreq, ctrlWiggleRotationAmp) - value)
+/**
+ * Variable Cache
+ */
+var cache = {
+  isTurnOn: ctrlFx(50).value,
+  strength: ctrlFx(51).valueAtTime(lookAtTime),
+  strengthSep: ctrlFx(56).valueAtTime(lookAtTime),
+  isWiggle: ctrlFx(63).value,
+  wiggleSeed: ctrlFx(64).value,
+  wiggleAmp: ctrlFx(65).value,
+  wiggleFreq: ctrlFx(66).value,
+  propValue: ctrlFx(107).value 
 }
 
-var ctrlRotationStrength = ctrlFx("Rotation Strength").valueAtTime(realTime - delay);
-
-if (ctrlIsSeparateRotation) {
-  ctrlRotationStrength = ctrlFx("Rotation Z Strength").valueAtTime(realTime - delay);
+/**
+ * Utility
+ */
+var utils = {
+  getValue: function (propValue, strength) {
+    return propValue * (strength / 100)
+  }
 }
 
-// calculate percent value
-var ctrlRotation = ctrlFx("Rotation Z") * (ctrlRotationStrength / 100);
+/**
+ * 
+ * @returns number
+ */
+function main() {
+  if (maskInfo.isAvalaible && (length(maskInfo.tangentsOut) > 0)) {
+    initialValue = radiansToDegrees(Math.atan2(maskInfo.tangentsOut[1], maskInfo.tangentsOut[0]));
+  }
 
-var layerRot = value;
+  var finalValue
+  if (cache.isTurnOn) {
+    if (cache.IsSeparate) {
+      finalValue = utils.getValue(cache.propValue, cache.strengthSep)
+    } else {
+      finalValue = utils.getValue(cache.propValue, cache.strength)
+    }
+  } else {
+    finalValue = utils.getValue(cache.propValue, globalProp.strength)
+  }
 
-// follow mask tangents (handle) if mask persist 
-if (ctrlHasMask && length(ctrlMaskTangentsOut) > 0) {
-  layerValue = radiansToDegrees(Math.atan2(ctrlMaskTangentsOut[1], ctrlMaskTangentsOut[0]));
+  
+  /**
+   * Final
+   */
+  return finalValue
 }
 
-// final
-ctrlValue = ctrlValue + ctrlRotation
-layerValue += ctrlValue
+// // follow mask tangents (handle) if mask persist 
+// if (ctrlHasMask && length(ctrlMaskTangentsOut) > 0) {
+//   layerValue = radiansToDegrees(Math.atan2(ctrlMaskTangentsOut[1], ctrlMaskTangentsOut[0]));
+// }

@@ -1,25 +1,52 @@
-// For Rotation
-if (!ctrlValue) { ctrlValue = 0 }
+/**
+ * Rotation Y Function
+ * Created for Nautilus Project
+ */
 
-if (ctrlIsWiggleRotation) {
-  var ctrlWiggleRotationAmp = ctrlFx("Wiggle Rot Amp").value
-  var ctrlWiggleRotationFreq = ctrlFx("Wiggle Rot Freq").value
 
-  seedRandom(ctrlFx("Wiggle Rot Seed").value + index)
-  ctrlValue += (wiggle(ctrlWiggleRotationFreq, ctrlWiggleRotationAmp) - value)
+/**
+ * Variable Cache
+ */
+var cache = {
+  isTurnOn: ctrlFx(50).value,
+  strength: ctrlFx(51).valueAtTime(lookAtTime),
+  strengthSep: ctrlFx(55).valueAtTime(lookAtTime),
+  isWiggle: ctrlFx(63).value,
+  wiggleSeed: ctrlFx(64).value,
+  wiggleAmp: ctrlFx(65).value,
+  wiggleFreq: ctrlFx(66).value,
+  propValue: ctrlFx(106).value 
 }
 
-var ctrlRotationStrength = ctrlFx("Rotation Strength").valueAtTime(realTime - delay);
-
-if (ctrlIsSeparateRotation) {
-  ctrlRotationStrength = ctrlFx("Rotation Y Strength").valueAtTime(realTime - delay);
+/**
+ * Utility
+ */
+var utils = {
+  getValue: function (propValue, strength) {
+    return propValue * (strength / 100)
+  }
 }
 
-// calculate percent value
-var ctrlRotation = ctrlFx("Rotation Y") * (ctrlRotationStrength / 100);
+/**
+ * 
+ * @returns number
+ */
+function main() {
+  var finalValue
 
-var layerRot = value;
+  if (cache.isTurnOn) {
+    if (cache.IsSeparate) {
+      finalValue = utils.getValue(cache.propValue, cache.strengthSep)
+    } else {
+      finalValue = utils.getValue(cache.propValue, cache.strength)
+    }
+  } else {
+    finalValue = utils.getValue(cache.propValue, globalProp.strength)
+  }
 
-// final
-ctrlValue = ctrlValue + ctrlRotation
-layerValue += ctrlValue
+  
+  /**
+   * Final
+   */
+  return finalValue
+}
