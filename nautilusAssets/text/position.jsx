@@ -1,28 +1,85 @@
-// For position
-///////////////////////
-// take strength first
-///////////////////
-var ctrlPosStrength = ctrlFx("Position Strength").valueAtTime(realTime - delay);
-var ctrlPosXStrength = ctrlPosStrength
-var ctrlPosYStrength = ctrlPosStrength
-var ctrlPosZStrength = ctrlPosStrength
+/**
+ * Position Function
+ * Created for Nautilus Project
+ */
 
-if (ctrlIsSeparatePosition) {
-  ctrlPosXStrength = ctrlFx("Position X Strength").valueAtTime(realTime - delay);
-  ctrlPosYStrength = ctrlFx("Position Y Strength").valueAtTime(realTime - delay);
-  ctrlPosZStrength = ctrlFx("Position Z Strength").valueAtTime(realTime - delay);
+
+/**
+ * Variable Cache
+ */
+var cache = {
+  isTurnOn: ctrlFx(11).value,
+  strength: ctrlFx(12).valueAtTime(lookAtTime),
+  IsSeparate: ctrlFx(14).value,
+  strengthSep: [
+    ctrlFx(15).valueAtTime(lookAtTime),
+    ctrlFx(16).valueAtTime(lookAtTime),
+    ctrlFx(17).valueAtTime(lookAtTime),
+  ],
+  mode: ctrlFx(20).value,
+  mirrorIndex: ctrlFx(21).value,
+  isWiggle: ctrlFx(24).value,
+  wiggleSeed: ctrlFx(25).value,
+  wiggleAmp: ctrlFx(26).value,
+  wiggleFreq: ctrlFx(27).value
 }
 
-//////////////////
-// Calculate modulo 4 (for alternate mode yeah)
-//////////////////
-if (ctrlMode == 2) {
-  var p = (textIndex - 1) % 4;
-  if (p == 0) { ctrlPosYStrength *= -1; ctrlPosXStrength *= 0; } 
-  else if (p == 1) { ctrlPosYStrength *= 0; ctrlPosXStrength *= 1; }
-  else if (p == 2) { ctrlPosYStrength *= 1; ctrlPosXStrength *= 0; }
-  else if (p == 3) { ctrlPosYStrength *= 0; ctrlPosXStrength *= -1; }
+
+
+/**
+ * Utility
+ */
+function calculateMode (modeId, strength) {
+  switch (modeId) {
+    /**
+     * Alternate Mode
+     */
+    case 2:
+      var p = (textIndex - 1) % 4;
+      switch (p) {
+        case 0:
+          strength[0] *= -1; 
+          strength[1] *= 0;
+          break;
+        case 1:
+          strength[0] *= 0; 
+          strength[1] *= 1;
+          break;
+        case 2:
+          strength[0] *= 1; 
+          strength[1] *= 0;
+          break;
+        case 3:
+          strength[0] *= 0; 
+          strength[1] *= -1;
+          break;
+      }
+      break;
+  }
+
+  return strength
 }
 
-// final
-[ctrlPosXStrength, ctrlPosYStrength, ctrlPosZStrength];
+
+/**
+ * Main Function
+ */
+function main() {
+  var mode = cache.mode
+  var myStrength = cache.strength
+
+  if (cache.isTurnOn) {
+    if (cache.IsSeparate) {
+      strength = calculateMode(mode, cache.strengthSep)
+    } else {
+      strength = calculateMode(mode, [myStrength, myStrength, myStrength])
+    }
+  } else {
+    strength = calculateMode(ctrlGlobalMode, [globalStrength, globalStrength, globalStrength])
+  }
+
+  /**
+   * final
+   */
+  return strength
+}
