@@ -8,22 +8,22 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(31).value,
-  strength: ctrlFx(32).valueAtTime(lookAtTime),
-  isSeparate: ctrlFx(34).value,
+  isTurnOn: ctrlFx(32).value,
+  strength: ctrlFx(33).valueAtTime(lookAtTime),
+  isSeparate: ctrlFx(35).value,
   strengthSep: [
-    ctrlFx(35).valueAtTime(lookAtTime),
     ctrlFx(36).valueAtTime(lookAtTime),
+    ctrlFx(37).valueAtTime(lookAtTime),
   ],
-  modeId: ctrlFx(39).value,
-  mirrorIndex: ctrlFx(40).value,
-  isWiggle: ctrlFx(43).value,
-  wiggleSeed: ctrlFx(44).value,
-  wiggleAmp: ctrlFx(45).value,
-  wiggleFreq: ctrlFx(46).value,
+  modeId: ctrlFx(40).value,
+  interval: ctrlFx(41).value,
+  isWiggle: ctrlFx(44).value,
+  wiggleSeed: ctrlFx(45).value,
+  wiggleAmp: ctrlFx(46).value,
+  wiggleFreq: ctrlFx(47).value,
   propValue: [
-    ctrlFx(101).value,
     ctrlFx(102).value,
+    ctrlFx(103).value,
   ]
 }
 

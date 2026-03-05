@@ -8,14 +8,16 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(50).value,
-  strength: ctrlFx(51).valueAtTime(lookAtTime),
-  strengthSep: ctrlFx(55).valueAtTime(lookAtTime),
-  isWiggle: ctrlFx(63).value,
-  wiggleSeed: ctrlFx(64).value,
-  wiggleAmp: ctrlFx(65).value,
-  wiggleFreq: ctrlFx(66).value,
-  propValue: ctrlFx(106).value 
+  isTurnOn: ctrlFx(51).value,
+  strength: ctrlFx(52).valueAtTime(lookAtTime),
+  strengthSep: ctrlFx(56).valueAtTime(lookAtTime),
+  modeId: ctrlFx(60).value,
+  interval: ctrlFx(61).value,
+  isWiggle: ctrlFx(64).value,
+  wiggleSeed: ctrlFx(65).value,
+  wiggleAmp: ctrlFx(66).value,
+  wiggleFreq: ctrlFx(67).value,
+  propValue: ctrlFx(107).value 
 }
 
 /**
