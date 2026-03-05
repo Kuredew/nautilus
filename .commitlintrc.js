@@ -1,9 +1,6 @@
-const fs = require('fs')
-const path = require('path')
-const packages = fs.readdirSync(path.resolve(__dirname, 'packages'))
-module.exports = {
+export default {
   prompt: { 
-    scopes: [...packages],
+    scopes: ['ui', 'text', 'layer', 'effect', 'deps', 'config'],
     enableMultipleScopes: true,
     scopeEnumSeparator: "," 
   }
