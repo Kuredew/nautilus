@@ -8,20 +8,20 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(11).value,
-  strength: ctrlFx(12).valueAtTime(lookAtTime),
-  IsSeparate: ctrlFx(14).value,
+  isTurnOn: ctrlFx(12).value,
+  strength: ctrlFx(13).valueAtTime(lookAtTime),
+  IsSeparate: ctrlFx(15).value,
   strengthSep: [
-    ctrlFx(15).valueAtTime(lookAtTime),
     ctrlFx(16).valueAtTime(lookAtTime),
     ctrlFx(17).valueAtTime(lookAtTime),
+    ctrlFx(18).valueAtTime(lookAtTime),
   ],
-  mode: ctrlFx(20).value,
-  mirrorIndex: ctrlFx(21).value,
-  isWiggle: ctrlFx(24).value,
-  wiggleSeed: ctrlFx(25).value,
-  wiggleAmp: ctrlFx(26).value,
-  wiggleFreq: ctrlFx(27).value
+  mode: ctrlFx(21).value,
+  mirrorIndex: ctrlFx(22).value,
+  isWiggle: ctrlFx(25).value,
+  wiggleSeed: ctrlFx(26).value,
+  wiggleAmp: ctrlFx(27).value,
+  wiggleFreq: ctrlFx(28).value
 }
 
 
@@ -29,7 +29,7 @@ var cache = {
 /**
  * Utility
  */
-function calculateMode (modeId, strength) {
+function calculateMode (modeId, strength, opts) {
   switch (modeId) {
     /**
      * Alternate Mode
@@ -55,6 +55,19 @@ function calculateMode (modeId, strength) {
           break;
       }
       break;
+    /**
+     * Mirror Mode
+     */
+    case 3:
+      var p = Math.ceil(textIndex / opts.mirrorIndex)
+      if (p !== 0) {
+        strength[0] *= 1
+        strength[1] *= 1
+      } else {
+        strength[0] *= -1
+        strength[1] *= -1
+      }
+      break;
   }
 
   return strength
@@ -69,6 +82,8 @@ function main() {
   var myStrength = cache.strength
 
   if (cache.isTurnOn) {
+
+
     if (cache.IsSeparate) {
       strength = calculateMode(mode, cache.strengthSep)
     } else {

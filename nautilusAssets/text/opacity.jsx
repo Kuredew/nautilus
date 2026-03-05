@@ -8,12 +8,12 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(84).value,
-  strength: ctrlFx(85).valueAtTime(lookAtTime),
-  isWiggle: ctrlFx(87).value,
-  wiggleSeed: ctrlFx(88).value,
-  wiggleAmp: ctrlFx(89).value,
-  wiggleFreq: ctrlFx(90).value
+  isTurnOn: ctrlFx(85).value,
+  strength: ctrlFx(86).valueAtTime(lookAtTime),
+  isWiggle: ctrlFx(88).value,
+  wiggleSeed: ctrlFx(89).value,
+  wiggleAmp: ctrlFx(90).value,
+  wiggleFreq: ctrlFx(91).value
 }
 
 
