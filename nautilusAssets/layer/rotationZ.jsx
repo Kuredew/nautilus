@@ -34,6 +34,7 @@ var utils = {
  * @returns number
  */
 function main() {
+  var maskInfo = getMaskInfo()
   if (maskInfo.isAvalaible && (length(maskInfo.tangentsOut) > 0)) {
     initialValue = radiansToDegrees(Math.atan2(maskInfo.tangentsOut[1], maskInfo.tangentsOut[0]));
   }

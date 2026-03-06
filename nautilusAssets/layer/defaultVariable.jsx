@@ -13,16 +13,20 @@ var totalIndex = thisComp.numLayers
 var realIndex = totalIndex - index
 
 /**
- * Mask Info
+ * Utility for property expression
  */
-var maskInfo = {}
-try {
-  maskInfo.isAvalaible = true
-  maskInfo.path = ctrl.mask("Mask 1").maskPath;
-  maskInfo.point = maskInfo.path.points()[realIndex]
-  maskInfo.tangentsIn = maskInfo.path.inTangents()[realIndex]
-  maskInfo.tangentsOut = maskInfo.path.outTangents()[realIndex]
-} catch (e) { maskInfo.isAvalaible = false }
+function getMaskInfo() {
+  var maskInfo = {}
+  try {
+    maskInfo.isAvalaible = true
+    maskInfo.path = ctrl.mask("Mask 1").maskPath;
+    maskInfo.point = maskInfo.path.points()[realIndex]
+    maskInfo.tangentsIn = maskInfo.path.inTangents()[realIndex]
+    maskInfo.tangentsOut = maskInfo.path.outTangents()[realIndex]
+  } catch (e) { maskInfo.isAvalaible = false }
+  
+  return maskInfo
+}
 
 /**
  * Loop effect list

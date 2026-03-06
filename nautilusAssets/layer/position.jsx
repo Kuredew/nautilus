@@ -85,6 +85,7 @@ function main() {
   /**
    * Follow Mask
    */
+  var maskInfo = getMaskInfo()
   if (maskInfo.isAvalaible) {
     initialValue = maskInfo.point
   }

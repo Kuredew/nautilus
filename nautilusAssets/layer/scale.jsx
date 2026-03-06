@@ -63,6 +63,7 @@ function main() {
   /**
    * Follow Mask
    */
+  var maskInfo = getMaskInfo()
   if (maskInfo.isAvalaible) {
     var maskScale = (length(maskInfo.tangentsIn) + length(maskInfo.tangentsOut) / 2)
     initialValue = [maskScale, maskScale]
@@ -91,12 +92,3 @@ function main() {
    */
   return utils.getValue(cache.propValue, strength)
 }
-
-// // follow mask, again
-// if (ctrlHasMask) {
-//   var finalLength = (length(ctrlMaskTangentsIn) + length(ctrlMaskTangentsOut)) / 2;
-
-//   layerValue = []
-//   layerValue[0] = layerScaleX + finalLength;
-//   layerValue[1] = layerScaleY + finalLength;
-// }
