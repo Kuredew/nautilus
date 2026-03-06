@@ -9,8 +9,6 @@
  */
 var cache = {
   isTurnOn: ctrlFx(51).value,
-  strength: ctrlFx(52).valueAtTime(lookAtTime),
-  strengthSep: ctrlFx(57).valueAtTime(lookAtTime),
   modeId: ctrlFx(60).value,
   interval: ctrlFx(61).value,
   isWiggle: ctrlFx(64).value,
@@ -39,22 +37,25 @@ function main() {
     initialValue = radiansToDegrees(Math.atan2(maskInfo.tangentsOut[1], maskInfo.tangentsOut[0]));
   }
 
-  var finalValue
+  var newValue
   if (cache.isTurnOn) {
     if (cache.IsSeparate) {
-      finalValue = utils.getValue(cache.propValue, cache.strengthSep)
+      var strengthSep = ctrlFx(57).valueAtTime(lookAtTime)
+      newValue = utils.getValue(cache.propValue, strengthSep)
     } else {
-      finalValue = utils.getValue(cache.propValue, cache.strength)
+      var myStrength = ctrlFx(52).valueAtTime(lookAtTime)
+      newValue = utils.getValue(cache.propValue, myStrength)
     }
   } else {
-    finalValue = utils.getValue(cache.propValue, globalProp.strength)
+    var ctrlStrength = getCtrlStrength()
+    newValue = utils.getValue(cache.propValue, ctrlStrength)
   }
 
   
   /**
    * Final
    */
-  return finalValue
+  return newValue
 }
 
 // // follow mask tangents (handle) if mask persist 

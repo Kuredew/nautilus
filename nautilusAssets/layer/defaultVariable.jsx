@@ -74,7 +74,10 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   }
 
   var lookAtTime = realTime - (finalIndex * globalProp.delay);
-  globalProp.strength = globalProp.strength.valueAtTime(lookAtTime)
+
+  function getCtrlStrength() {
+    return globalProp.strength.valueAtTime(lookAtTime)
+  }
 
   PROPERTY_EXPRESSION
   

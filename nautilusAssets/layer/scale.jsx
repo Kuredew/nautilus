@@ -9,12 +9,7 @@
  */
 var cache = {
   isTurnOn: ctrlFx(32).value,
-  strength: ctrlFx(33).valueAtTime(lookAtTime),
   isSeparate: ctrlFx(35).value,
-  strengthSep: [
-    ctrlFx(36).valueAtTime(lookAtTime),
-    ctrlFx(37).valueAtTime(lookAtTime),
-  ],
   modeId: ctrlFx(40).value,
   interval: ctrlFx(41).value,
   isWiggle: ctrlFx(44).value,
@@ -75,15 +70,21 @@ function main() {
   var strength
   if (cache.isTurnOn) {
     if (cache.isSeparate) {
-      strength = utils.calculateMode(cache.modeId, cache.strengthSep)
+      var strengthSep = [
+        ctrlFx(36).valueAtTime(lookAtTime),
+        ctrlFx(37).valueAtTime(lookAtTime),
+      ]
+      strength = utils.calculateMode(cache.modeId, strengthSep)
     } else {
+      var myStrength = ctrlFx(33).valueAtTime(lookAtTime)
       strength = utils.calculateMode(globalProp.modeId, 
-        [cache.strength, cache.strength, cache.strength]
+        [myStrength, myStrength, myStrength]
       )
     }
   } else {
+    var ctrlStrength = getCtrlStrength()
     strength = utils.calculateMode(globalProp.modeId, 
-      [globalProp.strength, globalProp.strength, globalProp.strength]
+      [ctrlStrength, ctrlStrength, ctrlStrength]
     )
   }
 
