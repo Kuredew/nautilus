@@ -24,6 +24,23 @@ var cache = {
 var utils = {
   getValue: function (propValue, strength) {
     return propValue * (strength / 100)
+  },
+  calculateMode: function (modeId, strength, interval) {
+    switch (modeId) {
+     /**
+     * Mirror Mode
+     */
+    case 2:
+      var p = Math.ceil(realIndex / interval) % 2
+      if (p !== 0) {
+        strength *= 1
+      } else {
+        strength *= -1
+      }
+      break;
+    }
+    
+    return strength
   }
 }
 
@@ -37,28 +54,22 @@ function main() {
     initialValue = radiansToDegrees(Math.atan2(maskInfo.tangentsOut[1], maskInfo.tangentsOut[0]));
   }
 
-  var newValue
+  var strength
   if (cache.isTurnOn) {
     if (cache.IsSeparate) {
       var strengthSep = ctrlFx(57).valueAtTime(lookAtTime)
-      newValue = utils.getValue(cache.propValue, strengthSep)
+      strength = utils.calculateMode(cache.modeId, strengthSep, cache.interval)
     } else {
       var myStrength = ctrlFx(52).valueAtTime(lookAtTime)
-      newValue = utils.getValue(cache.propValue, myStrength)
+      strength = utils.calculateMode(cache.modeId, myStrength, cache.interval)
     }
   } else {
     var ctrlStrength = getCtrlStrength()
-    newValue = utils.getValue(cache.propValue, ctrlStrength)
+    strength = utils.calculateMode(globalProp.modeId - 1, ctrlStrength, globalProp.interval)
   }
-
   
   /**
    * Final
    */
-  return newValue
+  return utils.getValue(cache.propValue, strength)
 }
-
-// // follow mask tangents (handle) if mask persist 
-// if (ctrlHasMask && length(ctrlMaskTangentsOut) > 0) {
-//   layerValue = radiansToDegrees(Math.atan2(ctrlMaskTangentsOut[1], ctrlMaskTangentsOut[0]));
-// }

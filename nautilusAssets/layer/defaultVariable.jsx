@@ -43,6 +43,7 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   var globalProp = {
     direction: ctrlFx(5).value,
     delay: ctrlFx(8).value / 10,
+    interval: ctrlFx(7).value,
     strength: ctrlFx(9),
     modeId: ctrlFx(6).value
   }

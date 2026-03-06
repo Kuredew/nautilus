@@ -39,13 +39,13 @@ var utils = {
       propValue[2] * (strength[2] / 100)
     ]
   },
-  calculateMode: function (modeId, strength) {
+  calculateMode: function (modeId, strength, interval) {
     switch (modeId) {
       /**
        * Alternate Mode
        */
       case 2:
-        var p = (index - 1) % 4;
+        var p = (realIndex - 1) % 4;
         switch (p) {
           case 0:
             strength[0] *= -1; 
@@ -63,6 +63,19 @@ var utils = {
             strength[0] *= 0; 
             strength[1] *= -1;
             break;
+        }
+        break;
+       /**
+       * Mirror Mode
+       */
+      case 3:
+        var p = Math.ceil(realIndex / interval) % 2
+        if (p !== 0) {
+          strength[0] *= 1
+          strength[1] *= 1
+        } else {
+          strength[0] *= -1
+          strength[1] *= -1
         }
         break;
     }
@@ -97,19 +110,23 @@ function main() {
         ctrlFx(18).valueAtTime(lookAtTime),
       ]
 
-      strength = utils.calculateMode(cache.modeId, strengthSep)
+      strength = utils.calculateMode(cache.modeId, strengthSep, cache.interval)
     } else {
       var myStrength = ctrlFx(13).valueAtTime(lookAtTime)
 
-      strength = utils.calculateMode(globalProp.modeId, 
-        [myStrength, myStrength, myStrength]
+      strength = utils.calculateMode(
+        globalProp.modeId, 
+        [myStrength, myStrength, myStrength],
+        cache.interval
       )
     }
   } else {
     var ctrlStrength = getCtrlStrength()
 
-    strength = utils.calculateMode(globalProp.modeId, 
-      [ctrlStrength, ctrlStrength, ctrlStrength]
+    strength = utils.calculateMode(
+      globalProp.modeId, 
+      [ctrlStrength, ctrlStrength, ctrlStrength],
+      globalProp.interval
     )
   }
 
