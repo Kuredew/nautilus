@@ -52,7 +52,6 @@ function main() {
   var strength 
 
   var mode = cache.mode
-  var myStrength = cache.strength
   var myInterval = cache.interval
 
   if (cache.isTurnOn) {

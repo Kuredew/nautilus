@@ -21,9 +21,20 @@ var cache = {
  * Main Function
  */
 function main() {
+  var strength
+
   if (cache.isTurnOn) {
     strength = cache.strength
+  } else {
+    var ctrlStrength = getCtrlStrength()
+
+    strength = [
+      ctrlStrength,
+      ctrlStrength,
+      ctrlStrength
+    ]
   }
+
 
   /**
    * final
