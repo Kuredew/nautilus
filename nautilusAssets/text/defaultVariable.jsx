@@ -38,7 +38,11 @@ switch (ctrlDirection) {
 }
 
 var lookAtTime = time - (finalIndex * ctrlDelay)
-var ctrlStrength = ctrlFx(9).valueAtTime(lookAtTime)
+
+// Lazy load (only call valueAtTime if needed)
+function getCtrlStrength() {
+  return ctrlFx(9).valueAtTime(lookAtTime)
+}
 
 PROPERTY_EXPRESSION
 
