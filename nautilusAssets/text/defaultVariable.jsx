@@ -7,9 +7,11 @@
  * Global Variable Cache
  */
 var ctrlFx = effect("NAUTILUS_FX_NAME")
-var ctrlGlobalMode = ctrlFx(6).value
+var ctrlMode = ctrlFx(6).value
+var ctrlInterval = ctrlFx(7).value
 var ctrlDirection = ctrlFx(5).value
 var ctrlDelay = ctrlFx(8) / 10
+var ctrlStrength
 
 
 /**
@@ -36,8 +38,7 @@ switch (ctrlDirection) {
 }
 
 var lookAtTime = time - (finalIndex * ctrlDelay)
-var globalStrength = ctrlFx(9).valueAtTime(lookAtTime)
-var strength = [globalStrength, globalStrength, globalStrength]
+var ctrlStrength = ctrlFx(9).valueAtTime(lookAtTime)
 
 PROPERTY_EXPRESSION
 

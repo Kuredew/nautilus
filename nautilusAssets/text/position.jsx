@@ -17,7 +17,7 @@ var cache = {
     ctrlFx(18).valueAtTime(lookAtTime),
   ],
   mode: ctrlFx(21).value,
-  mirrorIndex: ctrlFx(22).value,
+  interval: ctrlFx(22).value,
   isWiggle: ctrlFx(25).value,
   wiggleSeed: ctrlFx(26).value,
   wiggleAmp: ctrlFx(27).value,
@@ -29,7 +29,7 @@ var cache = {
 /**
  * Utility
  */
-function calculateMode (modeId, strength, opts) {
+function calculateMode (modeId, strength, interval) {
   switch (modeId) {
     /**
      * Alternate Mode
@@ -59,7 +59,7 @@ function calculateMode (modeId, strength, opts) {
      * Mirror Mode
      */
     case 3:
-      var p = Math.ceil(textIndex / opts.mirrorIndex)
+      var p = Math.ceil(textIndex / interval) % 2
       if (p !== 0) {
         strength[0] *= 1
         strength[1] *= 1
@@ -78,19 +78,20 @@ function calculateMode (modeId, strength, opts) {
  * Main Function
  */
 function main() {
+  var strength
+
   var mode = cache.mode
   var myStrength = cache.strength
+  var myInterval = cache.interval
 
   if (cache.isTurnOn) {
-
-
     if (cache.IsSeparate) {
-      strength = calculateMode(mode, cache.strengthSep)
+      strength = calculateMode(mode, cache.strengthSep, myInterval)
     } else {
-      strength = calculateMode(mode, [myStrength, myStrength, myStrength])
+      strength = calculateMode(mode, [myStrength, myStrength, myStrength], myInterval)
     }
   } else {
-    strength = calculateMode(ctrlGlobalMode, [globalStrength, globalStrength, globalStrength])
+    strength = calculateMode(ctrlMode, [ctrlStrength, ctrlStrength, ctrlStrength], ctrlInterval)
   }
 
   /**
