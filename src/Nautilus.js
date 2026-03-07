@@ -2,7 +2,7 @@
 // Kureichi<Kuredew> (hibikumonogatari@gmail.com)
 
 // fix json undefined because adobe dont want to include JSON natively
-#include "nautilusAssets/json2.js"
+import './nautilusAssets/json2.js'
 
 function NautilusScript(ui_ref) {
   var nautilus = {
