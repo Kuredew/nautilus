@@ -8,14 +8,14 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(50).value,
-  strength: ctrlFx(51).valueAtTime(lookAtTime),
-  strengthSep: ctrlFx(55).valueAtTime(lookAtTime),
-  isWiggle: ctrlFx(63).value,
-  wiggleSeed: ctrlFx(64).value,
-  wiggleAmp: ctrlFx(65).value,
-  wiggleFreq: ctrlFx(66).value,
-  propValue: ctrlFx(106).value 
+  isTurnOn: ctrlFx(51).value,
+  modeId: ctrlFx(60).value,
+  interval: ctrlFx(61).value,
+  isWiggle: ctrlFx(64).value,
+  wiggleSeed: ctrlFx(65).value,
+  wiggleAmp: ctrlFx(66).value,
+  wiggleFreq: ctrlFx(67).value,
+  propValue: ctrlFx(107).value 
 }
 
 /**
@@ -24,6 +24,23 @@ var cache = {
 var utils = {
   getValue: function (propValue, strength) {
     return propValue * (strength / 100)
+  },
+  calculateMode: function (modeId, strength, interval) {
+    switch (modeId) {
+     /**
+     * Mirror Mode
+     */
+    case 2:
+      var p = Math.ceil(realIndex / interval) % 2
+      if (p !== 0) {
+        strength *= 1
+      } else {
+        strength *= -1
+      }
+      break;
+    }
+    
+    return strength
   }
 }
 
@@ -32,21 +49,22 @@ var utils = {
  * @returns number
  */
 function main() {
-  var finalValue
-
+  var strength
   if (cache.isTurnOn) {
     if (cache.IsSeparate) {
-      finalValue = utils.getValue(cache.propValue, cache.strengthSep)
+      var strengthSep = ctrlFx(56).valueAtTime(lookAtTime)
+      strength = utils.calculateMode(cache.modeId, strengthSep, cache.interval)
     } else {
-      finalValue = utils.getValue(cache.propValue, cache.strength)
+      var myStrength = ctrlFx(52).valueAtTime(lookAtTime)
+      strength = utils.calculateMode(cache.modeId, myStrength, cache.interval)
     }
   } else {
-    finalValue = utils.getValue(cache.propValue, globalProp.strength)
+    var ctrlStrength = getCtrlStrength()
+    strength = utils.calculateMode(globalProp.modeId - 1, ctrlStrength, globalProp.interval)
   }
-
   
   /**
    * Final
    */
-  return finalValue
+  return utils.getValue(cache.propValue, strength)
 }

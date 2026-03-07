@@ -8,22 +8,17 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(31).value,
-  strength: ctrlFx(32).valueAtTime(lookAtTime),
-  isSeparate: ctrlFx(34).value,
-  strengthSep: [
-    ctrlFx(35).valueAtTime(lookAtTime),
-    ctrlFx(36).valueAtTime(lookAtTime),
-  ],
-  modeId: ctrlFx(39).value,
-  mirrorIndex: ctrlFx(40).value,
-  isWiggle: ctrlFx(43).value,
-  wiggleSeed: ctrlFx(44).value,
-  wiggleAmp: ctrlFx(45).value,
-  wiggleFreq: ctrlFx(46).value,
+  isTurnOn: ctrlFx(32).value,
+  isSeparate: ctrlFx(35).value,
+  modeId: ctrlFx(40).value,
+  interval: ctrlFx(41).value,
+  isWiggle: ctrlFx(44).value,
+  wiggleSeed: ctrlFx(45).value,
+  wiggleAmp: ctrlFx(46).value,
+  wiggleFreq: ctrlFx(47).value,
   propValue: [
-    ctrlFx(101).value,
     ctrlFx(102).value,
+    ctrlFx(103).value,
   ]
 }
 
@@ -42,12 +37,20 @@ var utils = {
       propValue[1] * (strength[1] / 100),
     ]
   },
-  calculateMode: function (modeId, strength) {
+  calculateMode: function (modeId, strength, interval) {
     switch (modeId) {
-      /**
+       /**
        * Mirror Mode
        */
-      case 3:
+      case 2:
+        var p = Math.ceil(realIndex / interval) % 2
+        if (p !== 0) {
+          strength[0] *= 1
+          strength[1] *= 1
+        } else {
+          strength[0] *= -1
+          strength[1] *= -1
+        }
         break;
     }
 
@@ -63,6 +66,7 @@ function main() {
   /**
    * Follow Mask
    */
+  var maskInfo = getMaskInfo()
   if (maskInfo.isAvalaible) {
     var maskScale = (length(maskInfo.tangentsIn) + length(maskInfo.tangentsOut) / 2)
     initialValue = [maskScale, maskScale]
@@ -74,15 +78,25 @@ function main() {
   var strength
   if (cache.isTurnOn) {
     if (cache.isSeparate) {
-      strength = utils.calculateMode(cache.modeId, cache.strengthSep)
+      var strengthSep = [
+        ctrlFx(36).valueAtTime(lookAtTime),
+        ctrlFx(37).valueAtTime(lookAtTime),
+      ]
+      strength = utils.calculateMode(cache.modeId, strengthSep, cache.interval)
     } else {
-      strength = utils.calculateMode(globalProp.modeId, 
-        [cache.strength, cache.strength, cache.strength]
+      var myStrength = ctrlFx(33).valueAtTime(lookAtTime)
+      strength = utils.calculateMode(
+        globalProp.modeId, 
+        [myStrength, myStrength, myStrength],
+        cache.interval
       )
     }
   } else {
-    strength = utils.calculateMode(globalProp.modeId, 
-      [globalProp.strength, globalProp.strength, globalProp.strength]
+    var ctrlStrength = getCtrlStrength()
+    strength = utils.calculateMode(
+      globalProp.modeId - 1, 
+      [ctrlStrength, ctrlStrength, ctrlStrength],
+      globalProp.interval
     )
   }
 
@@ -91,12 +105,3 @@ function main() {
    */
   return utils.getValue(cache.propValue, strength)
 }
-
-// // follow mask, again
-// if (ctrlHasMask) {
-//   var finalLength = (length(ctrlMaskTangentsIn) + length(ctrlMaskTangentsOut)) / 2;
-
-//   layerValue = []
-//   layerValue[0] = layerScaleX + finalLength;
-//   layerValue[1] = layerScaleY + finalLength;
-// }

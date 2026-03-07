@@ -8,21 +8,29 @@
  */
 var ctrl = thisComp.layer("NULL_LAYER_NAME")
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
+
+/**
+ * Other information
+ */
 var realTime = time + ctrl.startTime
 var totalIndex = thisComp.numLayers
 var realIndex = totalIndex - index
 
 /**
- * Mask Info
+ * Utility for property expression
  */
-var maskInfo = {}
-try {
-  maskInfo.isAvalaible = true
-  maskInfo.path = ctrl.mask("Mask 1").maskPath;
-  maskInfo.point = maskInfo.path.points()[realIndex]
-  maskInfo.tangentsIn = maskInfo.path.inTangents()[realIndex]
-  maskInfo.tangentsOut = maskInfo.path.outTangents()[realIndex]
-} catch (e) { maskInfo.isAvalaible = false }
+function getMaskInfo() {
+  var maskInfo = {}
+  try {
+    maskInfo.isAvalaible = true
+    maskInfo.path = ctrl.mask("Mask 1").maskPath;
+    maskInfo.point = maskInfo.path.points()[realIndex]
+    maskInfo.tangentsIn = maskInfo.path.inTangents()[realIndex]
+    maskInfo.tangentsOut = maskInfo.path.outTangents()[realIndex]
+  } catch (e) { maskInfo.isAvalaible = false }
+  
+  return maskInfo
+}
 
 /**
  * Loop effect list
@@ -38,8 +46,9 @@ for (var i = 0; i < ctrlFxList.length; i++) {
    */
   var globalProp = {
     direction: ctrlFx(5).value,
-    delay: ctrlFx(7).value / 10,
-    strength: ctrlFx(8),
+    delay: ctrlFx(8).value / 10,
+    interval: ctrlFx(7).value,
+    strength: ctrlFx(9),
     modeId: ctrlFx(6).value
   }
 
@@ -50,7 +59,7 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   var finalIndex
   switch (globalProp.direction) {
     case 1:
-      finalIndex = totalIndex - index      
+      finalIndex = realIndex
       break;
     case 2:
       finalIndex = index - 1
@@ -70,7 +79,10 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   }
 
   var lookAtTime = realTime - (finalIndex * globalProp.delay);
-  globalProp.strength = globalProp.strength.valueAtTime(lookAtTime)
+
+  function getCtrlStrength() {
+    return globalProp.strength.valueAtTime(lookAtTime)
+  }
 
   PROPERTY_EXPRESSION
   

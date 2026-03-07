@@ -1,4 +1,4 @@
-var x = ctrlFx(101).value;
-var y = ctrlFx(102).value;
+var x = ctrlFx(102).value;
+var y = ctrlFx(103).value;
 
 [value[0] + x, value[1] + y]

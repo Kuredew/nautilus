@@ -7,17 +7,23 @@
  * Global Variable Cache
  */
 var ctrlFx = effect("NAUTILUS_FX_NAME")
-var ctrlGlobalMode = ctrlFx(6).value
+var ctrlMode = ctrlFx(6).value
+var ctrlInterval = ctrlFx(7).value
 var ctrlDirection = ctrlFx(5).value
-var ctrlDelay = ctrlFx(7) / 10
+var ctrlDelay = ctrlFx(8) / 10
+var ctrlStrength
 
 
 /**
  * Direction Logic
  */
 var totalIndex = textTotal
-var finalIndex = textIndex - 1
+var realIndex = textIndex - 1
+var finalIndex
 switch (ctrlDirection) {
+  case 1:
+    finalIndex = realIndex
+    break;
   case 2:
     finalIndex = totalIndex - textIndex;
     break;
@@ -36,8 +42,11 @@ switch (ctrlDirection) {
 }
 
 var lookAtTime = time - (finalIndex * ctrlDelay)
-var globalStrength = ctrlFx(8).valueAtTime(lookAtTime)
-var strength = [globalStrength, globalStrength, globalStrength]
+
+// Lazy load (only call valueAtTime if needed)
+function getCtrlStrength() {
+  return ctrlFx(9).valueAtTime(lookAtTime)
+}
 
 PROPERTY_EXPRESSION
 

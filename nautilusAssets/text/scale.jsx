@@ -8,32 +8,36 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(31).value,
-  strength: ctrlFx(32).valueAtTime(lookAtTime),
-  IsSeparate: ctrlFx(34).value,
-  strengthSep: [
-    ctrlFx(35).valueAtTime(lookAtTime),
-    ctrlFx(36).valueAtTime(lookAtTime),
-  ],
-  mode: ctrlFx(39).value,
-  mirrorIndex: ctrlFx(40).value,
-  isWiggle: ctrlFx(43).value,
-  wiggleSeed: ctrlFx(44).value,
-  wiggleAmp: ctrlFx(45).value,
-  wiggleFreq: ctrlFx(46).value
+  isTurnOn: ctrlFx(32).value,
+  IsSeparate: ctrlFx(35).value,
+  mode: ctrlFx(40).value,
+  interval: ctrlFx(41).value,
+  isWiggle: ctrlFx(44).value,
+  wiggleSeed: ctrlFx(45).value,
+  wiggleAmp: ctrlFx(46).value,
+  wiggleFreq: ctrlFx(47).value
 }
-
 
 
 /**
  * Utility
  */
-function calculateMode (modeId, strength) {
+function calculateMode (modeId, strength, interval) {
   switch (modeId) {
     /**
-     * Mirror Mode (soon)
+     * Mirror Mode
      */
     case 2:
+      var p = Math.ceil(realIndex / interval) % 2
+      if (p !== 0) {
+        strength[0] *= 1
+        strength[1] *= 1
+        strength[2] *= 1
+      } else {
+        strength[0] *= -1
+        strength[1] *= -1
+        strength[2] *= -1
+      }
       break;
   }
 
@@ -45,17 +49,30 @@ function calculateMode (modeId, strength) {
  * Main Function
  */
 function main() {
+  var strength 
+
   var mode = cache.mode
-  var myStrength = cache.strength
+  var myInterval = cache.interval
 
   if (cache.isTurnOn) {
     if (cache.IsSeparate) {
-      strength = calculateMode(mode, cache.strengthSep)
+      // Lazy load
+      var strengthSep = [
+        ctrlFx(36).valueAtTime(lookAtTime),
+        ctrlFx(37).valueAtTime(lookAtTime),
+      ],
+
+      strength = calculateMode(mode, strengthSep, myInterval)
     } else {
-      strength = calculateMode(mode, [myStrength, myStrength, myStrength])
+      // Lazy Load
+      var myStrength = ctrlFx(33).valueAtTime(lookAtTime),
+
+      strength = calculateMode(mode, [myStrength, myStrength, myStrength], myInterval)
     }
   } else {
-    strength = calculateMode(ctrlGlobalMode, [globalStrength, globalStrength, globalStrength])
+    var ctrlStrength = getCtrlStrength()
+
+    strength = calculateMode(ctrlMode - 1, [ctrlStrength, ctrlStrength, ctrlStrength], ctrlInterval)
   }
 
   /**
