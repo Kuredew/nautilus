@@ -3,17 +3,20 @@
   "type": "module",
   "version": "1.4.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node run.js",
-    "build": "node scripts/build.js"
+    "compile": "extendscriptr --script src/index.js --output dist/Nautilus.jsx",
+    "build": "node scripts/build.js && pnpm run compile"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.26.0",
-  "dependencies": {
-    "jsxbin": "^2.3.0"
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "extendscriptr": "^1.2.5"
   }
 }
