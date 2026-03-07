@@ -39,34 +39,34 @@ export function changeBasedOn(basedOnIndex) {
 }
 
 export function createBasedOnWindow() {
-  nautilus.basedOnPanel = new Window("palette", "Based On", undefined, { resizeable: true })
-  nautilus.basedOnPanel.alignChildren = ["fill", "center"]
+  const windowRef = new Window("palette", "Based On", undefined, { resizeable: true })
+  windowRef.alignChildren = ["fill", "center"]
 
   const executeBasedOn = function(basedOnIndex) {
     try {
       changeBasedOn(basedOnIndex)
-      nautilus.basedOnPanel.close()
+      windowRef.close()
     } catch (e) {
       handleError("[executeBasedOn] " + e.message)
     }
   }
 
-  const characterButton = nautilus.basedOnPanel.add("button", undefined, "Character")
+  const characterButton = windowRef.add("button", undefined, "Character")
   characterButton.onClick = function () { executeBasedOn(1) }
 
-  const characterSpacelessButton = nautilus.basedOnPanel.add("button", undefined, "Character Spaceless")
+  const characterSpacelessButton = windowRef.add("button", undefined, "Character Spaceless")
   characterSpacelessButton.onClick = function () { executeBasedOn(2) }
 
-  const wordsButton = nautilus.basedOnPanel.add("button", undefined, "Words")
+  const wordsButton = windowRef.add("button", undefined, "Words")
   wordsButton.onClick = function () { executeBasedOn(3) }
 
-  const linesButton = nautilus.basedOnPanel.add("button", undefined, "Lines")
+  const linesButton = windowRef.add("button", undefined, "Lines")
   linesButton.onClick = function () { executeBasedOn(4) }
 
-  nautilus.basedOnPanel.add("statictext", undefined, "Dont forget to select Nautilus/NautiFlow effect first.")
+  windowRef.add("statictext", undefined, "Dont forget to select Nautilus/NautiFlow effect first.")
 
-  nautilus.basedOnPanel.center()
-  nautilus.basedOnPanel.show()
+  windowRef.center()
+  windowRef.show()
 
   resetButton(this) 
 }
