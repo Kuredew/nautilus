@@ -1,22 +1,17 @@
 import fs from "fs"
 import Logger from "./utils/log.js"
-import jsxbin from "jsxbin"
 import path from "path"
 
 const sourcePath = "src"
-const nautilusJSXName = "Nautilus.jsx"
-const assetsFolderName = "nautilusAssets"
+const libFolderName = "lib"
 const outputFolderName = "dist"
 
-const nautilusJSXPath = path.join(sourcePath, nautilusJSXName)
-const assetsFolderPath = path.join(sourcePath, assetsFolderName)
-
-const nautilusJSXBINOutputPath = path.join(outputFolderName, `Nautilus.jsxbin`)
+const libFolderPath = path.join(sourcePath, libFolderName)
 
 const otherFiles = [
   {
-    name: assetsFolderName,
-    from: assetsFolderPath,
+    name: "nautilusLib",
+    from: libFolderPath,
     to: ""
   },
   {
@@ -27,7 +22,7 @@ const otherFiles = [
   {
     name: "package.json",
     from: "package.json",
-    to: assetsFolderName
+    to: "nautilusLib"
   },
   {
     name: "LICENSE.txt",
@@ -54,11 +49,10 @@ const build = async (onLog = () => {}) => {
       log(`copying ${file.from} to ${finalOutput}`)
       fs.cpSync(file.from, finalOutput, { recursive: true })
     })
-
     log("copied!")
 
-    log(`building ${nautilusJSXPath} to ${sourcePath}`)
-    await jsxbin(nautilusJSXPath, sourcePath)
+    // log(`building ${nautilusJSXPath} to ${sourcePath}`)
+    // await jsxbin(nautilusJSXPath, sourcePath)
 
     log("build complete")
   } catch (e) {
