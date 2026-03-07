@@ -5,7 +5,7 @@ dist
 node_modules
 
 # ignore package json in nautilusAssets for development
-nautilusAssets/package.json
+src/nautilusAssets/package.json
 
 # ignore .env
 .env
