@@ -18,8 +18,12 @@ var ctrlStrength
  * Direction Logic
  */
 var totalIndex = textTotal
-var finalIndex = textIndex - 1
+var realIndex = textIndex - 1
+var finalIndex
 switch (ctrlDirection) {
+  case 1:
+    finalIndex = realIndex
+    break;
   case 2:
     finalIndex = totalIndex - textIndex;
     break;

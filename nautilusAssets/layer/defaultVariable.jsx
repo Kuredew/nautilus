@@ -8,6 +8,10 @@
  */
 var ctrl = thisComp.layer("NULL_LAYER_NAME")
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
+
+/**
+ * Other information
+ */
 var realTime = time + ctrl.startTime
 var totalIndex = thisComp.numLayers
 var realIndex = totalIndex - index
@@ -55,7 +59,7 @@ for (var i = 0; i < ctrlFxList.length; i++) {
   var finalIndex
   switch (globalProp.direction) {
     case 1:
-      finalIndex = totalIndex - index      
+      finalIndex = realIndex
       break;
     case 2:
       finalIndex = index - 1

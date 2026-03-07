@@ -28,7 +28,7 @@ function calculateMode (modeId, strength, interval) {
      * Mirror Mode
      */
     case 2:
-      var p = Math.ceil(textIndex / interval) % 2
+      var p = Math.ceil(realIndex / interval) % 2
       if (p !== 0) {
         strength[0] *= 1
         strength[1] *= 1
