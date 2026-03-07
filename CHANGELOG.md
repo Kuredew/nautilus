@@ -1,5 +1,80 @@
 # Changelog
 
+## [2.0.0](https://github.com/Kuredew/nautilus/compare/v1.4.1...v2.0.0) (2026-03-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Convert nautilus scripts to es6 syntax
+* **build:** Now Nautilus must build with extendscriptr
+* Move all scripts to src folder
+* Change the Nautilus Control effect to be neater and more structured
+
+### 🎉 New Features
+
+* Add Based On text animator switcher ([777b063](https://github.com/Kuredew/nautilus/commit/777b0636e24e19e5a490177bc340e3c2ac47507e))
+* Add remove nautilus feature to remove nautilus from Text/Comp/Precomp layer ([ccec91e](https://github.com/Kuredew/nautilus/commit/ccec91e6f389f1afff56b38ce66375d50aee7ff5))
+* **layer:** Add Mirror mode ([1edc686](https://github.com/Kuredew/nautilus/commit/1edc686f00a53376b2b9276305cbde7ba2f702b6))
+* **text:** Add Mirror mode ([20d9a6f](https://github.com/Kuredew/nautilus/commit/20d9a6f472c6f1d833b95b23a12d8e6abb01c7c6))
+
+
+### ✨ UI Changes
+
+* Add settings button ([75a6ba3](https://github.com/Kuredew/nautilus/commit/75a6ba34afbd876ac8c5c7642bc979a3888eabb7))
+* Add switch mode between Text layer and Comp Layer ([16296dd](https://github.com/Kuredew/nautilus/commit/16296ddf39d6b6bf827ec90a3db432626d59f1c3))
+* Change about alert to use After Effect Window Dialog ([8c17f2a](https://github.com/Kuredew/nautilus/commit/8c17f2abf7f5c32bbe65fe875e42186886c72996))
+* Change button to iconbutton and adjust the layout ([04d5d56](https://github.com/Kuredew/nautilus/commit/04d5d5696dd8a2e07844a929f8842416eb826d86))
+* Create responsive button layout ([a7de1ad](https://github.com/Kuredew/nautilus/commit/a7de1adf6724d90535d023c47c94df6b24a0ccc0))
+* Improve iconbutton img ([1230229](https://github.com/Kuredew/nautilus/commit/1230229f89cc50ff7550bc32547a561de0580849))
+* Separate nautilus function error from global handleError function ([ca5cf7d](https://github.com/Kuredew/nautilus/commit/ca5cf7da4b66fdf882cb3d86bbd975cb9b557cfe))
+
+
+### 🔨 Bug Fixes
+
+* Difficult to reduce the scale of letters in the text layer ([176c1b6](https://github.com/Kuredew/nautilus/commit/176c1b6545a1ab033e1ed9e7490763b74d80e276))
+* Other letters disappear if they are not attached by a point mask ([d9e15c9](https://github.com/Kuredew/nautilus/commit/d9e15c9e3756b07ba5cf701c5573b8f81b29bf4f))
+* **text,layer:** Index text and comp are not in sync with each other ([9980f2a](https://github.com/Kuredew/nautilus/commit/9980f2af8cd4a0f54debe14edebcba5000155d62))
+* **text:** Variable undefined error ([3393467](https://github.com/Kuredew/nautilus/commit/3393467eb204a34c71c8fd6cf419b2daac5148a1))
+
+
+### 🚀 Performance
+
+* **layer:** Get mask info if needed only ([6ac3033](https://github.com/Kuredew/nautilus/commit/6ac3033fd4637eb889bbc5ed5eaa0e3e1ee6d521))
+* **layer:** Only call valueAtTime on needed ([c332283](https://github.com/Kuredew/nautilus/commit/c332283c2e77ce6e1ba26b25ea9741c97e1fcd95))
+* **text:** Implement lazy load for valueAtTime call ([4ab764a](https://github.com/Kuredew/nautilus/commit/4ab764a633d5c6295d0e34d918450f2800d751f9))
+
+
+### 🩹 Refactors
+
+* **build:** Now Nautilus must build with extendscriptr ([ab48716](https://github.com/Kuredew/nautilus/commit/ab48716c72d1fb9fc507d6abe7cd3e9c5e229422))
+* Change the Nautilus Control effect to be neater and more structured ([d099cc1](https://github.com/Kuredew/nautilus/commit/d099cc1a321a884377c3152e232672baa81de028))
+* Convert nautilus scripts to es6 syntax ([c3c8e5b](https://github.com/Kuredew/nautilus/commit/c3c8e5b2bb1dc69239294e77b2eeef36f546e7d3))
+* **effect:** Add interval slider and change `mirror index` to `interval` ([65f541d](https://github.com/Kuredew/nautilus/commit/65f541d88a5afaf6f06bb716fa9779b1f5a06982))
+* **layer:** Adjust effect index property reference ([f8e4c95](https://github.com/Kuredew/nautilus/commit/f8e4c95d63a31bd1a986ac85445c02f8b16d8d02))
+* Move all scripts to src folder ([dca0e35](https://github.com/Kuredew/nautilus/commit/dca0e35837b7872add005c746677725b6cb872b6))
+* **text,layer:** Change defaultVariable to `template` ([a120df4](https://github.com/Kuredew/nautilus/commit/a120df4aaf1995a4ac3f5d438544037480fed13c))
+* **text:** Adjust effect index property reference ([41fd8e0](https://github.com/Kuredew/nautilus/commit/41fd8e0d3ada2326902b49c6bbd52fe902bb9127))
+* **ui:** Don't put windowRef into state again ([7ab08a6](https://github.com/Kuredew/nautilus/commit/7ab08a683df9067541f3485bcefc315e29ade443))
+
+
+### 📃 Documentation
+
+* change license badge from GPLv3 to MIT License ([a7b8aa4](https://github.com/Kuredew/nautilus/commit/a7b8aa4200728c3b5d82ce9fd125e186a0e4b8ab))
+
+
+### 🎧 Maintenance
+
+* Add cmd `pnpm run dev` to run script ([5e485d7](https://github.com/Kuredew/nautilus/commit/5e485d7929267a3d8ba5b46288128b54b9def077))
+* Add emoji to section changelog ([ba8ea97](https://github.com/Kuredew/nautilus/commit/ba8ea97f3e67f7b5243fe5c031c9ab43132e505a))
+* Add script runner for development ([06eb528](https://github.com/Kuredew/nautilus/commit/06eb5289b88be5c12d011910d7ff20ccc516b05c))
+* Add UI Changes section in changelog ([ef56816](https://github.com/Kuredew/nautilus/commit/ef56816cb9bbdcbb6ccb47afe3db16cadb782209))
+* Change nautilusAssets to nautilusLib ([a020b90](https://github.com/Kuredew/nautilus/commit/a020b900ea20b823cb69eaba8cdb89052a448c29))
+* **config:** Add commitizen configuration ([b842afd](https://github.com/Kuredew/nautilus/commit/b842afdb9e799373fb46cef52f495c5cc4e7b00c))
+* **config:** Add Performace section in changelog ([725c070](https://github.com/Kuredew/nautilus/commit/725c0703b4a8500c7cf17810baa93afaeca156f1))
+* **config:** Adjust to compatible module project ([d013133](https://github.com/Kuredew/nautilus/commit/d013133e825894d3e7fd173bf43363e60e92f286))
+* **config:** Refactor build to use `src` folder ([5662f8a](https://github.com/Kuredew/nautilus/commit/5662f8aed557a7c95a925b763cdeb5e3f7f13a55))
+* **config:** Update build command and script ([949b94b](https://github.com/Kuredew/nautilus/commit/949b94be0c6e5a64bcab4c6562624bcf317aa656))
+
 ## [1.4.1](https://github.com/Kuredew/nautilus/compare/v1.4.0...v1.4.1) (2026-02-23)
 
 
