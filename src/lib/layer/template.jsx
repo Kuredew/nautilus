@@ -6,7 +6,7 @@
 /**
  * Global Variable Cache
  */
-var ctrl = thisComp.layer("NULL_LAYER_NAME")
+var ctrl = comp("PARENT_COMP_NAME").layer("COMP_NAME")
 var ctrlFxList = NAUTILUS_FX_NAME_LIST
 
 /**

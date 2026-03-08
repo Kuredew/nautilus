@@ -1,6 +1,4 @@
-import { nautilus } from "../state";
 import { getCompItem } from "./app";
-import { replaceExpression } from "./expression";
 
 export function getSelectedLayer() {
   const comp = getCompItem()
@@ -17,9 +15,15 @@ export function isTextLayer(layer) {
   try {
     const dummyVar = layer.text.sourceText; 
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
+}
+
+export function isCompLayer(layer) {
+  if (layer.source instanceof CompItem) { return true }
+
+  return false
 }
 
 export function precomposeLayers(layerIndices, name, inPoint, outPoint) {
@@ -43,77 +47,62 @@ export function precomposeLayers(layerIndices, name, inPoint, outPoint) {
 
 }
 
-// layer, ownCompName, compName, nullName, effectNameList
-export function applyExpressionToLayer(layer, config) {
+const addExprToProperties = (layer, exprs) => {
   try {
     const trProp = layer.property("Transform")
-
-    const posProp = trProp.property("Position");
-    posProp.dimensionSeparated = false;
-
-    const RotProp = trProp.property("Rotation");
-    const RotXProp = trProp.property("X Rotation");
-    const RotYProp = trProp.property("Y Rotation");
-    const RotZProp = trProp.property("Z Rotation");
-    const SclProp = trProp.property("Scale");
-    const OpcProp = trProp.property("Opacity"); 
-
-    const executeReplaceExpression = function(expression) {
-      const replaceConfig = {
-        template: nautilus.expression.layer.template,
-        propertyExpression: expression,
-        ownCompName: config.ownCompName,
-        compName: config.compName,
-        nullName: config.nullName,
-        effectNameList: config.effectNameList
-      }
-      
-      return replaceExpression(replaceConfig)
+    const propertyMatchNames = {
+      position: "ADBE Position",
+      rotation: "ADBE Rotate Z",
+      rotationX: "ADBE Rotate X",
+      rotationY: "ADBE Rotate Y",
+      rotationZ: "ADBE Rotate Z",
+      scale: "ADBE Scale",
+      opacity: "ADBE Opacity",
     }
 
-    posProp.expression = executeReplaceExpression(nautilus.expression.layer.position)
-    SclProp.expression = executeReplaceExpression(nautilus.expression.layer.scale)
-    OpcProp.expression = executeReplaceExpression(nautilus.expression.layer.opacity)
+    trProp.property(propertyMatchNames.position).dimensionSeparated = false
+    
+    for (const key in exprs) {
+      if (layer.threeDLayer) {
+        if (key === "rotation") continue 
+      } else {
+        if (["rotationX", "rotationY", "rotationZ"].indexOf(key) !== -1) continue 
+      }
 
-    if (layer.threeDLayer) {
-      RotXProp.expression = executeReplaceExpression(nautilus.expression.layer.rotationX)
-      RotYProp.expression = executeReplaceExpression(nautilus.expression.layer.rotationY)
-      RotZProp.expression = executeReplaceExpression(nautilus.expression.layer.rotationZ)
-    } else {
-      RotProp.expression = executeReplaceExpression(nautilus.expression.layer.rotationZ)
+      const prop = trProp.property(propertyMatchNames[key])
+      if (prop && prop.canSetExpression) {
+        prop.expression = exprs[key];
+      }
     }
   } catch (e) {
-    throw new Error("[applyExpressionToLayer] " + e.message)
+    throw new Error("[addExprToProperties] " + e.message)
   }
 }
 
-export function clearExpressionFromLayer(layer) {
+// layer, ownCompName, compName, nullName, effectNameList
+export function applyExprToLayer(layer, exprs) {
   try {
-    const trProp = layer.property("Transform")
-
-    const posProp = trProp.property("Position");
-    posProp.dimensionSeparated = false;
-
-    const RotProp = trProp.property("Rotation");
-    const RotXProp = trProp.property("X Rotation");
-    const RotYProp = trProp.property("Y Rotation");
-    const RotZProp = trProp.property("Z Rotation");
-    const SclProp = trProp.property("Scale");
-    const OpcProp = trProp.property("Opacity");
-
-    posProp.expression = ""
-    SclProp.expression = ""
-    OpcProp.expression = ""
-
-    if (layer.threeDLayer) {
-      RotXProp.expression = ""
-      RotYProp.expression = ""
-      RotZProp.expression = ""
-    } else {
-      RotProp.expression = ""
-    }
+    addExprToProperties(layer, exprs)
   } catch (e) {
-    throw new Error("[clearExpressionFromLayer] " + e.message)
+    throw new Error("[applyExprToLayer] " + e.message)
+  }
+}
+
+export function clearExprFromLayer(layer) {
+  try {
+    const exprs = {
+      position: "",
+      rotation: "",
+      rotationX: "",
+      rotationY: "",
+      rotationZ: "",
+      scale: "",
+      opacity: "",
+    }
+    
+    addExprToProperties(layer, exprs)
+  } catch (e) {
+    throw new Error("[clearExprFromLayer] " + e.message)
   }
 }
 

@@ -1,184 +1,172 @@
 import { nautilus } from "../state";
+import { getExpr } from "../utils/expression";
+import { applyExprToLayer, getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer";
+import { applyNautiFLowEffect, applyNautilusEffect, getAllNautilusEffect } from "../utils/effect";
 import { getCompItem } from "../utils/app";
-import { replaceExpression } from "../utils/expression";
-import { applyExpressionToLayer, getSelectedLayer, isTextLayer } from "../utils/layer";
-import { createNullCtrl, getNautilusCtrl, isNautilusNull } from "../utils/null";
-import { applyNautiFLowEffect, applyNautilusEffect, getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
 
-export function applyLayer() {
+export function applyNautilusExprToLayer(layer, config) {
+  const exprList = [
+    nautilus.expression.layer.position,
+    nautilus.expression.layer.scale,
+    nautilus.expression.layer.opacity,
+    nautilus.expression.layer.rotationX,
+    nautilus.expression.layer.rotationY,
+    nautilus.expression.layer.rotationZ,
+  ]
+  
+  const finalExpr = exprList.map((expr) => (
+    getExpr(
+      nautilus.expression.layer.template,
+      {
+        VERSION: nautilus.version,
+        PARENT_COMP_NAME: config.parentCompName,
+        COMP_NAME: config.compName,
+        NAUTILUS_FX_NAME_LIST: `[${config.nautilusEffects.map((effectName) => (`"${effectName}"`))}]`,
+        PROPERTY_EXPRESSION: expr
+      }
+    )
+  ))
+
+  applyExprToLayer(
+    layer,
+    {
+      position: finalExpr[0],
+      scale: finalExpr[1],
+      opacity: finalExpr[2],
+      rotationX: finalExpr[3],
+      rotationY: finalExpr[4],
+      rotationZ: finalExpr[5]
+    }
+  );
+}
+
+export function applyComp() {
   app.beginUndoGroup("Apply Nautilus");
   try {
     const comp = getCompItem()
-
     const selectedLayers = getSelectedLayer();
+    const applyToComp = (compLayer) => {
+      applyNautilusEffect(compLayer)
+      const nautilusEffects = getAllNautilusEffect(compLayer)
 
-    let ctrlLayer
-    let ctrlLayerEffectNameList
-    if (!nautilus.applyToCompLayers) {
-      const ctrlLayer = getNautilusCtrl(selectedLayers);
-      if (!ctrlLayer) {
-        ctrlLayer = createNullCtrl(selectedLayers)
+      const innerComp = compLayer.source;
+      for (let j = 1; j <= innerComp.numLayers; j++) {
+        const layer = innerComp.layer(j)
+
+        applyNautilusExprToLayer(layer, {
+          parentCompName: comp.name,
+          compName: compLayer.name, 
+          nautilusEffects
+        })
       }
-
-      applyNautilusEffect(ctrlLayer)
-      ctrlLayerEffectNameList = getAllNautilusEffect(ctrlLayer)
     }
-
     
     selectedLayers.forEach((layer) => {
-      // ignore nautilus null ctrl
-      if (isNautilusNull(layer)) { return }
-
-      if (nautilus.applyToCompLayers) {
-        if (!(layer.source instanceof CompItem)) {
-          alert("Layer '" + layer.name + "'" +  " skipped because this layer is not instance of preComp/Comp Layer")
-          return
-        }
-
-        ctrlLayer = layer
-
-        applyNautilusEffect(ctrlLayer)
-        ctrlLayerEffectNameList = getAllNautilusEffect(ctrlLayer)
-
-        const innerComp = layer.source;
-        for (let j = 1; j <= innerComp.numLayers; j++) {
-          applyExpressionToLayer(innerComp.layer(j), {
-            ownCompName: layer.name, 
-            compName: comp.name, 
-            nullName: ctrlLayer.name, 
-            effectNameList: ctrlLayerEffectNameList
-          });
-        }
-
-        return
+      if (isCompLayer(layer)) {
+        applyToComp(layer)
       } else {
-        applyExpressionToLayer(layer, null, null, ctrlLayer.name, ctrlLayerEffectNameList);
+        // TODO: do precomp here, select and
+        // applyToComp(precompLayer)
+        
       }
     })
   } catch (e) {
-    throw new Error("[applyLayer] " + e.message)
+    throw new Error("[applyComp] " + e.message)
   }
 
   app.endUndoGroup();
 }
 
+const addTextAnimator = (layer, exprs) => {
+  try {
+    const matchNames = {
+      position: "ADBE Text Position 3D",
+      rotation: "ADBE Text Rotation",
+      opacity: "ADBE Text Opacity",
+      scale: "ADBE Text Scale 3D",
+      tracking: "ADBE Text Tracking Amount"
+    }
 
-export function applyText() {
-  app.beginUndoGroup("Apply Nautilus");
-
-  const addTextAnimator = (name, layer, propertyType, selectorExpression, valueExpression) => {
-    try {
-      const textProp = layer.property("ADBE Text Properties")
+    const textProp = layer.property("ADBE Text Properties")
+    
+    Object.keys(exprs).forEach(propertyName => {
+      const expr = exprs[propertyName]
       const animators = textProp.property("ADBE Text Animators")
       const animatorGroup = animators.addProperty("ADBE Text Animator");
-      animatorGroup.name = name
-
       const propGroup = animatorGroup.property("ADBE Text Animator Properties");
-
-      if (propertyType === "position") matchName = "ADBE Text Position 3D"
-      else if (propertyType === "rotation") matchName = "ADBE Text Rotation"
-      else if (propertyType === "opacity") matchName = "ADBE Text Opacity"
-      else if (propertyType === "scale") matchName = "ADBE Text Scale 3D"
-      else if (propertyType === "tracking") matchName = "ADBE Text Tracking Amount"
-
-      // stop if matchname not found
-      if (matchName === "") {
-        return
-      }
-
-      // Add Property based on PropertyType
-      const valueProperty = propGroup.addProperty(matchName);
-
-      // add expression to valueProperty
-      if (valueExpression) {
-        valueProperty.expression = valueExpression
-      } else {
-        alert("ValueExpression is empty!")
-      }
-
+      const valueProperty = propGroup.addProperty(matchNames[propertyName])
       const selectorGroup = animatorGroup.property("ADBE Text Selectors");
       const expSelector = selectorGroup.addProperty("ADBE Text Expressible Selector");
       
-      if (selectorExpression) {
-        expSelector.property(2).expression = selectorExpression
-      }
-    } catch (e) {
-      throw new Error("[addTextAnimatorGroup] " + e.message)
-    }
+      animatorGroup.name = expr.name
+      valueProperty.expression = expr.propertyExpr
+      expSelector.property(2).expression = expr.selectorExpr
+    })
+  } catch (e) {
+    throw new Error("[addTextAnimatorGroup] " + e.message)
   }
+}
 
-  const getExpression = (propertyExpression, nautilusEffectName, isPropertyValue) => {
-    let template = nautilus.expression.text.template
-
-    if (isPropertyValue) {
-      template = "var ctrlFx = effect('" + nautilusEffectName + "');\n\nPROPERTY_EXPRESSION"
-    }
-
-    return replaceExpression({
-      template: template,
-      propertyExpression: propertyExpression,
-      nautilusEffectName: nautilusEffectName
-    }
-    );
-  }
-
-  const getMaskExpression = (propertyExpression, nautiFlowEffectName) => {
-    if (!propertyExpression) return ""
-
-    return propertyExpression.replace("NAUTIFLOW_FX_NAME", nautiFlowEffectName)
-  }
+export function applyText() {
+  app.beginUndoGroup("Apply Text");
 
   try {
     const selectedLayers = getSelectedLayer();
    
     selectedLayers.forEach(layer => {
-      if (!isTextLayer(layer)) {
-        alert("Layer '" + layer.name + "'" +  " skipped because this layer is not text layer!")
-        return
+      if (!isTextLayer(layer)) return
+      
+      if (getAllNautilusEffect(layer).length === 0) {
+        applyNautiFLowEffect(layer)
+        const rawSelectorExprs = [
+          nautilus.expression.text.positionMask,
+          nautilus.expression.text.rotationMask,
+          nautilus.expression.text.trackingMask
+        ]
+        const finalPropertyExprs = [
+          nautilus.expression.text.positionMaskValue,
+          nautilus.expression.text.rotationMaskValue,
+          nautilus.expression.text.trackingMaskValue
+        ]
+
+        const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(expr, { NAUTIFLOW_FX_NAME: nautilus.nautiFlowEffectName })))
+        
+        addTextAnimator(layer, {
+          position: { name: "Nautiflow Position", propertyExpr: finalPropertyExprs[0], selectorExpr: finalSelectorExprs[0] },
+          rotation: { name: "Nautiflow Rotation", propertyExpr: finalPropertyExprs[1], selectorExpr: finalSelectorExprs[1] },
+          tracking: { name: "Nautiflow Tracking", propertyExpr: finalPropertyExprs[2], selectorExpr: finalSelectorExprs[2] },
+        })
       }
 
       applyNautilusEffect(layer)
-      const nautilusEffectList = getAllNautilusEffect(layer)
-      const lastNautilusEffectName = nautilusEffectList[nautilusEffectList.length - 1]
+      const nautilusEffects = getAllNautilusEffect(layer)
+      const lastNautilusEffectName = nautilusEffects[nautilusEffects.length-1]
+      const defaultTemplate = 'var ctrlFx = effect("NAUTILUS_FX_NAME");\n\nPROPERTY_EXPRESSION'
+      
+      const rawPropertyExprs = [
+        nautilus.expression.text.positionValue,
+        nautilus.expression.text.rotationValue,
+        nautilus.expression.text.scaleValue,
+        nautilus.expression.text.opacityValue,
+      ]
+      const rawSelectorExprs = [
+        nautilus.expression.text.position,
+        nautilus.expression.text.rotation,
+        nautilus.expression.text.scale,
+        nautilus.expression.text.opacity,
+      ]
+      const finalPropertyExprs = rawPropertyExprs.map((expr) => (getExpr(defaultTemplate, { NAUTILUS_FX_NAME: lastNautilusEffectName, PROPERTY_EXPRESSION: expr })))
+      const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { NAUTILUS_FX_NAME: lastNautilusEffectName, PROPERTY_EXPRESSION: expr })))
 
-      let lastNautiFlowEffectName
-      const addAnimatorMaskUtil = (name, propertyType) => {
-        addTextAnimator(
-          name, 
-          layer, 
-          propertyType, 
-          getMaskExpression(nautilus.expression.text[propertyType + "Mask"], lastNautiFlowEffectName), 
-          nautilus.expression.text[propertyType + "MaskValue"]
-        )
-      }
-
-      const addAnimatorUtil = (name, propertyType) => {
-        addTextAnimator(
-          name, 
-          layer, 
-          propertyType, 
-          getExpression(nautilus.expression.text[propertyType], lastNautilusEffectName), 
-          getExpression(nautilus.expression.text[propertyType + "Value"], lastNautilusEffectName, true)
-        )
-      }
-
-      if (nautilusEffectList.length === 1) {
-        applyNautiFLowEffect(layer)
-        const nautiFlowEffectList = getAllNautiFlowEffect(layer)
-        lastNautiFlowEffectName = nautiFlowEffectList[nautiFlowEffectList.length - 1]
-
-        addAnimatorMaskUtil("NAUTILUS_MASK_POS", "position")
-        addAnimatorMaskUtil("NAUTILUS_MASK_ROT", "rotation")
-        addAnimatorMaskUtil("NAUTILUS_MASK_SCL", "scale")
-        addAnimatorMaskUtil("NAUTILUS_TRACKING", "tracking")
-      }
-
-      addAnimatorUtil("NAUTILUS_POS", "position")
-      addAnimatorUtil("NAUTILUS_ROT", "rotation")
-      addAnimatorUtil("NAUTILUS_SCL", "scale")
-      addAnimatorUtil("NAUTILUS_OPACITY", "opacity")
+      addTextAnimator(layer, {
+        position: { name: "Nautilus Position", propertyExpr: finalPropertyExprs[0], selectorExpr: finalSelectorExprs[0] },
+        rotation: { name: "Nautilus Rotation", propertyExpr: finalPropertyExprs[1], selectorExpr: finalSelectorExprs[1] },
+        scale: { name: "Nautilus Scale", propertyExpr: finalPropertyExprs[2], selectorExpr: finalSelectorExprs[2] },
+        opacity: { name: "Nautilus Opacity", propertyExpr: finalPropertyExprs[3], selectorExpr: finalSelectorExprs[3] },
+      })
     })
   } catch (e) {
+    app.endUndoGroup();
     throw new Error("[applyText] " + e.message)
   }
 
@@ -191,6 +179,6 @@ export function applyNautilus() {
   if (nautilus.mode === "text") {
     applyText()
   } else if (nautilus.mode === "comp") {
-    applyLayer()
+    applyComp()
   }
 }
