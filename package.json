@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "node scripts/build.js",
+    "prebuild": "node scripts/preBuild.js",
     "build": "extendscriptr --script src/index.js --output dist/Nautilus.jsx",
     "postbuild": "node scripts/postBuild.js"
   },
