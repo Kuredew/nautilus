@@ -86,7 +86,7 @@ export function createMainWindow(ui_ref) {
         resetButton(this)
       }
       basedOnButton.onClick = function () { executeFunc(createBasedOnWindow); resetButton(this) }
-      settingsButton.onClick = function () { executeFunc(createSettingsWindow); utils.resetButton(this) }
+      settingsButton.onClick = function () { executeFunc(createSettingsWindow); resetButton(this) }
 
       removeButton.onClick = function () { executeFunc(removeNautilus); resetButton(this) }
       extractButton.onClick = function() { executeFunc(extract); resetButton(this) }

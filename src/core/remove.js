@@ -1,4 +1,7 @@
-import { clearExpressionFromLayer, getSelectedLayer, isTextLayer } from "../utils/layer"
+import { getCompItem } from "../utils/app"
+import { getAllNautilusEffect } from "../utils/effect"
+import { clearExprFromLayer, getSelectedLayer, isTextLayer } from "../utils/layer"
+import { applyNautilusExprToLayer } from "./apply"
 
 export function removeNautilus() {
   app.beginUndoGroup("removeNautilus")
@@ -29,25 +32,32 @@ export function removeNautilus() {
             const animator = animatorsGroup.property(m)
             const selectorGroup = animator.property("ADBE Text Selectors")
             const selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
-            const selectorExpressionAmount = selectorExpression.property(2)
+            const selectorExpressionAmount = selectorExpression.property("ADBE Text Expressible Amount")
 
-            if (selectorExpressionAmount.expression.indexOf('("' + effect.name + '")') === -1) { continue }
-            
-            animator.remove()
+            if (selectorExpressionAmount?.expression?.indexOf('("' + effectName + '")') === -1) { continue }
+            if (animator) animator.remove()
           }
 
-          effect.remove()
+          if (effect) effect.remove()
         } else if (layer.source instanceof CompItem) {
+          if (effect) effect.remove()
+          const nautilusEffects = getAllNautilusEffect()
+
+          const comp = getCompItem()
           const innerComp = layer.source
           for (let l = 1; l <= innerComp.numLayers; l++) {
-            clearExpressionFromLayer(innerComp.layer(l))
+            if (nautilusEffects.length === 0) clearExprFromLayer(innerComp.layer(l))
+            else applyNautilusExprToLayer(layer, {
+              parentCompName: comp.name,
+              compName: layer.name, 
+              nautilusEffects
+            })
           }
-
-          effect.remove()
         }
       })
     })
   } catch (e) {
+    app.endUndoGroup()
     throw new Error("[removeNautilus] " + e.message)
   }
   app.endUndoGroup()
