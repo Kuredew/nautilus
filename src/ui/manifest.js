@@ -1,4 +1,5 @@
 import { applyNautilus } from "../core/apply";
+import { bake } from "../core/bake";
 import { createBasedOnWindow } from "../core/changeBasedOn";
 import { extract } from "../core/extract";
 import { createAboutWindow } from "../core/help";
@@ -26,7 +27,7 @@ export function createMainWindow(ui_ref) {
       const btnGroup = windowRef.add("group", undefined, "ButtonGroup");
       btnGroup.orientation = "row"
       btnGroup.alignChildren = ["fill", "fill"];
-      const btnGroupWidth = btnGroup.preferredSize.width + 20
+      btnGroup.preferredSize.width + 20
 
       const applyButton = btnGroup.add("iconbutton", undefined, nautilus.icons.apply, { style: "toolbutton" });
       applyButton.helpTip = "Apply Nautilus"
@@ -37,6 +38,10 @@ export function createMainWindow(ui_ref) {
 
       const basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn, { style: "toolbutton" });
       basedOnButton.helpTip = "Change Based On text animator\n(Please note this only works for text layer)"
+
+      const bakeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.bake, { style: "toolbutton" });
+      bakeButton.helpTip = "Bake applied Nautilus layer into keyframes"
+
       const removeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.remove, { style: "toolbutton" });
       removeButton.helpTip = "Remove Nautilus from Text/Comp/Precomp Layer"
 
@@ -88,6 +93,7 @@ export function createMainWindow(ui_ref) {
       basedOnButton.onClick = function () { executeFunc(createBasedOnWindow); resetButton(this) }
       settingsButton.onClick = function () { executeFunc(createSettingsWindow); resetButton(this) }
 
+      bakeButton.onClick = function () { executeFunc(bake); resetButton(this) }
       removeButton.onClick = function () { executeFunc(removeNautilus); resetButton(this) }
       extractButton.onClick = function() { executeFunc(extract); resetButton(this) }
       helpButton.onClick = function() { executeFunc(createAboutWindow); resetButton(this) }
