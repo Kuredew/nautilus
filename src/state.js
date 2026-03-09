@@ -47,6 +47,7 @@ export const nautilus = {
       extract: null,
       apply: null,
       basedOn: null,
+      bake: null,
       remove: null,
       settings: null
     },
@@ -96,6 +97,7 @@ export function load() {
     nautilus.icons.extract = getFileObj("icons/extract.png")
     nautilus.icons.apply = getFileObj("icons/apply.png")
     nautilus.icons.basedOn = getFileObj("icons/based-on.png")
+    nautilus.icons.bake = getFileObj("icons/bake.png")
     nautilus.icons.remove = getFileObj("icons/remove.png")
     nautilus.icons.settings = getFileObj("icons/settings.png")
   } catch (e) {
