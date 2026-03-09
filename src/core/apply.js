@@ -56,7 +56,7 @@ export function applyComp() {
         const layer = innerComp.layer(j)
 
         applyNautilusExprToLayer(layer, {
-          layerIndex: innerComp.numLayers - (j - 1),
+          layerIndex: j,
           parentCompName: comp.name,
           compName: compLayer.name, 
           nautilusEffects
