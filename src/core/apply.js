@@ -42,26 +42,34 @@ export function applyNautilusExprToLayer(layer, config) {
   );
 }
 
+export function applyNautilusExprToAllLayers(compLayer) {
+  try {
+    const nautilusEffects = getAllNautilusEffect(compLayer)
+    const comp = getCompItem()
+
+    const innerComp = compLayer.source;
+    for (let j = 1; j <= innerComp.numLayers; j++) {
+      const layer = innerComp.layer(j)
+
+      applyNautilusExprToLayer(layer, {
+        layerIndex: j,
+        parentCompName: comp.name,
+        compName: compLayer.name, 
+        nautilusEffects
+      })
+    }
+  } catch (e) {
+    throw new Error("[applyNautilusAll] " + e.message)
+  }
+}
+
 export function applyComp() {
   app.beginUndoGroup("Apply Nautilus");
   try {
-    const comp = getCompItem()
     const selectedLayers = getSelectedLayer();
     const applyToComp = (compLayer) => {
       applyNautilusEffect(compLayer)
-      const nautilusEffects = getAllNautilusEffect(compLayer)
-
-      const innerComp = compLayer.source;
-      for (let j = 1; j <= innerComp.numLayers; j++) {
-        const layer = innerComp.layer(j)
-
-        applyNautilusExprToLayer(layer, {
-          layerIndex: j,
-          parentCompName: comp.name,
-          compName: compLayer.name, 
-          nautilusEffects
-        })
-      }
+      applyNautilusExprToAllLayers(compLayer)
     }
     
     selectedLayers.forEach((layer) => {
