@@ -22,6 +22,7 @@ export function applyNautilusExprToLayer(layer, config) {
         PARENT_COMP_NAME: config.parentCompName,
         COMP_NAME: config.compName,
         NAUTILUS_FX_NAME_LIST: `[${config.nautilusEffects.map((effectName) => (`"${effectName}"`))}]`,
+        FIXED_INDEX: config.layerIndex,
         PROPERTY_EXPRESSION: expr
       }
     )
@@ -54,6 +55,7 @@ export function applyComp() {
         const layer = innerComp.layer(j)
 
         applyNautilusExprToLayer(layer, {
+          layerIndex: innerComp.numLayers - (j - 1),
           parentCompName: comp.name,
           compName: compLayer.name, 
           nautilusEffects
