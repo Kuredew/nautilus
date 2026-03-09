@@ -74,11 +74,13 @@ export function applyText() {
         const rawSelectorExprs = [
           nautilus.expression.text.positionMask,
           nautilus.expression.text.rotationMask,
+          nautilus.expression.text.scaleMask,
           nautilus.expression.text.trackingMask
         ]
         const finalPropertyExprs = [
           nautilus.expression.text.positionMaskValue,
           nautilus.expression.text.rotationMaskValue,
+          nautilus.expression.text.scaleMaskValue,
           nautilus.expression.text.trackingMaskValue
         ]
 
@@ -87,7 +89,8 @@ export function applyText() {
         addTextAnimator(layer, {
           position: { name: "Nautiflow Position", propertyExpr: finalPropertyExprs[0], selectorExpr: finalSelectorExprs[0] },
           rotation: { name: "Nautiflow Rotation", propertyExpr: finalPropertyExprs[1], selectorExpr: finalSelectorExprs[1] },
-          tracking: { name: "Nautiflow Tracking", propertyExpr: finalPropertyExprs[2], selectorExpr: finalSelectorExprs[2] },
+          scale: { name: "Nautiflow Scale", propertyExpr: finalPropertyExprs[2], selectorExpr: finalSelectorExprs[2] },
+          tracking: { name: "Nautiflow Tracking", propertyExpr: finalPropertyExprs[3], selectorExpr: finalSelectorExprs[3] },
         })
       }
 
