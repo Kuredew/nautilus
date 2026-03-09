@@ -12,9 +12,10 @@ var ctrlFxList = NAUTILUS_FX_NAME_LIST
 /**
  * Other information
  */
+var fixedIndex = FIXED_INDEX
 var realTime = time + ctrl.startTime
 var totalIndex = thisComp.numLayers
-var realIndex = totalIndex - index
+var realIndex = totalIndex - fixedIndex
 
 /**
  * Utility for property expression

@@ -52,11 +52,12 @@ export function extract() {
         
         const charContents = charLayer.property("Contents");
         
+        const id = charContents.numProperties - index
         // remove group except index group
         for (let k = charContents.numProperties; k >= 1; k--) {
-            if (k === index + 1) { continue }
+          if (k === id) continue
 
-            charContents.property(k).remove();
+          charContents.property(k).remove();
         }
 
         const rect = charLayer.sourceRectAtTime(comp.time, false);

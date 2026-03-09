@@ -1,64 +1,17 @@
 import { nautilus } from "../state";
 import { getExpr } from "../utils/expression";
-import { applyExprToLayer, getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer";
+import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer";
 import { applyNautiFLowEffect, applyNautilusEffect, getAllNautilusEffect } from "../utils/effect";
-import { getCompItem } from "../utils/app";
+import { applyLayers } from "./nautilusExpr";
 
-export function applyNautilusExprToLayer(layer, config) {
-  const exprList = [
-    nautilus.expression.layer.position,
-    nautilus.expression.layer.scale,
-    nautilus.expression.layer.opacity,
-    nautilus.expression.layer.rotationX,
-    nautilus.expression.layer.rotationY,
-    nautilus.expression.layer.rotationZ,
-  ]
-  
-  const finalExpr = exprList.map((expr) => (
-    getExpr(
-      nautilus.expression.layer.template,
-      {
-        VERSION: nautilus.version,
-        PARENT_COMP_NAME: config.parentCompName,
-        COMP_NAME: config.compName,
-        NAUTILUS_FX_NAME_LIST: `[${config.nautilusEffects.map((effectName) => (`"${effectName}"`))}]`,
-        PROPERTY_EXPRESSION: expr
-      }
-    )
-  ))
-
-  applyExprToLayer(
-    layer,
-    {
-      position: finalExpr[0],
-      scale: finalExpr[1],
-      opacity: finalExpr[2],
-      rotationX: finalExpr[3],
-      rotationY: finalExpr[4],
-      rotationZ: finalExpr[5]
-    }
-  );
-}
 
 export function applyComp() {
   app.beginUndoGroup("Apply Nautilus");
   try {
-    const comp = getCompItem()
     const selectedLayers = getSelectedLayer();
     const applyToComp = (compLayer) => {
       applyNautilusEffect(compLayer)
-      const nautilusEffects = getAllNautilusEffect(compLayer)
-
-      const innerComp = compLayer.source;
-      for (let j = 1; j <= innerComp.numLayers; j++) {
-        const layer = innerComp.layer(j)
-
-        applyNautilusExprToLayer(layer, {
-          parentCompName: comp.name,
-          compName: compLayer.name, 
-          nautilusEffects
-        })
-      }
+      applyLayers(compLayer)
     }
     
     selectedLayers.forEach((layer) => {

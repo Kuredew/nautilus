@@ -1,7 +1,7 @@
-import { getCompItem } from "../utils/app"
+import { clearExprFromAllLayers } from "../utils/comp"
 import { getAllNautilusEffect } from "../utils/effect"
-import { clearExprFromLayer, getSelectedLayer, isTextLayer } from "../utils/layer"
-import { applyNautilusExprToLayer } from "./apply"
+import { getSelectedLayer, isTextLayer } from "../utils/layer"
+import { applyLayers } from "./nautilusExpr"
 
 export function removeNautilus() {
   app.beginUndoGroup("removeNautilus")
@@ -42,17 +42,9 @@ export function removeNautilus() {
         } else if (layer.source instanceof CompItem) {
           if (effect) effect.remove()
           const nautilusEffects = getAllNautilusEffect(layer)
-
-          const comp = getCompItem()
-          const innerComp = layer.source
-          for (let l = 1; l <= innerComp.numLayers; l++) {
-            if (nautilusEffects.length === 0) clearExprFromLayer(innerComp.layer(l))
-            else applyNautilusExprToLayer(layer, {
-              parentCompName: comp.name,
-              compName: layer.name, 
-              nautilusEffects
-            })
-          }
+          
+          if (nautilusEffects.length === 0) clearExprFromAllLayers(layer)
+          else applyLayers(layer)
         }
       })
     })
