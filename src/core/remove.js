@@ -41,7 +41,7 @@ export function removeNautilus() {
           if (effect) effect.remove()
         } else if (layer.source instanceof CompItem) {
           if (effect) effect.remove()
-          const nautilusEffects = getAllNautilusEffect()
+          const nautilusEffects = getAllNautilusEffect(layer)
 
           const comp = getCompItem()
           const innerComp = layer.source
