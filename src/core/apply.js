@@ -34,6 +34,7 @@ export function applyNautilusExprToLayer(layer, config) {
       position: finalExpr[0],
       scale: finalExpr[1],
       opacity: finalExpr[2],
+      rotation: finalExpr[5],
       rotationX: finalExpr[3],
       rotationY: finalExpr[4],
       rotationZ: finalExpr[5]
