@@ -1,7 +1,7 @@
 import { clearExprFromAllLayers } from "../utils/comp"
 import { getAllNautilusEffect } from "../utils/effect"
 import { getSelectedLayer, isTextLayer } from "../utils/layer"
-import { applyNautilusExprToAllLayers } from "./apply"
+import { applyLayers } from "./nautilusExpr"
 
 export function removeNautilus() {
   app.beginUndoGroup("removeNautilus")
@@ -44,7 +44,7 @@ export function removeNautilus() {
           const nautilusEffects = getAllNautilusEffect(layer)
           
           if (nautilusEffects.length === 0) clearExprFromAllLayers(layer)
-          else applyNautilusExprToAllLayers(layer)
+          else applyLayers(layer)
         }
       })
     })
