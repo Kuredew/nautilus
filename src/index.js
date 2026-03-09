@@ -14,12 +14,18 @@ function NautilusScript(ui_ref) {
    * Shows the window
    */
   const mainWindow = createMainWindow(ui_ref)
-  mainWindow.center()
-  mainWindow.show()
+  if (mainWindow instanceof Window) {
+    mainWindow.center()
+    mainWindow.show()
+  } else {
+    mainWindow.layout.layout(true)
+    mainWindow.layout.resize()
+  }
 }
 
 try {
-  NautilusScript(this);
+  // eslint-disable-next-line no-undef
+  NautilusScript(ui_ref);
 } catch (e) {
   handleLoadError(e.message)
 }
