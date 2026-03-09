@@ -11,6 +11,8 @@ const header = `
   * You can clone and build the script from the Nautilus repository:
   * Please visit https://github.com/Kuredew/nautilus
 */
+#include 'nautilusLib/json2.js'
+
 var ui_ref = this
 
 // trigger polyfill
