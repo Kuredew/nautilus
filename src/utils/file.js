@@ -1,26 +1,17 @@
-import { EXPRESSION_FOLDER } from "../config";
-
-export function getPathToNautilusFolder () {
-  const folderObj = new Folder((new File($.fileName).parent).fsName + "/" + EXPRESSION_FOLDER);
-  return folderObj;
-}
-
-export function getFileObj (fileName) {
-  const folderObj = getPathToNautilusFolder();
-  const fileObj = new File(folderObj.fsName + "/" + fileName)
-  if (!fileObj.exists) {
-    throw new Error("[getFileObj] File '" + fileName + "' is not exists in '" + EXPRESSION_FOLDER + "' folder, please install Nautilus correctly!")
+export function getFileObj(path) {
+  try {
+    return new File(path)
+  } catch (e) {
+    throw new Error("[getFileObj] " + e.message)
   }
-
-  return fileObj
 }
 
-export function readFile(fileName) {
+export function readFile(path) {
   let code
   let fileObj
 
   try {
-    fileObj = getFileObj(fileName)
+    fileObj = getFileObj(path)
   } catch (e) {
     throw new Error("[readFile] " + e.message)
   }
@@ -37,11 +28,22 @@ export function readFile(fileName) {
   return code;
 }
 
-export function readJsonFile(fileName) {
+export function readJsonFile(path) {
   try {
-    const code = JSON.parse(readFile(fileName))
+    const code = JSON.parse(readFile(path))
     return code
-  } catch (e) {
-    throw new Error("[readJsonFile] " + e.message)
+  } catch {
+    return null
   }
+}
+
+export function writeFile(path, content) {
+    var file = getFileObj(path)
+
+    if (file.open("w")) {
+        file.write(content);
+        file.close();
+    } else {
+        alert("Error opening file for writing.");
+    }
 }

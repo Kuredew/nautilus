@@ -1,5 +1,5 @@
-import { createProgressWindow } from "../ui/manifest"
 import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer"
+import { createProgress } from "../utils/progress"
 
 const bakeFromPrecomp = (compLayer) => {
   try {
@@ -11,10 +11,7 @@ const bakeFromPrecomp = (compLayer) => {
     ]
 
     const innerComp = compLayer.source
-    const { windowRef, progressBar } = createProgressWindow("Nautilus Bake", "Baking layers...", 0, innerComp.numLayers)
-    windowRef.center()
-    windowRef.show()
-    progressBar.value = 0
+    const { setProgress, close } = createProgress(innerComp.numLayers)
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i)
@@ -45,11 +42,10 @@ const bakeFromPrecomp = (compLayer) => {
           prop.expressionEnabled = false;
         }
       })
-      progressBar.value = i
-      windowRef.update()
+      setProgress(i)
     }
     
-    windowRef.close()
+    close()
   } catch (e) {
     throw new Error("[bakeFromPrecomp] " + e.message)
   }

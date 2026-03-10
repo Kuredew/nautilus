@@ -1,4 +1,5 @@
-import { getFileObj, readFile, readJsonFile } from "./utils/file"
+import { getFileObj, readFile, readJsonFile } from "./utils/nautilusLib"
+import { load as settingsLoad } from './utils/settings'
 
 export const nautilus = {
     mode: "text",
@@ -51,6 +52,9 @@ export const nautilus = {
       remove: null,
       settings: null
     },
+    settings: {
+      displayProgressWindow: false
+    },
     palette: null
 }
 
@@ -100,6 +104,8 @@ export function load() {
     nautilus.icons.bake = getFileObj("icons/bake.png")
     nautilus.icons.remove = getFileObj("icons/remove.png")
     nautilus.icons.settings = getFileObj("icons/settings.png")
+
+    settingsLoad()
   } catch (e) {
     throw new Error("[load] " + e.message)
   }

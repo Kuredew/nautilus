@@ -45,7 +45,7 @@ var utils = {
        * Alternate Mode
        */
       case 2:
-        var p = (realIndex) % 4;
+        var p = (realIndex + Math.ceil(interval)) % 4;
         switch (p) {
           case 0:
             strength[0] *= -1; 

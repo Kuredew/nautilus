@@ -1,6 +1,7 @@
-import { createProgressWindow } from "../ui/manifest";
 import { getCompItem } from "../utils/app";
 import { getSelectedLayer, isTextLayer, precomposeLayers, selectLayer, unSelectLayer } from "../utils/layer";
+import { createProgress } from "../utils/progress";
+
 
 export function extract() {
   app.beginUndoGroup("Extract")
@@ -39,10 +40,7 @@ export function extract() {
           groupNames.push(contents.property(i).name);
       }
 
-      const { windowRef, progressBar } = createProgressWindow("Nautilus Extract", "Extracting teks into shapes...", 0, groupNames.length)
-      progressBar.value = 0
-      windowRef.center()
-      windowRef.show()
+      const { setProgress, close } = createProgress(groupNames.length)
 
       const layerIndices = []
       groupNames.forEach((groupName, index) =>{
@@ -79,8 +77,7 @@ export function extract() {
         
         charLayer.transform.position.setValue([newPosX, newPosY]);
       
-        progressBar.value = index + 1
-        windowRef.update()
+        setProgress(index + 1)
       })
 
       // remove main shape layer
@@ -89,7 +86,7 @@ export function extract() {
       // precompose extracted layers
       precomposeLayers(layerIndices, textLayer.name, textLayer.inPoint, textLayer.outPoint)
 
-      windowRef.close()
+      close()
     })
 
   } catch (e) {
