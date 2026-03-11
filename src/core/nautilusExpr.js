@@ -21,7 +21,7 @@ export function applyLayer(layer, config) {
         VERSION: nautilus.version,
         PARENT_COMP_NAME: config.parentCompName,
         COMP_NAME: config.compName,
-        NAUTILUS_FX_NAME_LIST: `[${config.nautilusEffects.map((effectName) => (`"${effectName}"`))}]`,
+        NAUTILUS_FX_NAME_LIST: `[${config.nautilusEffectNames.map((effectName) => (`"${effectName}"`))}]`,
         FIXED_INDEX: config.layerIndex,
         PROPERTY_EXPRESSION: expr
       }
@@ -55,7 +55,7 @@ export function applyLayers(compLayer) {
         layerIndex: j,
         parentCompName: comp.name,
         compName: compLayer.name, 
-        nautilusEffects
+        nautilusEffectNames: nautilusEffects.map(e => e.name)
       })
     }
   } catch (e) {

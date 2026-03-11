@@ -12,16 +12,19 @@ export function removeNautilus() {
     selectedLayers.forEach(layer => {
       const selectedEffect = layer.selectedProperties
 
-      let effectNameToRemove = []
+      let effectNames = []
       if (selectedEffect.length > 0) {
         selectedEffect.forEach(effect => {
-          effectNameToRemove.push(effect.name)
+          effectNames.push(effect.name)
         })
       } else {
-        effectNameToRemove = [...getAllNautilusEffect(layer), ...getAllNautiFlowEffect(layer)]
+        effectNames = [
+          ...getAllNautilusEffect(layer).map(e => e.name), 
+          ...getAllNautiFlowEffect(layer).map(e => e.name)
+        ]
       }
       
-      effectNameToRemove.forEach(effectName => {
+      effectNames.forEach(effectName => {
         const effect = layer.property("ADBE Effect Parade").property(effectName);
 
         if (isTextLayer(layer)) {

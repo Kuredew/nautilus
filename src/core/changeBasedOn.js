@@ -18,7 +18,10 @@ export function changeBasedOn(basedOnIndex) {
           effectNames.push(effect.name)
         })
       } else {
-        effectNames = [...getAllNautilusEffect(layer), ...getAllNautiFlowEffect(layer)]
+        effectNames = [
+          ...getAllNautilusEffect(layer).map(e => e.name), 
+          ...getAllNautiFlowEffect(layer).map(e => e.name)
+        ]
       }
 
       effectNames.forEach(name => {

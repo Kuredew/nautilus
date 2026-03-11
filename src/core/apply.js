@@ -96,7 +96,7 @@ export function applyText() {
 
       applyNautilusEffect(layer)
       const nautilusEffects = getAllNautilusEffect(layer)
-      const lastNautilusEffectName = nautilusEffects[nautilusEffects.length-1]
+      const lastNautilusEffect = nautilusEffects[nautilusEffects.length-1]
       const defaultTemplate = 'var ctrlFx = effect("NAUTILUS_FX_NAME");\n\nPROPERTY_EXPRESSION'
       
       const rawPropertyExprs = [
@@ -111,8 +111,8 @@ export function applyText() {
         nautilus.expression.text.scale,
         nautilus.expression.text.opacity,
       ]
-      const finalPropertyExprs = rawPropertyExprs.map((expr) => (getExpr(defaultTemplate, { NAUTILUS_FX_NAME: lastNautilusEffectName, PROPERTY_EXPRESSION: expr })))
-      const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { NAUTILUS_FX_NAME: lastNautilusEffectName, PROPERTY_EXPRESSION: expr })))
+      const finalPropertyExprs = rawPropertyExprs.map((expr) => (getExpr(defaultTemplate, { NAUTILUS_FX_NAME: lastNautilusEffect.name, PROPERTY_EXPRESSION: expr })))
+      const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { NAUTILUS_FX_NAME: lastNautilusEffect.name, PROPERTY_EXPRESSION: expr })))
 
       addTextAnimator(layer, {
         position: { name: "Nautilus Position", propertyExpr: finalPropertyExprs[0], selectorExpr: finalSelectorExprs[0] },

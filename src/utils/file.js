@@ -1,4 +1,4 @@
-export function getFileObj(path) {
+export function getFile(path) {
   try {
     return new File(path)
   } catch (e) {
@@ -6,40 +6,31 @@ export function getFileObj(path) {
   }
 }
 
-export function readFile(path) {
+export function readFile(file) {
   let code
-  let fileObj
 
   try {
-    fileObj = getFileObj(path)
-  } catch (e) {
-    throw new Error("[readFile] " + e.message)
-  }
-
-  try {
-      fileObj.open("r");
-      code = fileObj.read();
+      file.open("r");
+      code = file.read();
   } catch (e) {
       throw new Error("[readFile] I couldn't read the file: " + e.message);
   } finally {
-      fileObj.close();
+      file.close();
   }
 
   return code;
 }
 
-export function readJsonFile(path) {
+export function readJsonFile(file) {
   try {
-    const code = JSON.parse(readFile(path))
+    const code = JSON.parse(readFile(file))
     return code
   } catch {
     return null
   }
 }
 
-export function writeFile(path, content) {
-    var file = getFileObj(path)
-
+export function writeFile(file, content) {
     if (file.open("w")) {
         file.write(content);
         file.close();
