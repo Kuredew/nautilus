@@ -30,13 +30,16 @@ const bakeFromPrecomp = (compLayer) => {
             const currentValue = prop.valueAtTime(t, false);
 
             if (prevValue === null || currentValue.toString() !== prevValue.toString()) {
-              cache.push({ time: t, currentValue: currentValue })
+              cache.push({ time: t, value: currentValue })
             }
 
             prevValue = currentValue;
           }
           cache.forEach(item => {
-            prop.setValueAtTime(item.time, item.currentValue)
+            const newKeyIndex = prop.addKey(item.time);
+            // eslint-disable-next-line no-undef
+            prop.setInterpolationTypeAtKey(newKeyIndex, KeyframeInterpolationType.LINEAR, KeyframeInterpolationType.HOLD);
+            prop.setValueAtKey(newKeyIndex, item.value)
           })
 
           prop.expressionEnabled = false;
