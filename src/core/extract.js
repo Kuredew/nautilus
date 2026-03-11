@@ -40,7 +40,7 @@ export function extract() {
           groupNames.push(contents.property(i).name);
       }
 
-      const { setProgress, close } = createProgress(groupNames.length)
+      const { setProgress, close } = createProgress("Nautilus Extract", "Extracting text into shapes...", { minValue: 0, maxValue: groupNames.length })
 
       const layerIndices = []
       groupNames.forEach((groupName, index) =>{

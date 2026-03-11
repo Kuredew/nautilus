@@ -55,7 +55,10 @@ export const nautilus = {
       settings: null
     },
     settings: {
-      displayProgressWindow: false
+      progressWindow: {
+        displayProgressWindow: false,
+        autoCloseProgressWindow: false,
+      }
     },
     palette: null
 }

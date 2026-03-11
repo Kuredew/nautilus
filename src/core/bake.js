@@ -11,7 +11,7 @@ const bakeFromPrecomp = (compLayer) => {
     ]
 
     const innerComp = compLayer.source
-    const { setProgress, close } = createProgress(innerComp.numLayers)
+    const { setProgress, close } = createProgress("Nautilus Bake", "Baking expression into keyframes...",{ minValue: 0, maxValue: innerComp.numLayers })
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i)

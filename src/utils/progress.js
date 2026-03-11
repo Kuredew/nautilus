@@ -1,12 +1,15 @@
 import { nautilus } from "../state"
 import { createProgressWindow } from "../ui/manifest"
 
-export function createProgress(maxValue) {
+
+export function createProgress(title, description, config) {
+  const progressWindowSettings = nautilus.settings.progressWindow
+
   let setProgress = () => {}
   let close = () => {}
 
-  if (nautilus.settings.displayProgressWindow) {
-    const { windowRef, progressBar } = createProgressWindow("Nautilus Extract", "Extracting teks into shapes...", 0, maxValue)
+  if (progressWindowSettings.displayProgressWindow) {
+    const { windowRef, progressBar } = createProgressWindow(title, description, config.minValue, config.maxValue)
     progressBar.value = 0
     windowRef.center()
     windowRef.show()
@@ -16,7 +19,9 @@ export function createProgress(maxValue) {
       windowRef.update()
     }
     close = () => {
-      windowRef.close()
+      if (progressWindowSettings.autoCloseProgressWindow) {
+        windowRef.close()
+      }
     }
   }
   
