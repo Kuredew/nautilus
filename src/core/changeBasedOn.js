@@ -1,4 +1,4 @@
-import { nautilus } from "../state"
+import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect"
 import { handleError } from "../utils/error"
 import { getSelectedLayer } from "../utils/layer"
 import { resetButton } from "../utils/ui"
@@ -11,11 +11,17 @@ export function changeBasedOn(basedOnIndex) {
 
     selectedLayers.forEach(layer => {
       const selectedEffect = layer.selectedProperties
-      if (selectedEffect.length === 0) {
-        throw new Error("Please select atleast one Nautilus Effect!")
+      
+      let effectNames = []
+      if (selectedEffect.length > 0) {
+        selectedEffect.forEach(effect => {
+          effectNames.push(effect.name)
+        })
+      } else {
+        effectNames = [...getAllNautilusEffect(layer), ...getAllNautiFlowEffect(layer)]
       }
 
-      selectedEffect.forEach(effect => {
+      effectNames.forEach(name => {
         const textProp = layer.property("ADBE Text Properties")
         const animatorsGroup = textProp.property("ADBE Text Animators")
 
@@ -25,7 +31,7 @@ export function changeBasedOn(basedOnIndex) {
           const selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
           const selectorExpressionAmount = selectorExpression.property(2)
 
-          if (selectorExpressionAmount.expression.indexOf('("' + effect.name + '")') === -1) { continue }
+          if (selectorExpressionAmount.expression.indexOf('("' + name + '")') === -1) { continue }
 
           const selectorExpressionBasedOn = selectorExpression.property(1)
           selectorExpressionBasedOn.setValue(basedOnIndex)

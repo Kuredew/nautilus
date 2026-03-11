@@ -1,5 +1,5 @@
 import { clearExprFromAllLayers } from "../utils/comp"
-import { getAllNautilusEffect } from "../utils/effect"
+import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect"
 import { getSelectedLayer, isTextLayer } from "../utils/layer"
 import { applyLayers } from "./nautilusExpr"
 
@@ -11,15 +11,15 @@ export function removeNautilus() {
 
     selectedLayers.forEach(layer => {
       const selectedEffect = layer.selectedProperties
-      if (selectedEffect.length === 0) {
-        throw new Error("Please select atleast one Nautilus Effect!")
+
+      let effectNameToRemove = []
+      if (selectedEffect.length > 0) {
+        selectedEffect.forEach(effect => {
+          effectNameToRemove.push(effect.name)
+        })
+      } else {
+        effectNameToRemove = [...getAllNautilusEffect(layer), ...getAllNautiFlowEffect(layer)]
       }
-
-      const effectNameToRemove = []
-      selectedEffect.forEach(effect => {
-        effectNameToRemove.push(effect.name)
-      })
-
       
       effectNameToRemove.forEach(effectName => {
         const effect = layer.property("ADBE Effect Parade").property(effectName);
