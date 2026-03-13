@@ -44,11 +44,18 @@ export function applyNautilusEffect(ctrlLayer) {
 
     ctrlLayer.selected = true
     const ctrlLayerEffects = getAllNautilusEffect(ctrlLayer);
+    
+    const applyDefault = () => {
+      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default)
+    }
 
     if (ctrlLayerEffects.length === 0 && nautilus.applyToCompLayers) {
-      ctrlLayer.applyPreset(nautilus.firstPresetFileObj);
+      if (nautilus.settings.nautilus.keyframeIn) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in)
+      else applyDefault()
     } else {
-      ctrlLayer.applyPreset(nautilus.secondPresetFileObj);
+      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out);
+      if (nautilus.settings.nautilus.keyframeOut) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out)
+      else applyDefault()
     }
 
     return getAllNautilusEffect(ctrlLayer)
@@ -59,7 +66,7 @@ export function applyNautilusEffect(ctrlLayer) {
 
 export function applyNautiFLowEffect(layer) {
   try {
-    layer.applyPreset(nautilus.nautiFlowPresetFileObj);
+    layer.applyPreset(nautilus.effectObj.nautiflow.default);
   } catch (e) {
     throw new Error("[applyNautiFlowEffect] " + e.message)
   }

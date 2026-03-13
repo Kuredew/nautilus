@@ -7,12 +7,19 @@ export const nautilus = {
     mode: "text",
     effectName: "Nautilus",
     nautiFlowEffectName: "NautiFlow",
-    firstPresetFileObj: null,
-    secondPresetFileObj: null,
-    nautiFlowPresetFileObj: null,
     version: null,
     aboutStr: null,
     applyToCompLayers: true,
+    effectObj : {
+      nautilus: {
+        default: null,
+        in: null,
+        out: null
+      },
+      nautiflow: {
+        default: null,
+      },
+    },
     expression: {
       text: {
         template: null,
@@ -55,6 +62,10 @@ export const nautilus = {
       settings: null
     },
     settings: {
+      nautilus: {
+        keyframeIn: true,
+        keyframeOut: true
+      },
       progressWindow: {
         displayProgressWindow: false,
         autoCloseProgressWindow: false,
@@ -66,8 +77,9 @@ export const nautilus = {
 export function load() {
   try {
     // Load expression for Comp Mode
-    nautilus.firstPresetFileObj = getFile("Nautilus.ffx")
-    nautilus.secondPresetFileObj = getFile("Nautilus2.ffx")
+    nautilus.effectObj.nautilus.in = getFile("effect/nautilus/in.ffx")
+    nautilus.effectObj.nautilus.out = getFile("effect/nautilus/out.ffx")
+    nautilus.effectObj.nautilus.default = getFile("effect/nautilus/default.ffx")
     nautilus.version = readJsonFile(getFile("package.json")).version
     nautilus.aboutStr = readFile(getFile("about.txt"))
     nautilus.expression.layer.template = readFile(getFile("layer/template.jsx"))
@@ -79,7 +91,7 @@ export function load() {
     nautilus.expression.layer.scale = readFile(getFile("layer/scale.jsx"))
 
     // Load expression for Text layer mode
-    nautilus.nautiFlowPresetFileObj = getFile("NautiFLow.ffx")
+    nautilus.effectObj.nautiflow.default = getFile("effect/nautiflow/default.ffx")
     nautilus.expression.text.template = readFile(getFile("text/template.jsx"))
     nautilus.expression.text.trackingMaskValue = readFile(getFile("text/trackingMaskValue.jsx"))
     nautilus.expression.text.trackingMask = readFile(getFile("text/trackingMask.jsx"))
