@@ -71,7 +71,10 @@ function bakeFromText(layer) {
     
 
     const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
-    findAnimatorIndexesByEffectName(layer, nautilus.effectName).forEach(index => animatorsGroup.property(index).remove())
+    getAllNautilusEffect(layer).forEach(effect => 
+      findAnimatorIndexesByEffectName(layer, effect.name).forEach(index => 
+        animatorsGroup.property(index).remove()
+    ))
 
     const preComp = extractChar(layer)
     const compLayer = comp.layer(preComp.name)
