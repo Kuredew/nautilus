@@ -1,6 +1,7 @@
 import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect"
 import { handleError } from "../utils/error"
 import { getSelectedLayer } from "../utils/layer"
+import { findAnimatorIndexesByEffectName } from "../utils/textLayer"
 import { resetButton } from "../utils/ui"
 
 export function changeBasedOn(basedOnIndex) {
@@ -24,21 +25,16 @@ export function changeBasedOn(basedOnIndex) {
         ]
       }
 
+      const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
       effectNames.forEach(name => {
-        const textProp = layer.property("ADBE Text Properties")
-        const animatorsGroup = textProp.property("ADBE Text Animators")
-
-        for (let k = 1; k <= animatorsGroup.numProperties; k++) {
-          const animator = animatorsGroup.property(k)
+        findAnimatorIndexesByEffectName(layer, name).forEach(index => {
+          const animator = animatorsGroup.property(index)
           const selectorGroup = animator.property("ADBE Text Selectors")
           const selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
-          const selectorExpressionAmount = selectorExpression.property(2)
-
-          if (selectorExpressionAmount.expression.indexOf('("' + name + '")') === -1) { continue }
-
           const selectorExpressionBasedOn = selectorExpression.property(1)
+
           selectorExpressionBasedOn.setValue(basedOnIndex)
-        }
+        })
       })
     })
   } catch (e) {

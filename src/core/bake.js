@@ -1,5 +1,11 @@
-import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer"
+import { nautilus } from "../state"
+import { copy, getCompItem, paste } from "../utils/app"
+import { getAllNautilusEffect } from "../utils/effect"
+import { findAbsoluteKeyframe, getSelectedLayer, isCompLayer, isTextLayer, unSelectAllLayer } from "../utils/layer"
 import { createProgress } from "../utils/progress"
+import { findAnimatorIndexesByEffectName } from "../utils/textLayer"
+import { extractChar } from "./extract"
+import { applyLayers } from "./nautilusExpr"
 
 const bakeFromPrecomp = (compLayer) => {
   try {
@@ -54,6 +60,35 @@ const bakeFromPrecomp = (compLayer) => {
   }
 }
 
+function bakeFromText(layer) {
+  try {
+    getAllNautilusEffect(layer).forEach(effect => effect.selected = true)
+    copy()
+
+    const comp = getCompItem()
+    const currentTime = comp.time
+    comp.time = comp.duration
+    
+
+    const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
+    findAnimatorIndexesByEffectName(layer, nautilus.effectName).forEach(index => animatorsGroup.property(index).remove())
+
+    const preComp = extractChar(layer)
+    const compLayer = comp.layer(preComp.name)
+
+    unSelectAllLayer()
+    compLayer.selected = true
+    comp.time = findAbsoluteKeyframe(layer).minTime
+    paste()
+    
+    applyLayers(compLayer)
+    bakeFromPrecomp(compLayer)
+    comp.time = currentTime
+  } catch (e) {
+    throw new Error("[bakeFromText] " + e.message)
+  }
+}
+
 export function bake() {
   app.beginUndoGroup("bake")
   try {
@@ -65,6 +100,7 @@ export function bake() {
       } else if (isTextLayer(layer)) {
         // TODO: Check if text layer is nautilus applied text layer.
         // after that, extract text layer into preComp, and do bakeFromPrecomp()
+        bakeFromText(layer)
       }
     });
   } catch (e) {
