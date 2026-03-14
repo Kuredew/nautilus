@@ -84,7 +84,7 @@ function bakeFromText(layer) {
     comp.time = findAbsoluteKeyframe(layer).minTime
     paste()
     
-    applyLayers(compLayer)
+    applyLayers(compLayer, nautilusEffects.map(e => e.name))
     bakeFromPrecomp(compLayer)
     comp.time = currentTime
     
