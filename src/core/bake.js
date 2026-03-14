@@ -1,11 +1,10 @@
-import { nautilus } from "../state"
 import { copy, getCompItem, paste } from "../utils/app"
 import { getAllNautilusEffect } from "../utils/effect"
 import { findAbsoluteKeyframe, getSelectedLayer, isCompLayer, isTextLayer, unSelectAllLayer } from "../utils/layer"
 import { createProgress } from "../utils/progress"
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer"
 import { extractChar } from "./extract"
-import { applyLayers } from "./nautilusExpr"
+import { applyLayers, applyTextLayer } from "./nautilusExpr"
 
 const bakeFromPrecomp = (compLayer) => {
   try {
@@ -71,7 +70,8 @@ function bakeFromText(layer) {
     
 
     const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
-    getAllNautilusEffect(layer).forEach(effect => 
+    const nautilusEffects = getAllNautilusEffect(layer)
+    nautilusEffects.forEach(effect => 
       findAnimatorIndexesByEffectName(layer, effect.name).forEach(index => 
         animatorsGroup.property(index).remove()
     ))
@@ -87,6 +87,8 @@ function bakeFromText(layer) {
     applyLayers(compLayer)
     bakeFromPrecomp(compLayer)
     comp.time = currentTime
+    
+    nautilusEffects.forEach(effect => applyTextLayer(layer, effect.name))
   } catch (e) {
     throw new Error("[bakeFromText] " + e.message)
   }
