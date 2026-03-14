@@ -3,6 +3,7 @@ import { getCompItem } from "../utils/app";
 import { getAllNautilusEffect } from "../utils/effect";
 import { getExpr } from "../utils/expression";
 import { applyExprToLayer } from "../utils/layer";
+import { addAnimatorWithExprs } from "./textLayer";
 
 export function applyLayer(layer, config) {
   const exprList = [
@@ -60,5 +61,58 @@ export function applyLayers(compLayer) {
     }
   } catch (e) {
     throw new Error("[applyNautilusAll] " + e.message)
+  }
+}
+
+
+export function applyTextLayer(textLayer, effectName) {
+  try {
+    const defaultTemplate = 'var ctrlFx = effect("NAUTILUS_FX_NAME");\n\nPROPERTY_EXPRESSION'
+    
+    const rawPropertyExprs = [
+      nautilus.expression.text.positionValue,
+      nautilus.expression.text.rotationValue,
+      nautilus.expression.text.scaleValue,
+      nautilus.expression.text.opacityValue,
+    ]
+    const rawSelectorExprs = [
+      nautilus.expression.text.position,
+      nautilus.expression.text.rotation,
+      nautilus.expression.text.scale,
+      nautilus.expression.text.opacity,
+    ]
+    const finalPropertyExprs = rawPropertyExprs.map((expr) => (getExpr(defaultTemplate, { NAUTILUS_FX_NAME: effectName, PROPERTY_EXPRESSION: expr })))
+    const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { NAUTILUS_FX_NAME: effectName, PROPERTY_EXPRESSION: expr })))
+    
+    const configs = [
+      { 
+        name: "Nautilus Position",
+        propertyName: "position",
+        propertyExpr: finalPropertyExprs[0],
+        selectorExpr: finalSelectorExprs[0] 
+      },
+      { 
+        name: "Nautilus Rotation", 
+        propertyName: "rotation",
+        propertyExpr: finalPropertyExprs[1], 
+        selectorExpr: finalSelectorExprs[1] 
+      },
+      { 
+        name: "Nautilus Scale", 
+        propertyName: "scale",
+        propertyExpr: finalPropertyExprs[2], 
+        selectorExpr: finalSelectorExprs[2] 
+      },
+      { 
+        name: "Nautilus Opacity", 
+        propertyName: "opacity",
+        propertyExpr: finalPropertyExprs[3], 
+        selectorExpr: finalSelectorExprs[3] 
+      },
+    ]
+
+    configs.forEach(config => addAnimatorWithExprs(textLayer, config))
+  } catch (e) {
+    throw new Error("[applyTextLayer] " + e.message)
   }
 }
