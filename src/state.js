@@ -1,16 +1,25 @@
-import { getFileObj, readFile, readJsonFile } from "./utils/nautilusLib"
+// import { getFileObj, readFile, readJsonFile } from "./utils/nautilusLib"
+import { readFile, readJsonFile } from './utils/file'
+import { getFile } from './utils/nautilusLib'
 import { load as settingsLoad } from './utils/settings'
 
 export const nautilus = {
     mode: "text",
     effectName: "Nautilus",
     nautiFlowEffectName: "NautiFlow",
-    firstPresetFileObj: null,
-    secondPresetFileObj: null,
-    nautiFlowPresetFileObj: null,
     version: null,
     aboutStr: null,
     applyToCompLayers: true,
+    effectObj : {
+      nautilus: {
+        default: null,
+        in: null,
+        out: null
+      },
+      nautiflow: {
+        default: null,
+      },
+    },
     expression: {
       text: {
         template: null,
@@ -53,57 +62,64 @@ export const nautilus = {
       settings: null
     },
     settings: {
-      displayProgressWindow: false
+      nautilus: {
+        keyframeIn: true,
+        keyframeOut: true
+      },
+      progressWindow: {
+        displayProgressWindow: false,
+        autoCloseProgressWindow: false,
+      }
     },
     palette: null
 }
 
-
 export function load() {
   try {
     // Load expression for Comp Mode
-    nautilus.firstPresetFileObj = getFileObj("Nautilus.ffx")
-    nautilus.secondPresetFileObj = getFileObj("Nautilus2.ffx")
-    nautilus.version = readJsonFile("package.json").version
-    nautilus.aboutStr = readFile("about.txt")
-    nautilus.expression.layer.template = readFile("layer/template.jsx")
-    nautilus.expression.layer.position = readFile("layer/position.jsx")
-    nautilus.expression.layer.rotationX = readFile("layer/rotationX.jsx")
-    nautilus.expression.layer.rotationY = readFile("layer/rotationY.jsx")
-    nautilus.expression.layer.rotationZ = readFile("layer/rotationZ.jsx")
-    nautilus.expression.layer.opacity = readFile("layer/opacity.jsx")
-    nautilus.expression.layer.scale = readFile("layer/scale.jsx")
+    nautilus.effectObj.nautilus.in = getFile("effect/nautilus/in.ffx")
+    nautilus.effectObj.nautilus.out = getFile("effect/nautilus/out.ffx")
+    nautilus.effectObj.nautilus.default = getFile("effect/nautilus/default.ffx")
+    nautilus.version = readJsonFile(getFile("package.json")).version
+    nautilus.aboutStr = readFile(getFile("about.txt"))
+    nautilus.expression.layer.template = readFile(getFile("layer/template.jsx"))
+    nautilus.expression.layer.position = readFile(getFile("layer/position.jsx"))
+    nautilus.expression.layer.rotationX = readFile(getFile("layer/rotationX.jsx"))
+    nautilus.expression.layer.rotationY = readFile(getFile("layer/rotationY.jsx"))
+    nautilus.expression.layer.rotationZ = readFile(getFile("layer/rotationZ.jsx"))
+    nautilus.expression.layer.opacity = readFile(getFile("layer/opacity.jsx"))
+    nautilus.expression.layer.scale = readFile(getFile("layer/scale.jsx"))
 
     // Load expression for Text layer mode
-    nautilus.nautiFlowPresetFileObj = getFileObj("NautiFLow.ffx")
-    nautilus.expression.text.template = readFile("text/template.jsx")
-    nautilus.expression.text.trackingMaskValue = readFile("text/trackingMaskValue.jsx")
-    nautilus.expression.text.trackingMask = readFile("text/trackingMask.jsx")
-    nautilus.expression.text.position = readFile("text/position.jsx")
-    nautilus.expression.text.positionValue = readFile("text/positionValue.jsx")
-    nautilus.expression.text.positionMask = readFile("text/positionMask.jsx")
-    nautilus.expression.text.positionMaskValue = readFile("text/positionMaskValue.jsx")
-    nautilus.expression.text.rotation = readFile("text/rotation.jsx")
-    nautilus.expression.text.rotationValue = readFile("text/rotationValue.jsx")
-    nautilus.expression.text.rotationMask = readFile("text/rotationMask.jsx")
-    nautilus.expression.text.rotationMaskValue = readFile("text/rotationMaskValue.jsx")
-    nautilus.expression.text.scale = readFile("text/scale.jsx")
-    nautilus.expression.text.scaleValue = readFile("text/scaleValue.jsx")
-    nautilus.expression.text.scaleMask = readFile("text/scaleMask.jsx")
-    nautilus.expression.text.scaleMaskValue = readFile("text/scaleMaskValue.jsx")
-    nautilus.expression.text.opacity = readFile("text/opacity.jsx")
-    nautilus.expression.text.opacityValue = readFile("text/opacityValue.jsx")
+    nautilus.effectObj.nautiflow.default = getFile("effect/nautiflow/default.ffx")
+    nautilus.expression.text.template = readFile(getFile("text/template.jsx"))
+    nautilus.expression.text.trackingMaskValue = readFile(getFile("text/trackingMaskValue.jsx"))
+    nautilus.expression.text.trackingMask = readFile(getFile("text/trackingMask.jsx"))
+    nautilus.expression.text.position = readFile(getFile("text/position.jsx"))
+    nautilus.expression.text.positionValue = readFile(getFile("text/positionValue.jsx"))
+    nautilus.expression.text.positionMask = readFile(getFile("text/positionMask.jsx"))
+    nautilus.expression.text.positionMaskValue = readFile(getFile("text/positionMaskValue.jsx"))
+    nautilus.expression.text.rotation = readFile(getFile("text/rotation.jsx"))
+    nautilus.expression.text.rotationValue = readFile(getFile("text/rotationValue.jsx"))
+    nautilus.expression.text.rotationMask = readFile(getFile("text/rotationMask.jsx"))
+    nautilus.expression.text.rotationMaskValue = readFile(getFile("text/rotationMaskValue.jsx"))
+    nautilus.expression.text.scale = readFile(getFile("text/scale.jsx"))
+    nautilus.expression.text.scaleValue = readFile(getFile("text/scaleValue.jsx"))
+    nautilus.expression.text.scaleMask = readFile(getFile("text/scaleMask.jsx"))
+    nautilus.expression.text.scaleMaskValue = readFile(getFile("text/scaleMaskValue.jsx"))
+    nautilus.expression.text.opacity = readFile(getFile("text/opacity.jsx"))
+    nautilus.expression.text.opacityValue = readFile(getFile("text/opacityValue.jsx"))
     
     // Load button Icon
-    nautilus.icons.text = getFileObj("icons/text.png")
-    nautilus.icons.comp = getFileObj("icons/comp.png")
-    nautilus.icons.about = getFileObj("icons/about.png")
-    nautilus.icons.extract = getFileObj("icons/extract.png")
-    nautilus.icons.apply = getFileObj("icons/apply.png")
-    nautilus.icons.basedOn = getFileObj("icons/based-on.png")
-    nautilus.icons.bake = getFileObj("icons/bake.png")
-    nautilus.icons.remove = getFileObj("icons/remove.png")
-    nautilus.icons.settings = getFileObj("icons/settings.png")
+    nautilus.icons.text = getFile("icons/text.png")
+    nautilus.icons.comp = getFile("icons/comp.png")
+    nautilus.icons.about = getFile("icons/about.png")
+    nautilus.icons.extract = getFile("icons/extract.png")
+    nautilus.icons.apply = getFile("icons/apply.png")
+    nautilus.icons.basedOn = getFile("icons/based-on.png")
+    nautilus.icons.bake = getFile("icons/bake.png")
+    nautilus.icons.remove = getFile("icons/remove.png")
+    nautilus.icons.settings = getFile("icons/settings.png")
 
     settingsLoad()
   } catch (e) {

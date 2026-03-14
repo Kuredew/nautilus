@@ -1,6 +1,7 @@
-import { nautilus } from "../state"
+import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect"
 import { handleError } from "../utils/error"
 import { getSelectedLayer } from "../utils/layer"
+import { findAnimatorIndexesByEffectName } from "../utils/textLayer"
 import { resetButton } from "../utils/ui"
 
 export function changeBasedOn(basedOnIndex) {
@@ -11,25 +12,29 @@ export function changeBasedOn(basedOnIndex) {
 
     selectedLayers.forEach(layer => {
       const selectedEffect = layer.selectedProperties
-      if (selectedEffect.length === 0) {
-        throw new Error("Please select atleast one Nautilus Effect!")
+      
+      let effectNames = []
+      if (selectedEffect.length > 0) {
+        selectedEffect.forEach(effect => {
+          effectNames.push(effect.name)
+        })
+      } else {
+        effectNames = [
+          ...getAllNautilusEffect(layer).map(e => e.name), 
+          ...getAllNautiFlowEffect(layer).map(e => e.name)
+        ]
       }
 
-      selectedEffect.forEach(effect => {
-        const textProp = layer.property("ADBE Text Properties")
-        const animatorsGroup = textProp.property("ADBE Text Animators")
-
-        for (let k = 1; k <= animatorsGroup.numProperties; k++) {
-          const animator = animatorsGroup.property(k)
+      const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
+      effectNames.forEach(name => {
+        findAnimatorIndexesByEffectName(layer, name).forEach(index => {
+          const animator = animatorsGroup.property(index)
           const selectorGroup = animator.property("ADBE Text Selectors")
           const selectorExpression = selectorGroup.property("ADBE Text Expressible Selector")
-          const selectorExpressionAmount = selectorExpression.property(2)
-
-          if (selectorExpressionAmount.expression.indexOf('("' + effect.name + '")') === -1) { continue }
-
           const selectorExpressionBasedOn = selectorExpression.property(1)
+
           selectorExpressionBasedOn.setValue(basedOnIndex)
-        }
+        })
       })
     })
   } catch (e) {

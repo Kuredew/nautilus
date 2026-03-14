@@ -41,6 +41,8 @@ export function precomposeLayers(layerIndices, name, inPoint, outPoint) {
     }
 
     comp.selectedLayers[0].startTime = inPoint;
+
+    return preComp
   } catch (e) {
     throw new Error("[precomposeLayers] " + e.message)
   }
@@ -114,4 +116,57 @@ export function selectLayer(layer) {
 export function unSelectLayer(layer) {
   layer.selected = false
   layer.selected = false
+}
+
+
+export function unSelectAllLayer() {
+  try {
+    const selectedLayers = getSelectedLayer()
+
+    selectedLayers.forEach(layer => {
+      unSelectLayer(layer)
+    })
+  } catch {
+    // dont do anything if getSelectedLayer throw an error
+    null
+  }
+}
+
+export function findAbsoluteKeyframe(layer) {
+  try {
+  const comp = getCompItem()
+
+  let maxTime = 0;
+  let minTime = comp.duration;
+
+  function searchProperties(group) {
+    for (let i = 1; i <= group.numProperties; i++) {
+      var prop = group.property(i);
+
+      // eslint-disable-next-line no-undef
+      if (prop.propertyType === PropertyType.PROPERTY) {
+        if (prop.numKeys > 0) {
+          let firstKeyTime = prop.keyTime(1)
+          let lastKeyTime = prop.keyTime(prop.numKeys)
+          if (lastKeyTime > maxTime) {
+            maxTime = lastKeyTime
+          }
+
+          if (firstKeyTime < minTime) {
+            minTime = firstKeyTime
+          }
+        }
+      // eslint-disable-next-line no-undef
+      } else if (prop.propertyType === PropertyType.INDEXED_GROUP || prop.propertyType === PropertyType.NAMED_GROUP) {
+        searchProperties(prop)
+      }
+    }
+  }
+
+  searchProperties(layer);
+  return { minTime: minTime, maxTime: maxTime }
+    
+  } catch (e) {
+    throw new Error("[findAbsoluteKeyframe] " + e.message)
+  }
 }

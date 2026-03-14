@@ -1,5 +1,10 @@
-import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer"
+import { copy, getCompItem, paste } from "../utils/app"
+import { getAllNautilusEffect } from "../utils/effect"
+import { findAbsoluteKeyframe, getSelectedLayer, isCompLayer, isTextLayer, unSelectAllLayer } from "../utils/layer"
 import { createProgress } from "../utils/progress"
+import { findAnimatorIndexesByEffectName } from "../utils/textLayer"
+import { extractChar } from "./extract"
+import { applyLayers, applyTextLayer } from "./nautilusExpr"
 
 const bakeFromPrecomp = (compLayer) => {
   try {
@@ -11,7 +16,7 @@ const bakeFromPrecomp = (compLayer) => {
     ]
 
     const innerComp = compLayer.source
-    const { setProgress, close } = createProgress(innerComp.numLayers)
+    const { setProgress, close } = createProgress("Nautilus Bake", "Baking expression into keyframes...",{ minValue: 0, maxValue: innerComp.numLayers })
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i)
@@ -30,13 +35,16 @@ const bakeFromPrecomp = (compLayer) => {
             const currentValue = prop.valueAtTime(t, false);
 
             if (prevValue === null || currentValue.toString() !== prevValue.toString()) {
-              cache.push({ time: t, currentValue: currentValue })
+              cache.push({ time: t, value: currentValue })
             }
 
             prevValue = currentValue;
           }
           cache.forEach(item => {
-            prop.setValueAtTime(item.time, item.currentValue)
+            const newKeyIndex = prop.addKey(item.time);
+            // eslint-disable-next-line no-undef
+            prop.setInterpolationTypeAtKey(newKeyIndex, KeyframeInterpolationType.LINEAR, KeyframeInterpolationType.HOLD);
+            prop.setValueAtKey(newKeyIndex, item.value)
           })
 
           prop.expressionEnabled = false;
@@ -51,6 +59,41 @@ const bakeFromPrecomp = (compLayer) => {
   }
 }
 
+function bakeFromText(layer) {
+  try {
+    getAllNautilusEffect(layer).forEach(effect => effect.selected = true)
+    copy()
+
+    const comp = getCompItem()
+    const currentTime = comp.time
+    comp.time = comp.duration
+    
+
+    const animatorsGroup = layer.property("ADBE Text Properties").property("ADBE Text Animators")
+    const nautilusEffects = getAllNautilusEffect(layer)
+    nautilusEffects.forEach(effect => 
+      findAnimatorIndexesByEffectName(layer, effect.name).forEach(index => 
+        animatorsGroup.property(index).remove()
+    ))
+
+    const preComp = extractChar(layer)
+    const compLayer = comp.layer(preComp.name)
+
+    unSelectAllLayer()
+    compLayer.selected = true
+    comp.time = findAbsoluteKeyframe(layer).minTime
+    paste()
+    
+    applyLayers(compLayer)
+    bakeFromPrecomp(compLayer)
+    comp.time = currentTime
+    
+    nautilusEffects.forEach(effect => applyTextLayer(layer, effect.name))
+  } catch (e) {
+    throw new Error("[bakeFromText] " + e.message)
+  }
+}
+
 export function bake() {
   app.beginUndoGroup("bake")
   try {
@@ -62,6 +105,7 @@ export function bake() {
       } else if (isTextLayer(layer)) {
         // TODO: Check if text layer is nautilus applied text layer.
         // after that, extract text layer into preComp, and do bakeFromPrecomp()
+        bakeFromText(layer)
       }
     });
   } catch (e) {

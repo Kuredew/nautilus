@@ -14,7 +14,7 @@ export function nautilusFolder() {
   }
 }
 
-export function getFolderPath(folderName) {
+export function getFolderByName(folderName) {
   try {
     const folder = nautilusFolder()
 
@@ -23,7 +23,7 @@ export function getFolderPath(folderName) {
       folderPathObj.create()
     }
 
-    return folderPathObj.fsName
+    return folderPathObj
   } catch (e) {
     throw new Error("[myDocument/getFolderPath] " + e.message)
   }

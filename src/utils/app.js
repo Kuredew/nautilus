@@ -6,3 +6,6 @@ export function getCompItem() {
 
   return comp
 }
+
+export const copy = () => app.executeCommand(19)
+export const paste = () => app.executeCommand(20)

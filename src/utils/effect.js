@@ -1,23 +1,35 @@
 import { nautilus } from "../state";
 
-export function getAllEffectName(layer, effectName) {
-  try {
-    const effectsArray = []
-    for (let i = 1; i <= layer.numProperties; i++) {
-      const prop = layer.property(i);
-      if (!(prop.matchName === "ADBE Effect Parade")) { continue }
+export function findEffects(layer, name) {
+  const foundEffects = [];
+  const effectGroup = layer.property("ADBE Effect Parade");
 
-      for (let j = 1; j <= prop.numProperties; j++) {
-        const effectPropertyName = prop.property(j).name
-        if (effectPropertyName.indexOf(effectName) === -1) { continue }
+  if (!effectGroup) return [];
 
-        effectsArray.push(effectPropertyName);
-      }
+  for (let i = 1; i <= effectGroup.numProperties; i++) {
+    const effect = effectGroup.property(i);
+    if (effect.name.indexOf(name) !== -1) {
+      foundEffects.push(effect);
     }
-    return effectsArray
-  } catch (e) {
-    throw new Error("[getAllEffectName] " + e.message)
   }
+  return foundEffects;
+}
+
+
+export function getAllNautilusEffect(layer) {
+  try {
+    return findEffects(layer, nautilus.effectName)
+  } catch (e) {
+    throw new Error("[getAllNautilusEffect] " + e.message)
+  }
+}
+
+export function isNautilusEffect(property) {
+  return property.name.indexOf(nautilus.effectName) !== -1
+}
+
+export function getAllNautiFlowEffect(layer) {
+  return findEffects(layer, nautilus.nautiFlowEffectName)
 }
 
 export function applyNautilusEffect(ctrlLayer) {
@@ -31,12 +43,19 @@ export function applyNautilusEffect(ctrlLayer) {
     })
 
     ctrlLayer.selected = true
-    const ctrlLayerEffectNameList = getAllNautilusEffect(ctrlLayer);
+    const ctrlLayerEffects = getAllNautilusEffect(ctrlLayer);
+    
+    const applyDefault = () => {
+      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default)
+    }
 
-    if (ctrlLayerEffectNameList.length === 0 && nautilus.applyToCompLayers) {
-      ctrlLayer.applyPreset(nautilus.firstPresetFileObj);
+    if (ctrlLayerEffects.length === 0 && nautilus.applyToCompLayers) {
+      if (nautilus.settings.nautilus.keyframeIn) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in)
+      else applyDefault()
     } else {
-      ctrlLayer.applyPreset(nautilus.secondPresetFileObj);
+      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out);
+      if (nautilus.settings.nautilus.keyframeOut) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out)
+      else applyDefault()
     }
 
     return getAllNautilusEffect(ctrlLayer)
@@ -45,26 +64,10 @@ export function applyNautilusEffect(ctrlLayer) {
   }
 }
 
-export function getAllNautilusEffect(layer) {
-  try {
-    return getAllEffectName(layer, nautilus.effectName)
-  } catch (e) {
-    throw new Error("[getAllNautilusEffect] " + e.message)
-  }
-}
-
-export function isNautilusEffect(property) {
-  return property.name.indexOf(nautilus.effectName) !== -1
-}
-
 export function applyNautiFLowEffect(layer) {
   try {
-    layer.applyPreset(nautilus.nautiFlowPresetFileObj);
+    layer.applyPreset(nautilus.effectObj.nautiflow.default);
   } catch (e) {
     throw new Error("[applyNautiFlowEffect] " + e.message)
   }
-}
-
-export function getAllNautiFlowEffect(layer) {
-  return getAllEffectName(layer, nautilus.nautiFlowEffectName)
 }

@@ -1,29 +1,20 @@
 import { nautilus } from "../state";
 import { readJsonFile, writeFile } from "./file";
-import { getFolderPath } from "./myDocuments";
+import { getFolderByName } from "./myDocuments";
+import { getFile as getFileUtil } from './file'
 
-const jsonName = "settings.json"
+const settingsJsonName = "settings.json"
 
-function folderPath() {
-  try {
-    return getFolderPath('Settings')
-  } catch (e) {
-    throw new Error("[getFolder] " + e.message)
-  }
-}
-
-function jsonPath() {
-  try {
-    const settingsFolderPath = folderPath()
-    return settingsFolderPath + "/" + jsonName
-  } catch (e) {
-    throw new Error("[settingsJsonPath] " + e.message)
-  }
+const getFileByName = (fileName) => {
+  const folder = getFolderByName('settings')
+  const jsonPath = `${folder.fsName}/${fileName}`
+  return getFileUtil(jsonPath)
 }
 
 export function load() {
   try {
-    const settings = readJsonFile(jsonPath())
+    const file = getFileByName(settingsJsonName)
+    const settings = readJsonFile(file)
     
     if (settings) nautilus.settings = {...nautilus.settings, ...settings}
   } catch (e) {
@@ -33,7 +24,8 @@ export function load() {
 
 export function save() {
   try {
-    writeFile(jsonPath(), JSON.stringify(nautilus.settings))
+    const file = getFileByName(settingsJsonName)
+    writeFile(file, JSON.stringify(nautilus.settings))
     
   } catch (e) {
     throw new Error("[save] " + e.message)

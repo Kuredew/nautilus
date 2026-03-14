@@ -86,7 +86,7 @@ function main() {
     } else {
       var myStrength = ctrlFx(33).valueAtTime(lookAtTime)
       strength = utils.calculateMode(
-        globalProp.modeId, 
+        cache.modeId, 
         [myStrength, myStrength, myStrength],
         cache.interval
       )
