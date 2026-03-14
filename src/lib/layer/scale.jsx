@@ -17,8 +17,8 @@ var cache = {
   wiggleAmp: ctrlFx(46).value,
   wiggleFreq: ctrlFx(47).value,
   propValue: [
-    ctrlFx(102).value,
-    ctrlFx(103).value,
+    ctrlFx(106).value,
+    ctrlFx(107).value,
   ]
 }
 

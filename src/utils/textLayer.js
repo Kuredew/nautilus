@@ -40,7 +40,8 @@ export function createAnimator(textLayer, config) {
       rotation: "ADBE Text Rotation",
       opacity: "ADBE Text Opacity",
       scale: "ADBE Text Scale 3D",
-      tracking: "ADBE Text Tracking Amount"
+      tracking: "ADBE Text Tracking Amount",
+      skew: "ADBE Text Skew"
     }
 
     const textProp = textLayer.property("ADBE Text Properties")

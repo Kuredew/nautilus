@@ -68,13 +68,17 @@ export function applyTextLayer(textLayer, effectName) {
     const defaultTemplate = 'var ctrlFx = effect("NAUTILUS_FX_NAME");\n\nPROPERTY_EXPRESSION'
     
     const rawPropertyExprs = [
+      nautilus.expression.text.trackingValue,
       nautilus.expression.text.positionValue,
+      nautilus.expression.text.skewValue,
       nautilus.expression.text.rotationValue,
       nautilus.expression.text.scaleValue,
       nautilus.expression.text.opacityValue,
     ]
     const rawSelectorExprs = [
+      nautilus.expression.text.tracking,
       nautilus.expression.text.position,
+      nautilus.expression.text.skew,
       nautilus.expression.text.rotation,
       nautilus.expression.text.scale,
       nautilus.expression.text.opacity,
@@ -84,28 +88,40 @@ export function applyTextLayer(textLayer, effectName) {
     
     const configs = [
       { 
-        name: "Nautilus Position",
-        propertyName: "position",
+        name: "Nautilus Tracking",
+        propertyName: "tracking",
         propertyExpr: finalPropertyExprs[0],
         selectorExpr: finalSelectorExprs[0] 
       },
       { 
+        name: "Nautilus Position",
+        propertyName: "position",
+        propertyExpr: finalPropertyExprs[1],
+        selectorExpr: finalSelectorExprs[1] 
+      },
+      { 
+        name: "Nautilus Skew",
+        propertyName: "skew",
+        propertyExpr: finalPropertyExprs[2],
+        selectorExpr: finalSelectorExprs[2] 
+      },
+      { 
         name: "Nautilus Rotation", 
         propertyName: "rotation",
-        propertyExpr: finalPropertyExprs[1], 
-        selectorExpr: finalSelectorExprs[1] 
+        propertyExpr: finalPropertyExprs[3], 
+        selectorExpr: finalSelectorExprs[3] 
       },
       { 
         name: "Nautilus Scale", 
         propertyName: "scale",
-        propertyExpr: finalPropertyExprs[2], 
-        selectorExpr: finalSelectorExprs[2] 
+        propertyExpr: finalPropertyExprs[4], 
+        selectorExpr: finalSelectorExprs[4] 
       },
       { 
         name: "Nautilus Opacity", 
         propertyName: "opacity",
-        propertyExpr: finalPropertyExprs[3], 
-        selectorExpr: finalSelectorExprs[3] 
+        propertyExpr: finalPropertyExprs[5], 
+        selectorExpr: finalSelectorExprs[5] 
       },
     ]
 

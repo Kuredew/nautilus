@@ -35,7 +35,6 @@ export function removeNautilus() {
           findAnimatorIndexesByEffectName(layer, effectName).forEach(index => animatorsGroup.property(index).remove())
 
         } else if (layer.source instanceof CompItem) {
-          if (effect) effect.remove()
           const nautilusEffects = getAllNautilusEffect(layer)
           
           if (nautilusEffects.length === 0) clearExprFromAllLayers(layer)
