@@ -1,4 +1,3 @@
-// import { getFileObj, readFile, readJsonFile } from "./utils/nautilusLib"
 import { readFile, readJsonFile } from './utils/file'
 import { getFile } from './utils/nautilusLib'
 import { load as settingsLoad } from './utils/settings'
@@ -57,6 +56,7 @@ export const nautilus = {
       extract: null,
       apply: null,
       basedOn: null,
+      reload: null,
       bake: null,
       remove: null,
       settings: null
@@ -117,6 +117,7 @@ export function load() {
     nautilus.icons.extract = getFile("icons/extract.png")
     nautilus.icons.apply = getFile("icons/apply.png")
     nautilus.icons.basedOn = getFile("icons/based-on.png")
+    nautilus.icons.reload = getFile("icons/reload.png")
     nautilus.icons.bake = getFile("icons/bake.png")
     nautilus.icons.remove = getFile("icons/remove.png")
     nautilus.icons.settings = getFile("icons/settings.png")

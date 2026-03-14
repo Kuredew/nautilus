@@ -3,6 +3,7 @@ import { bake } from "../core/bake";
 import { createBasedOnWindow } from "../core/changeBasedOn";
 import { extract } from "../core/extract";
 import { createAboutWindow } from "../core/help";
+import { reload } from "../core/reload";
 import { removeNautilus } from "../core/remove";
 import { createSettingsWindow } from "../core/settings";
 import { nautilus } from "../state";
@@ -38,6 +39,9 @@ export function createMainWindow(ui_ref) {
 
       const basedOnButton = btnGroup.add("iconbutton", undefined, nautilus.icons.basedOn, { style: "toolbutton" });
       basedOnButton.helpTip = "Change Based On text animator\n(Please note this only works for text layer)"
+
+      const reloadButton = btnGroup.add("iconbutton", undefined, nautilus.icons.reload, { style: "toolbutton" });
+      reloadButton.helpTip = "Reload applied nautilus expression. (use this to fix common bug)"
 
       const bakeButton = btnGroup.add("iconbutton", undefined, nautilus.icons.bake, { style: "toolbutton" });
       bakeButton.helpTip = "Bake applied Nautilus layer into keyframes"
@@ -93,6 +97,7 @@ export function createMainWindow(ui_ref) {
       basedOnButton.onClick = function () { executeFunc(createBasedOnWindow); resetButton(this) }
       settingsButton.onClick = function () { executeFunc(createSettingsWindow); resetButton(this) }
 
+      reloadButton.onClick = function() { executeFunc(reload); resetButton(this) }
       bakeButton.onClick = function () { executeFunc(bake); resetButton(this) }
       removeButton.onClick = function () { executeFunc(removeNautilus); resetButton(this) }
       extractButton.onClick = function() { executeFunc(extract); resetButton(this) }

@@ -1,6 +1,5 @@
 import { nautilus } from "../state";
 import { getCompItem } from "../utils/app";
-import { getAllNautilusEffect } from "../utils/effect";
 import { getExpr } from "../utils/expression";
 import { applyExprToLayer } from "../utils/layer";
 import { addAnimatorWithExprs } from "./textLayer";
@@ -43,9 +42,8 @@ export function applyLayer(layer, config) {
   );
 }
 
-export function applyLayers(compLayer) {
+export function applyLayers(compLayer, effectNames) {
   try {
-    const nautilusEffects = getAllNautilusEffect(compLayer)
     const comp = getCompItem()
 
     const innerComp = compLayer.source;
@@ -56,7 +54,7 @@ export function applyLayers(compLayer) {
         layerIndex: j,
         parentCompName: comp.name,
         compName: compLayer.name, 
-        nautilusEffectNames: nautilusEffects.map(e => e.name)
+        nautilusEffectNames: effectNames
       })
     }
   } catch (e) {

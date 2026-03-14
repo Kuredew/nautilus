@@ -24,6 +24,15 @@ export function findAnimatorIndexesByEffectName(textLayer, effectName) {
   }
 }
 
+export function removeAnimatorByEffectName(textLayer, effectName) {
+  try {
+    const animatorsGroup = textLayer.property("ADBE Text Properties").property("ADBE Text Animators")
+    findAnimatorIndexesByEffectName(textLayer, effectName).forEach(index => animatorsGroup.property(index).remove())
+  } catch (e) {
+    throw new Error("[removeAnimatorByEffectName] " + e.message)
+  }
+}
+
 export function createAnimator(textLayer, config) {
   try {
     const matchNames = {
