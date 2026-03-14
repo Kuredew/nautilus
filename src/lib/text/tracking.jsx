@@ -8,7 +8,7 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(81).value,
+  isTurnOn: ctrlFx(85).value,
 }
 
 
@@ -20,7 +20,7 @@ function main() {
   
   if (cache.isTurnOn) {
     // Lazy load
-    strength = ctrlFx(82).valueAtTime(lookAtTime)
+    strength = ctrlFx(86).valueAtTime(lookAtTime)
   } else {
     strength = getCtrlStrength()
   }

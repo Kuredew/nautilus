@@ -8,11 +8,11 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(85).value,
-  isWiggle: ctrlFx(88).value,
-  wiggleSeed: ctrlFx(89).value,
-  wiggleAmp: ctrlFx(90).value,
-  wiggleFreq: ctrlFx(91).value
+  isTurnOn: ctrlFx(89).value,
+  isWiggle: ctrlFx(92).value,
+  wiggleSeed: ctrlFx(93).value,
+  wiggleAmp: ctrlFx(94).value,
+  wiggleFreq: ctrlFx(95).value
 }
 
 
@@ -23,7 +23,7 @@ function main() {
   var strength
 
   if (cache.isTurnOn) {
-    strength = ctrlFx(86).valueAtTime(lookAtTime)
+    strength = ctrlFx(90).valueAtTime(lookAtTime)
   } else {
     strength = getCtrlStrength()
   }
