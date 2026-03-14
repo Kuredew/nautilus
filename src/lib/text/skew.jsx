@@ -1,5 +1,5 @@
 /**
- * Opacity Function
+ * Skew Function
  * Created for Nautilus Project
  */
 
@@ -8,11 +8,11 @@
  * Variable Cache
  */
 var cache = {
-  isTurnOn: ctrlFx(85).value,
-  isWiggle: ctrlFx(88).value,
-  wiggleSeed: ctrlFx(89).value,
-  wiggleAmp: ctrlFx(90).value,
-  wiggleFreq: ctrlFx(91).value
+  isTurnOn: ctrlFx(71).value,
+  isWiggle: ctrlFx(74).value,
+  wiggleSeed: ctrlFx(75).value,
+  wiggleAmp: ctrlFx(76).value,
+  wiggleFreq: ctrlFx(77).value
 }
 
 
@@ -23,7 +23,7 @@ function main() {
   var strength
 
   if (cache.isTurnOn) {
-    strength = ctrlFx(86).valueAtTime(lookAtTime)
+    strength = ctrlFx(72).valueAtTime(lookAtTime)
   } else {
     strength = getCtrlStrength()
   }

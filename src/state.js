@@ -23,12 +23,16 @@ export const nautilus = {
     expression: {
       text: {
         template: null,
+        tracking: null,
+        trackingValue: null,
         trackingMaskValue: null,
         trackingMask: null,
         position: null,
         positionValue: null,
         positionMask: null,
         positionMaskValue: null,
+        skew: null,
+        skewValue: null,
         rotation: null,
         rotationValue: null,
         rotationMask: null,
@@ -93,12 +97,16 @@ export function load() {
     // Load expression for Text layer mode
     nautilus.effectObj.nautiflow.default = getFile("effect/nautiflow/default.ffx")
     nautilus.expression.text.template = readFile(getFile("text/template.jsx"))
+    nautilus.expression.text.tracking = readFile(getFile("text/tracking.jsx"))
+    nautilus.expression.text.trackingValue = readFile(getFile("text/trackingValue.jsx"))
     nautilus.expression.text.trackingMaskValue = readFile(getFile("text/trackingMaskValue.jsx"))
     nautilus.expression.text.trackingMask = readFile(getFile("text/trackingMask.jsx"))
     nautilus.expression.text.position = readFile(getFile("text/position.jsx"))
     nautilus.expression.text.positionValue = readFile(getFile("text/positionValue.jsx"))
     nautilus.expression.text.positionMask = readFile(getFile("text/positionMask.jsx"))
     nautilus.expression.text.positionMaskValue = readFile(getFile("text/positionMaskValue.jsx"))
+    nautilus.expression.text.skew = readFile(getFile("text/skew.jsx"))
+    nautilus.expression.text.skewValue = readFile(getFile("text/skewValue.jsx"))
     nautilus.expression.text.rotation = readFile(getFile("text/rotation.jsx"))
     nautilus.expression.text.rotationValue = readFile(getFile("text/rotationValue.jsx"))
     nautilus.expression.text.rotationMask = readFile(getFile("text/rotationMask.jsx"))
