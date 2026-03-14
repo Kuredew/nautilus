@@ -10,8 +10,8 @@ export function applyComp() {
   try {
     const selectedLayers = getSelectedLayer();
     const applyToComp = (compLayer) => {
-      applyNautilusEffect(compLayer)
-      applyLayers(compLayer)
+      const effects = applyNautilusEffect(compLayer)
+      applyLayers(compLayer, effects.map(e => e.name))
     }
     
     selectedLayers.forEach((layer) => {
