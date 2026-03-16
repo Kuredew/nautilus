@@ -16,7 +16,13 @@ const bakeFromPrecomp = (compLayer) => {
     ]
 
     const innerComp = compLayer.source
-    const { setProgress, close } = createProgress("Nautilus Bake", "Baking expression into keyframes...",{ minValue: 0, maxValue: innerComp.numLayers })
+    const startTime = innerComp.workAreaStart;
+    const endTime = innerComp.workAreaDuration + startTime;
+    const { setProgress, close } = createProgress(
+      "Nautilus Bake", 
+      "Baking expression into keyframes...", 
+      { minValue: startTime, maxValue: endTime }
+    )
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i)
@@ -25,9 +31,6 @@ const bakeFromPrecomp = (compLayer) => {
       matchNames.forEach(matchName => {
         const prop = transformGrp.property(matchName)
         if (prop.canSetExpression && prop.expressionEnabled) {
-          const startTime = innerComp.workAreaStart;
-          const endTime = innerComp.workAreaDuration + startTime;
-
           let prevValue = null;
 
           const cache = []
@@ -39,6 +42,7 @@ const bakeFromPrecomp = (compLayer) => {
             }
 
             prevValue = currentValue;
+            setProgress(t)
           }
           cache.forEach(item => {
             const newKeyIndex = prop.addKey(item.time);
@@ -50,7 +54,6 @@ const bakeFromPrecomp = (compLayer) => {
           prop.expressionEnabled = false;
         }
       })
-      setProgress(i)
     }
     
     close()
