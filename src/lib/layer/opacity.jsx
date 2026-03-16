@@ -35,7 +35,7 @@ function main() {
   var newValue
 
   if (cache.isTurnOn) {
-    var myStrength = ctrlFx(86).valueAtTime(lookAtTime)
+    var myStrength = ctrlFx(90).valueAtTime(lookAtTime)
 
     newValue = utils.getValue(cache.propValue, myStrength)
   } else {
