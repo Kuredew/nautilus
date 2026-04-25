@@ -74,6 +74,11 @@ function main() {
 
     strength = calculateMode(ctrlMode - 1, [ctrlStrength, ctrlStrength, ctrlStrength], ctrlInterval)
   }
+  
+  if (cache.isWiggle) {
+    seedRandom(cache.wiggleSeed)
+    strength += wiggle(cache.wiggleFreq, cache.wiggleAmp)
+  }
 
   /**
    * final

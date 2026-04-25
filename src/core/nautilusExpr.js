@@ -84,7 +84,7 @@ export function applyTextLayer(textLayer, effectName) {
       nautilus.expression.text.opacity,
     ]
     const finalPropertyExprs = rawPropertyExprs.map((expr) => (getExpr(defaultTemplate, { NAUTILUS_FX_NAME: effectName, PROPERTY_EXPRESSION: expr })))
-    const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { NAUTILUS_FX_NAME: effectName, PROPERTY_EXPRESSION: expr })))
+    const finalSelectorExprs = rawSelectorExprs.map((expr) => (getExpr(nautilus.expression.text.template, { VERSION: nautilus.version, NAUTILUS_FX_NAME: effectName, PROPERTY_EXPRESSION: expr })))
     
     const configs = [
       { 
