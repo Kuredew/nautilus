@@ -27,6 +27,11 @@ function main() {
   } else {
     strength = getCtrlStrength()
   }
+  
+  if (cache.isWiggle) {
+    seedRandom(cache.wiggleSeed)
+    strength += wiggle(cache.wiggleFreq, cache.wiggleAmp)
+  }
 
   /**
    * final
