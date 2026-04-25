@@ -6,9 +6,11 @@
   "main": "src/index.js",
   "watch": {
     "build:dev": {
-      "patterns": ["src"],
+      "patterns": [
+        "src"
+      ],
       "extensions": "js",
-      "quiet":false
+      "quiet": false
     }
   },
   "scripts": {
@@ -28,6 +30,7 @@
     "@babel/core": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
     "@eslint/js": "^10.0.1",
+    "czg": "^1.12.0",
     "eslint": "^10.0.3",
     "eslint-plugin-import": "^2.32.0",
     "extendscriptr": "^1.2.5",
