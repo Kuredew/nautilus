@@ -13,6 +13,7 @@ export const nautilus = {
       nautilus: {
         default: null,
         in: null,
+        inAlternate: null,
         out: null
       },
       nautiflow: {
@@ -68,6 +69,7 @@ export const nautilus = {
     settings: {
       nautilus: {
         keyframeIn: true,
+        applyAlternateAnimation: true,
         keyframeOut: true
       },
       progressWindow: {
@@ -82,6 +84,7 @@ export function load() {
   try {
     // Load expression for Comp Mode
     nautilus.effectObj.nautilus.in = getFile("effect/nautilus/in.ffx")
+    nautilus.effectObj.nautilus.inAlternate = getFile("effect/nautilus/in_alternate.ffx")
     nautilus.effectObj.nautilus.out = getFile("effect/nautilus/out.ffx")
     nautilus.effectObj.nautilus.default = getFile("effect/nautilus/default.ffx")
     nautilus.version = readJsonFile(getFile("package.json")).version
@@ -121,7 +124,7 @@ export function load() {
     // Load button Icon
     nautilus.icons.text = getFile("icons/text.png")
     nautilus.icons.comp = getFile("icons/comp.png")
-    nautilus.icons.about = getFile("icons/about.png")
+    nautilus.icons.about = getFile("icons/nautilus.png")
     nautilus.icons.extract = getFile("icons/extract.png")
     nautilus.icons.apply = getFile("icons/apply.png")
     nautilus.icons.basedOn = getFile("icons/based-on.png")

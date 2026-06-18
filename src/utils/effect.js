@@ -50,7 +50,8 @@ export function applyNautilusEffect(ctrlLayer) {
     }
 
     if (ctrlLayerEffects.length === 0 && nautilus.applyToCompLayers) {
-      if (nautilus.settings.nautilus.keyframeIn) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in)
+      if (nautilus.settings.nautilus.keyframeIn && !nautilus.settings.nautilus.applyAlternateAnimation) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in)
+      else if (nautilus.settings.nautilus.keyframeIn && nautilus.settings.nautilus.applyAlternateAnimation) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.inAlternate)
       else applyDefault()
     } else {
       ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out);
