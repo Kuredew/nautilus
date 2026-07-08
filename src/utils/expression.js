@@ -1,8 +1,11 @@
 // defaultVariableExpression, propertyExpression, nautilusEffectName, ownCompName, compName, nullName, effectNameList
 export function getExpr(template, replaceConfig) {
   try {
-    let expr = template;
+    if (!template) {
+      throw new Error("Expression is null or undefined");
+    }
 
+    let expr = template;
     for (const key in replaceConfig) {
       expr = expr.replace(key, replaceConfig[key]);
     }
