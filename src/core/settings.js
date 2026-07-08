@@ -17,6 +17,10 @@ export function createSettingsWindow() {
 
   const keyframeInNautilus = nautilusPanel.add('checkbox', undefined, "Add keyframe in to nautilus effect when first applying")
   keyframeInNautilus.value = nautilusSettings.keyframeIn
+
+  const applyAlternateAnimationNautilus = nautilusPanel.add('checkbox', undefined, "Apply alternate animation")
+  applyAlternateAnimationNautilus.value = nautilusSettings.applyAlternateAnimation
+
   const keyframeOutNautilus = nautilusPanel.add('checkbox', undefined, "Add keyframe out on nautilus effect when next apply")
   keyframeOutNautilus.value = nautilusSettings.keyframeOut
   
@@ -36,7 +40,20 @@ export function createSettingsWindow() {
   keyframeInNautilus.onClick = () => {
     nautilusSettings.keyframeIn = keyframeInNautilus.value
     resetButton(this)
+    
+    if (nautilusSettings.keyframeIn) {
+      applyAlternateAnimationNautilus.enabled = true
+    } else if (!nautilusSettings.keyframeIn) {
+      applyAlternateAnimationNautilus.enabled = false
+    }
   }
+  
+  applyAlternateAnimationNautilus.onClick = () => {
+    nautilusSettings.applyAlternateAnimation = applyAlternateAnimationNautilus.value
+
+    resetButton(this)
+  }
+
   keyframeOutNautilus.onClick = () => {
     nautilusSettings.keyframeOut = keyframeOutNautilus.value
     resetButton(this)
