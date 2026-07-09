@@ -14,11 +14,11 @@
     <img src="https://github.com/user-attachments/assets/f16cc843-07da-48ff-95a9-58d222e093d5">
 </div>
 
-## About
+### About
 
 Nautilus is a script for creating Japanese-like text animation. It's very similar to TextEvo, but more flexible. Animation keyframes are separated based on transforms, rather than combined into a single strength property.
 
-## Installation
+### Installation
 
 1. Go to [Releases](https://github.com/Kuredew/nautilus/releases/latest), download **Nautilus.zip** from assets
 2. Extract the file, and open the **dist** folder
@@ -28,11 +28,11 @@ Nautilus is a script for creating Japanese-like text animation. It's very simila
 C:\Program Files\Adobe\Adobe After Effects (your version)\Support Files\Scripts\ScriptUI Panels
 ```
 
-## Usage
+### Usage
 
 We're currently working on the documentation for how to use the script; please stay tuned.
 
-## Roadmap
+### Roadmap
 
 | Milestone                      | Status | Version     |
 | :----------------------------- | :----- | :---------- |
@@ -41,6 +41,6 @@ We're currently working on the documentation for how to use the script; please s
 | 3D Text Layer Support          | ❌     | -           |
 | Variable Font Animate Support  | ❌     | Not Planned |
 
-## Contributing
+### Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
