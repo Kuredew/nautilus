@@ -15,53 +15,63 @@ export function findEffects(layer, name) {
   return foundEffects;
 }
 
-
 export function getAllNautilusEffect(layer) {
   try {
-    return findEffects(layer, nautilus.effectName)
+    return findEffects(layer, nautilus.effectName);
   } catch (e) {
-    throw new Error("[getAllNautilusEffect] " + e.message)
+    throw new Error("[getAllNautilusEffect] " + e.message);
   }
 }
 
 export function isNautilusEffect(property) {
-  return property.name.indexOf(nautilus.effectName) !== -1
+  return property.name.indexOf(nautilus.effectName) !== -1;
 }
 
 export function getAllNautiFlowEffect(layer) {
-  return findEffects(layer, nautilus.nautiFlowEffectName)
+  return findEffects(layer, nautilus.nautiFlowEffectName);
 }
 
 export function applyNautilusEffect(ctrlLayer) {
   try {
-    const comp = ctrlLayer.containingComp
-    comp.selectedLayers.forEach(layer => {
+    const comp = ctrlLayer.containingComp;
+    comp.selectedLayers.forEach((layer) => {
       layer.selected = false;
-    })
-    comp.selectedLayers.forEach(layer => {
+    });
+    comp.selectedLayers.forEach((layer) => {
       layer.selected = false;
-    })
+    });
 
-    ctrlLayer.selected = true
+    ctrlLayer.selected = true;
     const ctrlLayerEffects = getAllNautilusEffect(ctrlLayer);
-    
+
     const applyDefault = () => {
-      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default)
-    }
+      ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default);
+    };
 
     if (ctrlLayerEffects.length === 0 && nautilus.applyToCompLayers) {
-      if (nautilus.settings.nautilus.keyframeIn && !nautilus.settings.nautilus.applyAlternateAnimation) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in)
-      else if (nautilus.settings.nautilus.keyframeIn && nautilus.settings.nautilus.applyAlternateAnimation) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.inAlternate)
-      else applyDefault()
+      if (
+        nautilus.settings.nautilus.keyframeIn &&
+        !nautilus.settings.nautilus.applyAlternateAnimation
+      )
+        ctrlLayer.applyPreset(nautilus.effectObj.nautilus.in);
+      else if (
+        nautilus.settings.nautilus.keyframeIn &&
+        nautilus.settings.nautilus.applyAlternateAnimation
+      )
+        ctrlLayer.applyPreset(nautilus.effectObj.nautilus.inAlternate);
+      else applyDefault();
     } else {
       ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out);
-      if (nautilus.settings.nautilus.keyframeOut) ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out)
-      else applyDefault()
+      if (nautilus.settings.nautilus.keyframeOut)
+        ctrlLayer.applyPreset(nautilus.effectObj.nautilus.out);
+      else applyDefault();
     }
 
-    return getAllNautilusEffect(ctrlLayer)
+    const appliedNautilusEffectNames = getAllNautilusEffect(ctrlLayer);
+
+    return appliedNautilusEffectNames[appliedNautilusEffectNames.length - 1];
   } catch (e) {
-    throw new Error("[applyNautilusEffect] " + e.message)
+    throw new Error("[applyNautilusEffect] " + e.message);
   }
 }
 
@@ -69,6 +79,6 @@ export function applyNautiFLowEffect(layer) {
   try {
     layer.applyPreset(nautilus.effectObj.nautiflow.default);
   } catch (e) {
-    throw new Error("[applyNautiFlowEffect] " + e.message)
+    throw new Error("[applyNautiFlowEffect] " + e.message);
   }
 }
