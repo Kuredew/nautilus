@@ -1,69 +1,64 @@
-import { nautilus } from "../state";
+// import { nautilus } from "../state";
 import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer";
-import { applyNautiFLowEffect, applyNautilusEffect, getAllNautilusEffect } from "../utils/effect";
-import { applyLayers, applyTextLayer as nautilusExprApply } from "./nautilusExpr";
-import { applyTextLayer as nautiflowExprApply } from "./nautiflowExpr"
+import {
+  applyNautiFLowEffect,
+  applyNautilusEffect,
+  getAllNautilusEffect,
+} from "../utils/effect";
+import {
+  applyLayers,
+  applyTextLayer as nautilusExprApply,
+} from "./nautilusExpr";
+import { applyTextLayer as nautiflowExprApply } from "./nautiflowExpr";
 
-
-export function applyComp() {
-  app.beginUndoGroup("Apply Nautilus");
+export function applyComp(compLayer) {
   try {
-    const selectedLayers = getSelectedLayer();
-    const applyToComp = (compLayer) => {
-      const effects = applyNautilusEffect(compLayer)
-      applyLayers(compLayer, effects.map(e => e.name))
-    }
-    
-    selectedLayers.forEach((layer) => {
-      if (isCompLayer(layer)) {
-        applyToComp(layer)
-      } else {
-        // TODO: do precomp here, select and
-        // applyToComp(precompLayer)
-        
-      }
-    })
-  } catch (e) {
-    throw new Error("[applyComp] " + e.message)
-  }
+    applyNautilusEffect(compLayer);
 
-  app.endUndoGroup();
+    const appliedNautilusEffectNames = getAllNautilusEffect(compLayer);
+    applyLayers(
+      compLayer,
+      appliedNautilusEffectNames.map((e) => e.name),
+    );
+  } catch (e) {
+    throw new Error(`[applyComp] ${e.message}`);
+  }
 }
 
-export function applyText() {
-  app.beginUndoGroup("Apply Text");
-
+export function applyText(textLayer) {
   try {
-    const selectedLayers = getSelectedLayer();
-   
-    selectedLayers.forEach(layer => {
-      if (!isTextLayer(layer)) return
-      
-      if (getAllNautilusEffect(layer).length === 0) {
-        applyNautiFLowEffect(layer)
-        nautiflowExprApply(layer)
-      }
+    if (getAllNautilusEffect(textLayer).length === 0) {
+      applyNautiFLowEffect(textLayer);
+      nautiflowExprApply(textLayer);
+    }
 
-      applyNautilusEffect(layer)
-      const nautilusEffects = getAllNautilusEffect(layer)
-      const lastNautilusEffect = nautilusEffects[nautilusEffects.length-1]
+    const lastNautilusEffect = applyNautilusEffect(textLayer);
+    if (!lastNautilusEffect)
+      throw new Error("Nautilus effect not applied correctly!");
 
-      nautilusExprApply(layer, lastNautilusEffect.name)
-    })
+    nautilusExprApply(textLayer, lastNautilusEffect.name);
+
+    app.executeCommand(2387);
   } catch (e) {
     app.endUndoGroup();
-    throw new Error("[applyText] " + e.message)
+    throw new Error(`[applyText] ${e.message}`);
   }
-
-  app.executeCommand(2387);
-  app.endUndoGroup();
 }
 
-
 export function applyNautilus() {
-  if (nautilus.mode === "text") {
-    applyText()
-  } else if (nautilus.mode === "comp") {
-    applyComp()
+  app.beginUndoGroup("apply");
+  try {
+    const selectedLayers = getSelectedLayer();
+
+    selectedLayers.forEach((layer) => {
+      if (isCompLayer(layer)) {
+        applyComp(layer);
+      } else if (isTextLayer(layer)) {
+        applyText(layer);
+      }
+    });
+  } catch (e) {
+    throw new Error(`[applyNautilus] ${e.message}`);
   }
+  app.endUndoGroup();
 }
