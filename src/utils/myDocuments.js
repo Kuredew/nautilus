@@ -1,30 +1,29 @@
-const userDataPath = Folder.myDocuments
-const folderName = 'Nautilus'
+const userDataPath = Folder.myDocuments;
+const folderName = "Nautilus";
 
 export function nautilusFolder() {
   try {
-    const folder = new Folder(`${userDataPath.fullName}/${folderName}`)
+    const folder = new Folder(`${userDataPath.fullName}/${folderName}`);
     if (!folder.exists) {
-      folder.create()
+      folder.create();
     }
-    return folder
-      
+    return folder;
   } catch (e) {
-    throw new Error("[myDocument/nautilusFolder] " + e.message)
+    throw new Error("[myDocument/nautilusFolder] " + e.message);
   }
 }
 
 export function getFolderByName(folderName) {
   try {
-    const folder = nautilusFolder()
+    const folder = nautilusFolder();
 
-    const folderPathObj = new Folder(folder.fsName + "/" + folderName)
+    const folderPathObj = new Folder(folder.fsName + "/" + folderName);
     if (!folderPathObj.exists) {
-      folderPathObj.create()
+      folderPathObj.create();
     }
 
-    return folderPathObj
+    return folderPathObj;
   } catch (e) {
-    throw new Error("[myDocument/getFolderPath] " + e.message)
+    throw new Error("[myDocument/getFolderPath] " + e.message);
   }
 }

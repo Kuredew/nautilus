@@ -4,8 +4,8 @@ export function getCompItem() {
     throw new Error("[getCompItem] Please select Composition!");
   }
 
-  return comp
+  return comp;
 }
 
-export const copy = () => app.executeCommand(19)
-export const paste = () => app.executeCommand(20)
+export const copy = () => app.executeCommand(19);
+export const paste = () => app.executeCommand(20);

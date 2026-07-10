@@ -1,1 +1,1 @@
-export const EXPRESSION_FOLDER = "nautilusLib"
+export const EXPRESSION_FOLDER = "nautilusLib";

@@ -3,23 +3,23 @@
  * Created by Kureichi | zeanlost
  */
 
-import { load } from './state.js'
-import { createMainWindow } from './ui/manifest.js';
-import { handleLoadError } from './utils/error.js';
+import { load } from "./state.js";
+import { createMainWindow } from "./ui/manifest.js";
+import { handleLoadError } from "./utils/error.js";
 
 function NautilusScript(ui_ref) {
-  load()
+  load();
 
   /**
    * Shows the window
    */
-  const mainWindow = createMainWindow(ui_ref)
+  const mainWindow = createMainWindow(ui_ref);
   if (mainWindow instanceof Window) {
-    mainWindow.center()
-    mainWindow.show()
+    mainWindow.center();
+    mainWindow.show();
   } else {
-    mainWindow.layout.layout(true)
-    mainWindow.layout.resize()
+    mainWindow.layout.layout(true);
+    mainWindow.layout.resize();
   }
 }
 
@@ -27,5 +27,5 @@ try {
   // eslint-disable-next-line no-undef
   NautilusScript(ui_ref);
 } catch (e) {
-  handleLoadError(e.message)
+  handleLoadError(e.message);
 }
