@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { copy, getCompItem, paste } from "../utils/app";
 import { getAllNautilusEffect } from "../utils/effect";
 import {
@@ -55,7 +56,6 @@ const bakeFromPrecomp = (compLayer) => {
           }
           cache.forEach((item) => {
             const newKeyIndex = prop.addKey(item.time);
-            // eslint-disable-next-line no-undef
             prop.setInterpolationTypeAtKey(
               newKeyIndex,
               KeyframeInterpolationType.LINEAR,

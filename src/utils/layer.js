@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { getCompItem } from "./app";
 
 export function getSelectedLayer() {
@@ -154,7 +155,6 @@ export function findAbsoluteKeyframe(layer) {
               minTime = firstKeyTime;
             }
           }
-          // eslint-disable-next-line no-undef
         } else if (
           prop.propertyType === PropertyType.INDEXED_GROUP ||
           prop.propertyType === PropertyType.NAMED_GROUP
