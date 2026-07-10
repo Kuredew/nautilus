@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      types-for-adobe:
+        specifier: ^7.2.5
+        version: 7.2.5
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -2090,6 +2094,9 @@ packages:
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
+
+  types-for-adobe@7.2.5:
+    resolution: {integrity: sha512-QUoHmjFbA/g+DnFMYwcNcGczDgcPmbtIYcmfDQZEUmtLK51W91BUlyMOdRUyuxQ8VjNuvROAjbORCz8iaML4hg==}
 
   umd@3.0.3:
     resolution: {integrity: sha512-4IcGSufhFshvLNcMCV80UnQVlZ5pMOC8mvNPForqwA4+lzYQuetTESLDQkeLmihq8bRcnpbQa48Wb8Lh16/xow==}
@@ -4786,6 +4793,8 @@ snapshots:
       reflect.getprototypeof: 1.0.10
 
   typedarray@0.0.6: {}
+
+  types-for-adobe@7.2.5: {}
 
   umd@3.0.3: {}
 
