@@ -1,5 +1,8 @@
 // defaultVariableExpression, propertyExpression, nautilusEffectName, ownCompName, compName, nullName, effectNameList
-export function getExpr(template, replaceConfig) {
+export function getExpr(
+  template: string,
+  replaceConfig: Record<string, string>,
+) {
   try {
     if (!template) {
       throw new Error("Expression is null or undefined");
@@ -12,6 +15,6 @@ export function getExpr(template, replaceConfig) {
 
     return expr;
   } catch (e) {
-    throw new Error("[getExpr] " + e.message);
+    if (e instanceof Error) throw new Error("[getExpr] " + e.message);
   }
 }

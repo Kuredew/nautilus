@@ -5,28 +5,35 @@ import { getFile as getFileUtil } from "./file";
 
 const settingsJsonName = "settings.json";
 
-const getFileByName = (fileName) => {
+const getFileByName = (fileName: string) => {
   const folder = getFolderByName("settings");
-  const jsonPath = `${folder.fsName}/${fileName}`;
-  return getFileUtil(jsonPath);
+
+  if (folder) {
+    const jsonPath = `${folder.fsName}/${fileName}`;
+    return getFileUtil(jsonPath);
+  }
 };
 
 export function load() {
   try {
     const file = getFileByName(settingsJsonName);
+    if (!file) throw new Error("File is undefined");
+
     const settings = readJsonFile(file);
 
     if (settings) nautilus.settings = { ...nautilus.settings, ...settings };
   } catch (e) {
-    throw new Error("[load] " + e.message);
+    if (e instanceof Error) throw new Error("[load] " + e.message);
   }
 }
 
 export function save() {
   try {
     const file = getFileByName(settingsJsonName);
+    if (!file) throw new Error("File is undefined");
+
     writeFile(file, JSON.stringify(nautilus.settings));
   } catch (e) {
-    throw new Error("[save] " + e.message);
+    if (e instanceof Error) throw new Error("[save] " + e.message);
   }
 }

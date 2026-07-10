@@ -13,15 +13,18 @@ export function removeNautilus() {
     selectedLayers.forEach((layer) => {
       const selectedEffect = layer.selectedProperties;
 
-      let effectNames = [];
+      let effectNames: string[] = [];
       if (selectedEffect.length > 0) {
         selectedEffect.forEach((effect) => {
           effectNames.push(effect.name);
         });
       } else {
+        const ntlsFXNames = getAllNautilusEffect(layer);
+        const ntflFXNames = getAllNautiFlowEffect(layer);
+
         effectNames = [
-          ...getAllNautilusEffect(layer).map((e) => e.name),
-          ...getAllNautiFlowEffect(layer).map((e) => e.name),
+          ...(ntlsFXNames ? ntlsFXNames.map((e) => e.name) : []),
+          ...(ntflFXNames ? ntflFXNames.map((e) => e.name) : []),
         ];
       }
 
@@ -35,20 +38,29 @@ export function removeNautilus() {
           const animatorsGroup = layer
             .property("ADBE Text Properties")
             .property("ADBE Text Animators");
-          findAnimatorIndexesByEffectName(layer, effectName).forEach((index) =>
+
+          const animatorIndexes = findAnimatorIndexesByEffectName(
+            layer,
+            effectName,
+          );
+          if (!animatorIndexes)
+            throw new Error("Animator indexes is undefined");
+
+          animatorIndexes.forEach((index) =>
             animatorsGroup.property(index).remove(),
           );
         } else if (layer.source instanceof CompItem) {
           const nautilusEffects = getAllNautilusEffect(layer);
 
-          if (nautilusEffects.length === 0) clearExprFromAllLayers(layer);
-          else applyLayers(layer);
+          if (nautilusEffects && nautilusEffects.length === 0)
+            clearExprFromAllLayers(layer);
+          // else applyLayers(layer);
         }
       });
     });
   } catch (e) {
     app.endUndoGroup();
-    throw new Error("[removeNautilus] " + e.message);
+    if (e instanceof Error) throw new Error("[removeNautilus] " + e.message);
   }
   app.endUndoGroup();
 }

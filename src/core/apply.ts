@@ -11,23 +11,28 @@ import {
 } from "./nautilusExpr";
 import { applyTextLayer as nautiflowExprApply } from "./nautiflowExpr";
 
-export function applyComp(compLayer) {
+export function applyComp(compLayer: AVLayer) {
   try {
     applyNautilusEffect(compLayer);
 
     const appliedNautilusEffectNames = getAllNautilusEffect(compLayer);
+    if (!appliedNautilusEffectNames)
+      throw new Error("Nautilus effect not found");
     applyLayers(
       compLayer,
       appliedNautilusEffectNames.map((e) => e.name),
     );
   } catch (e) {
-    throw new Error(`[applyComp] ${e.message}`);
+    if (e instanceof Error) throw new Error(`[applyComp] ${e.message}`);
   }
 }
 
-export function applyText(textLayer) {
+export function applyText(textLayer: AVLayer) {
   try {
-    if (getAllNautilusEffect(textLayer).length === 0) {
+    const ntlsFXNames = getAllNautilusEffect(textLayer);
+    if (!ntlsFXNames) throw new Error("Nautilus effect not found");
+
+    if (ntlsFXNames.length === 0) {
       applyNautiFLowEffect(textLayer);
       nautiflowExprApply(textLayer);
     }
@@ -41,7 +46,7 @@ export function applyText(textLayer) {
     app.executeCommand(2387);
   } catch (e) {
     app.endUndoGroup();
-    throw new Error(`[applyText] ${e.message}`);
+    if (e instanceof Error) throw new Error(`[applyText] ${e.message}`);
   }
 }
 
@@ -58,7 +63,7 @@ export function applyNautilus() {
       }
     });
   } catch (e) {
-    throw new Error(`[applyNautilus] ${e.message}`);
+    if (e instanceof Error) throw new Error(`[applyNautilus] ${e.message}`);
   }
   app.endUndoGroup();
 }

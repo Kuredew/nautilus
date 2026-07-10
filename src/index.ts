@@ -7,13 +7,15 @@ import { load } from "./state.js";
 import { createMainWindow } from "./ui/manifest.js";
 import { handleLoadError } from "./utils/error.js";
 
-function NautilusScript(ui_ref) {
+function NautilusScript(ui_ref: Window | Panel) {
   load();
 
   /**
    * Shows the window
    */
   const mainWindow = createMainWindow(ui_ref);
+  if (!mainWindow) throw new Error("Window not created (undefined)");
+
   if (mainWindow instanceof Window) {
     mainWindow.center();
     mainWindow.show();
@@ -24,8 +26,10 @@ function NautilusScript(ui_ref) {
 }
 
 try {
-  // eslint-disable-next-line no-undef
-  NautilusScript(ui_ref);
+  // @ts-ignore
+  const uiReference = ui_ref as Window | Panel;
+
+  NautilusScript(uiReference);
 } catch (e) {
-  handleLoadError(e.message);
+  if (e instanceof Error) handleLoadError(e.message);
 }

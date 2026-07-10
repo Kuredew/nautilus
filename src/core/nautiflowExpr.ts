@@ -2,7 +2,7 @@ import { nautilus } from "../state";
 import { getExpr } from "../utils/expression";
 import { addAnimatorWithExprs } from "./textLayer";
 
-export function applyTextLayer(textLayer) {
+export function applyTextLayer(textLayer: AVLayer) {
   const rawSelectorExprsKey = [
     "positionMask",
     "rotationMask",
@@ -10,7 +10,8 @@ export function applyTextLayer(textLayer) {
     "trackingMask",
   ];
   const finalSelectorExprs = rawSelectorExprsKey.map((key) => {
-    const rawExpr = nautilus.expression.text[key];
+    const rawExpr =
+      nautilus.expression.text[key as keyof typeof nautilus.expression.text];
 
     if (!rawExpr) throw new Error(`Expression "${key}" is null or undefined`);
 
@@ -31,25 +32,25 @@ export function applyTextLayer(textLayer) {
       name: "Nautiflow Position",
       propertyName: "position",
       propertyExpr: finalPropertyExprs[0],
-      selectorExpr: finalSelectorExprs[0],
+      selectorExpr: finalSelectorExprs[0] ?? "",
     },
     {
       name: "Nautiflow Rotation",
       propertyName: "rotation",
       propertyExpr: finalPropertyExprs[1],
-      selectorExpr: finalSelectorExprs[1],
+      selectorExpr: finalSelectorExprs[1] ?? "",
     },
     {
       name: "Nautiflow Scale",
       propertyName: "scale",
       propertyExpr: finalPropertyExprs[2],
-      selectorExpr: finalSelectorExprs[2],
+      selectorExpr: finalSelectorExprs[2] ?? "",
     },
     {
       name: "Nautiflow Tracking",
       propertyName: "tracking",
       propertyExpr: finalPropertyExprs[3],
-      selectorExpr: finalSelectorExprs[3],
+      selectorExpr: finalSelectorExprs[3] ?? "",
     },
   ];
 
