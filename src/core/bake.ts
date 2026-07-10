@@ -13,7 +13,7 @@ import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
 import { extractChar } from "./extract";
 import { applyLayers, applyTextLayer } from "./nautilusExpr";
 
-const bakeFromPrecomp = (compLayer) => {
+const bakeFromPrecomp = (compLayer: AVLayer) => {
   try {
     const matchNames = [
       "ADBE Position",
@@ -25,11 +25,12 @@ const bakeFromPrecomp = (compLayer) => {
     const innerComp = compLayer.source;
     const startTime = innerComp.workAreaStart;
     const endTime = innerComp.workAreaDuration + startTime;
-    const { setProgress, close } = createProgress(
+    const progress = createProgress(
       "Nautilus Bake",
       "Baking expression into keyframes...",
       { minValue: startTime, maxValue: endTime },
     );
+    if (!progress) throw new Error("Progress window not created (undefined)");
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i);
@@ -52,7 +53,7 @@ const bakeFromPrecomp = (compLayer) => {
             }
 
             prevValue = currentValue;
-            setProgress(t);
+            progress.setProgress(t);
           }
           cache.forEach((item) => {
             const newKeyIndex = prop.addKey(item.time);
@@ -69,15 +70,19 @@ const bakeFromPrecomp = (compLayer) => {
       });
     }
 
-    close();
+    progress.close();
   } catch (e) {
-    throw new Error("[bakeFromPrecomp] " + e.message);
+    if (e instanceof Error) throw new Error("[bakeFromPrecomp] " + e.message);
   }
 };
 
-function bakeFromText(layer) {
+function bakeFromText(layer: TextLayer) {
   try {
-    getAllNautilusEffect(layer).forEach((effect) => (effect.selected = true));
+    const ntlsFXNames = getAllNautilusEffect(layer);
+    if (!ntlsFXNames) throw new Error("Nautilus effect not found (undefined)");
+
+    ntlsFXNames.forEach((effect) => (effect.selected = true));
+
     copy();
 
     const comp = getCompItem();
@@ -88,18 +93,36 @@ function bakeFromText(layer) {
       .property("ADBE Text Properties")
       .property("ADBE Text Animators");
     const nautilusEffects = getAllNautilusEffect(layer);
-    nautilusEffects.forEach((effect) =>
-      findAnimatorIndexesByEffectName(layer, effect.name).forEach((index) =>
-        animatorsGroup.property(index).remove(),
-      ),
-    );
+
+    if (!nautilusEffects)
+      throw new Error("Nautilus effect not found (undefined)");
+
+    nautilusEffects.forEach((effect) => {
+      const animatorIndexes = findAnimatorIndexesByEffectName(
+        layer,
+        effect.name,
+      );
+      if (animatorIndexes)
+        animatorIndexes.forEach((index) =>
+          animatorsGroup.property(index).remove(),
+        );
+    });
 
     const preComp = extractChar(layer);
-    const compLayer = comp.layer(preComp.name);
+    if (!preComp)
+      throw new Error(
+        "Character not extracted successfully (precomp undefined)",
+      );
+
+    const compLayer = comp.layer(preComp.name) as AVLayer;
 
     unSelectAllLayer();
     compLayer.selected = true;
-    comp.time = findAbsoluteKeyframe(layer).minTime;
+    const absoluteKeyframes = findAbsoluteKeyframe(layer);
+    if (!absoluteKeyframes)
+      throw new Error("Absolute keyframes not found (undefined)");
+
+    comp.time = absoluteKeyframes.minTime;
     paste();
 
     applyLayers(
@@ -111,7 +134,7 @@ function bakeFromText(layer) {
 
     nautilusEffects.forEach((effect) => applyTextLayer(layer, effect.name));
   } catch (e) {
-    throw new Error("[bakeFromText] " + e.message);
+    if (e instanceof Error) throw new Error("[bakeFromText] " + e.message);
   }
 }
 
@@ -124,14 +147,15 @@ export function bake() {
       if (isCompLayer(layer)) {
         bakeFromPrecomp(layer);
       } else if (isTextLayer(layer)) {
-        // TODO: Check if text layer is nautilus applied text layer.
-        // after that, extract text layer into preComp, and do bakeFromPrecomp()
+        if (!(layer instanceof TextLayer))
+          throw new Error("Layer is not instance of TextLayer");
+
         bakeFromText(layer);
       }
     });
   } catch (e) {
     app.endUndoGroup();
-    throw new Error("[bake] " + e.message);
+    if (e instanceof Error) throw new Error("[bake] " + e.message);
   }
   app.endUndoGroup();
 }

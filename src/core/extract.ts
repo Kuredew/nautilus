@@ -8,7 +8,7 @@ import {
 } from "../utils/layer";
 import { createProgress } from "../utils/progress";
 
-export function extractChar(layer) {
+export function extractChar(layer: AVLayer) {
   try {
     if (!isTextLayer(layer)) {
       throw new Error("Please only select text layer!");
@@ -24,7 +24,7 @@ export function extractChar(layer) {
     // get shape layer from Create Shapes from Text
     const comp = getCompItem();
     const mainShapeLayer = comp.selectedLayers[0];
-    const contents = mainShapeLayer.property("Contents");
+    const contents = mainShapeLayer.property("Contents") as PropertyGroup;
     const shapeCount = contents.numProperties;
 
     // store group name reference
@@ -33,19 +33,20 @@ export function extractChar(layer) {
       groupNames.push(contents.property(i).name);
     }
 
-    const { setProgress, close } = createProgress(
+    const progressWindow = createProgress(
       "Nautilus Extract",
       "Extracting text into shapes...",
       { minValue: 0, maxValue: groupNames.length },
     );
+    if (!progressWindow) throw new Error("Progress window is undefined");
 
-    const layerIndices = [];
+    const layerIndices: number[] = [];
     groupNames.forEach((groupName, index) => {
-      const charLayer = mainShapeLayer.duplicate();
+      const charLayer = mainShapeLayer.duplicate() as AVLayer;
       charLayer.name = "Char_" + groupName + "_" + index;
       layerIndices.push(charLayer.index);
 
-      const charContents = charLayer.property("Contents");
+      const charContents = charLayer.property("Contents") as PropertyGroup;
 
       const id = charContents.numProperties - index;
       // remove group except index group
@@ -74,12 +75,12 @@ export function extractChar(layer) {
 
       charLayer.transform.position.setValue([newPosX, newPosY]);
 
-      setProgress(index + 1);
+      progressWindow.setProgress(index + 1);
     });
 
     // remove main shape layer
     mainShapeLayer.remove();
-    close();
+    progressWindow.close();
 
     // precompose extracted layers
     return precomposeLayers(
@@ -89,7 +90,7 @@ export function extractChar(layer) {
       textLayer.outPoint,
     );
   } catch (e) {
-    throw new Error("[extractChar] " + e.message);
+    if (e instanceof Error) throw new Error("[extractChar] " + e.message);
   }
 }
 
@@ -102,7 +103,7 @@ export function extract() {
       extractChar(layer);
     });
   } catch (e) {
-    throw new Error("[extract] " + e.message);
+    if (e instanceof Error) throw new Error("[extract] " + e.message);
   }
   app.endUndoGroup();
 }

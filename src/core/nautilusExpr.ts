@@ -4,7 +4,15 @@ import { getExpr } from "../utils/expression";
 import { applyExprToLayer } from "../utils/layer";
 import { addAnimatorWithExprs } from "./textLayer";
 
-export function applyLayer(layer, config) {
+export function applyLayer(
+  layer: AVLayer,
+  config: {
+    parentCompName: string;
+    compName: string;
+    nautilusEffectNames: string[];
+    layerIndex: string;
+  },
+) {
   const exprList = [
     nautilus.expression.layer.position,
     nautilus.expression.layer.scale,
@@ -26,17 +34,17 @@ export function applyLayer(layer, config) {
   );
 
   applyExprToLayer(layer, {
-    position: finalExpr[0],
-    scale: finalExpr[1],
-    opacity: finalExpr[2],
-    rotation: finalExpr[5],
-    rotationX: finalExpr[3],
-    rotationY: finalExpr[4],
-    rotationZ: finalExpr[5],
+    position: finalExpr[0] ?? "",
+    scale: finalExpr[1] ?? "",
+    opacity: finalExpr[2] ?? "",
+    rotation: finalExpr[5] ?? "",
+    rotationX: finalExpr[3] ?? "",
+    rotationY: finalExpr[4] ?? "",
+    rotationZ: finalExpr[5] ?? "",
   });
 }
 
-export function applyLayers(compLayer, effectNames) {
+export function applyLayers(compLayer: AVLayer, effectNames: string[]) {
   try {
     const comp = getCompItem();
 
@@ -45,18 +53,18 @@ export function applyLayers(compLayer, effectNames) {
       const layer = innerComp.layer(j);
 
       applyLayer(layer, {
-        layerIndex: j,
+        layerIndex: `${j}`,
         parentCompName: comp.name,
         compName: compLayer.name,
         nautilusEffectNames: effectNames,
       });
     }
   } catch (e) {
-    throw new Error("[applyNautilusAll] " + e.message);
+    if (e instanceof Error) throw new Error("[applyNautilusAll] " + e.message);
   }
 }
 
-export function applyTextLayer(textLayer, effectName) {
+export function applyTextLayer(textLayer: AVLayer, effectName: string) {
   try {
     const defaultTemplate =
       'var ctrlFx = effect("NAUTILUS_FX_NAME");\n\nPROPERTY_EXPRESSION';
@@ -95,43 +103,43 @@ export function applyTextLayer(textLayer, effectName) {
       {
         name: "Nautilus Tracking",
         propertyName: "tracking",
-        propertyExpr: finalPropertyExprs[0],
-        selectorExpr: finalSelectorExprs[0],
+        propertyExpr: finalPropertyExprs[0] ?? "",
+        selectorExpr: finalSelectorExprs[0] ?? "",
       },
       {
         name: "Nautilus Position",
         propertyName: "position",
-        propertyExpr: finalPropertyExprs[1],
-        selectorExpr: finalSelectorExprs[1],
+        propertyExpr: finalPropertyExprs[1] ?? "",
+        selectorExpr: finalSelectorExprs[1] ?? "",
       },
       {
         name: "Nautilus Skew",
         propertyName: "skew",
-        propertyExpr: finalPropertyExprs[2],
-        selectorExpr: finalSelectorExprs[2],
+        propertyExpr: finalPropertyExprs[2] ?? "",
+        selectorExpr: finalSelectorExprs[2] ?? "",
       },
       {
         name: "Nautilus Rotation",
         propertyName: "rotation",
-        propertyExpr: finalPropertyExprs[3],
-        selectorExpr: finalSelectorExprs[3],
+        propertyExpr: finalPropertyExprs[3] ?? "",
+        selectorExpr: finalSelectorExprs[3] ?? "",
       },
       {
         name: "Nautilus Scale",
         propertyName: "scale",
-        propertyExpr: finalPropertyExprs[4],
-        selectorExpr: finalSelectorExprs[4],
+        propertyExpr: finalPropertyExprs[4] ?? "",
+        selectorExpr: finalSelectorExprs[4] ?? "",
       },
       {
         name: "Nautilus Opacity",
         propertyName: "opacity",
-        propertyExpr: finalPropertyExprs[5],
-        selectorExpr: finalSelectorExprs[5],
+        propertyExpr: finalPropertyExprs[5] ?? "",
+        selectorExpr: finalSelectorExprs[5] ?? "",
       },
     ];
 
     configs.forEach((config) => addAnimatorWithExprs(textLayer, config));
   } catch (e) {
-    throw new Error("[applyTextLayer] " + e.message);
+    if (e instanceof Error) throw new Error("[applyTextLayer] " + e.message);
   }
 }

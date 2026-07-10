@@ -1,4 +1,4 @@
-export function handleError(msg) {
+export function handleError(msg: string) {
   alert(
     "One function of Nautilus gives an Error.\n\nDetail:\n" +
       msg +
@@ -6,7 +6,7 @@ export function handleError(msg) {
   );
 }
 
-export function handleLoadError(msg) {
+export function handleLoadError(msg: string) {
   alert(
     "There was a problem loading Nautilus into After Effects.\n\nDetail:\n" +
       msg +

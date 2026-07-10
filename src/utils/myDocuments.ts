@@ -9,13 +9,16 @@ export function nautilusFolder() {
     }
     return folder;
   } catch (e) {
-    throw new Error("[myDocument/nautilusFolder] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[myDocument/nautilusFolder] " + e.message);
   }
 }
 
-export function getFolderByName(folderName) {
+export function getFolderByName(folderName: string) {
   try {
     const folder = nautilusFolder();
+
+    if (!folder) throw new Error("Folder is undefined");
 
     const folderPathObj = new Folder(folder.fsName + "/" + folderName);
     if (!folderPathObj.exists) {
@@ -24,6 +27,7 @@ export function getFolderByName(folderName) {
 
     return folderPathObj;
   } catch (e) {
-    throw new Error("[myDocument/getFolderPath] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[myDocument/getFolderPath] " + e.message);
   }
 }

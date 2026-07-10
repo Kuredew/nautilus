@@ -1,12 +1,17 @@
 import { isTextLayer } from "./layer";
 
-export function findAnimatorIndexesByEffectName(textLayer, effectName) {
+export function findAnimatorIndexesByEffectName(
+  textLayer: AVLayer,
+  effectName: string,
+) {
   try {
     if (!isTextLayer(textLayer)) throw new Error("Layer is not text layer!");
     const indexes = [];
 
     const textProp = textLayer.property("ADBE Text Properties");
-    const animatorsGroup = textProp.property("ADBE Text Animators");
+    const animatorsGroup = textProp.property(
+      "ADBE Text Animators",
+    ) as PropertyGroup;
 
     for (let m = animatorsGroup.numProperties; m >= 1; m--) {
       const animator = animatorsGroup.property(m);
@@ -16,7 +21,7 @@ export function findAnimatorIndexesByEffectName(textLayer, effectName) {
       );
       const selectorExpressionAmount = selectorExpression.property(
         "ADBE Text Expressible Amount",
-      );
+      ) as Property;
 
       if (
         selectorExpressionAmount?.expression?.indexOf(
@@ -30,26 +35,43 @@ export function findAnimatorIndexesByEffectName(textLayer, effectName) {
 
     return indexes;
   } catch (e) {
-    throw new Error("[findAnimatorIndexesByEffectName] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[findAnimatorIndexesByEffectName] " + e.message);
   }
 }
 
-export function removeAnimatorByEffectName(textLayer, effectName) {
+export function removeAnimatorByEffectName(
+  textLayer: AVLayer,
+  effectName: string,
+) {
   try {
     const animatorsGroup = textLayer
       .property("ADBE Text Properties")
       .property("ADBE Text Animators");
-    findAnimatorIndexesByEffectName(textLayer, effectName).forEach((index) =>
-      animatorsGroup.property(index).remove(),
+    const animatorIndexes = findAnimatorIndexesByEffectName(
+      textLayer,
+      effectName,
     );
+
+    if (animatorIndexes)
+      animatorIndexes.forEach((index) =>
+        animatorsGroup.property(index).remove(),
+      );
   } catch (e) {
-    throw new Error("[removeAnimatorByEffectName] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[removeAnimatorByEffectName] " + e.message);
   }
 }
 
-export function createAnimator(textLayer, config) {
+export function createAnimator(
+  textLayer: AVLayer,
+  config: {
+    name: string;
+    propertyName: string;
+  },
+) {
   try {
-    const matchNames = {
+    const matchNames: Record<string, string> = {
       position: "ADBE Text Position 3D",
       rotation: "ADBE Text Rotation",
       opacity: "ADBE Text Opacity",
@@ -60,11 +82,17 @@ export function createAnimator(textLayer, config) {
 
     const textProp = textLayer.property("ADBE Text Properties");
 
-    const animators = textProp.property("ADBE Text Animators");
+    const animators = textProp.property("ADBE Text Animators") as PropertyGroup;
     const animatorGroup = animators.addProperty("ADBE Text Animator");
-    const propGroup = animatorGroup.property("ADBE Text Animator Properties");
-    const property = propGroup.addProperty(matchNames[config.propertyName]);
-    const selectorGroup = animatorGroup.property("ADBE Text Selectors");
+    const propGroup = animatorGroup.property(
+      "ADBE Text Animator Properties",
+    ) as PropertyGroup;
+    const property = propGroup.addProperty(
+      matchNames[config.propertyName],
+    ) as Property;
+    const selectorGroup = animatorGroup.property(
+      "ADBE Text Selectors",
+    ) as PropertyGroup;
     const selectorExpr = selectorGroup.addProperty(
       "ADBE Text Expressible Selector",
     );
@@ -73,9 +101,9 @@ export function createAnimator(textLayer, config) {
     return {
       animatorGroup,
       property,
-      selectorExpr: selectorExpr.property(2),
+      selectorExpr: selectorExpr.property(2) as Property,
     };
   } catch (e) {
-    throw new Error("[createAnimator] " + e.message);
+    if (e instanceof Error) throw new Error("[createAnimator] " + e.message);
   }
 }

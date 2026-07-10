@@ -17,25 +17,30 @@ export function reload() {
       if (isTextLayer(layer)) {
         const nautiflowEffect = getAllNautiFlowEffect(layer);
 
-        nautiflowEffect.forEach((effect) =>
-          removeAnimatorByEffectName(layer, effect.name),
-        );
-        nautilusEffect.forEach((effect) =>
-          removeAnimatorByEffectName(layer, effect.name),
-        );
+        if (nautiflowEffect)
+          nautiflowEffect.forEach((effect) =>
+            removeAnimatorByEffectName(layer, effect.name),
+          );
+
+        if (nautilusEffect)
+          nautilusEffect.forEach((effect) =>
+            removeAnimatorByEffectName(layer, effect.name),
+          );
 
         nautiflowTextLayerApply(layer);
-        nautilusEffect.forEach((effect) =>
-          nautilusTextLayerApply(layer, effect.name),
-        );
+        if (nautilusEffect)
+          nautilusEffect.forEach((effect) =>
+            nautilusTextLayerApply(layer, effect.name),
+          );
       } else if (isCompLayer(layer)) {
-        applyLayers(
-          layer,
-          nautilusEffect.map((e) => e.name),
-        );
+        if (nautilusEffect)
+          applyLayers(
+            layer,
+            nautilusEffect.map((e) => e.name),
+          );
       }
     });
   } catch (e) {
-    throw new Error("[core/reload] " + e.message);
+    if (e instanceof Error) throw new Error("[core/reload] " + e.message);
   }
 }

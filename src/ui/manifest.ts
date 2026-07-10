@@ -10,15 +10,15 @@ import { nautilus } from "../state";
 import { handleError } from "../utils/error";
 import { resetButton } from "../utils/ui";
 
-function executeFunc(func) {
+function executeFunc(func: () => void) {
   try {
     func();
   } catch (e) {
-    handleError("[executeFunc] " + e.message);
+    if (e instanceof Error) handleError("[executeFunc] " + e.message);
   }
 }
 
-export function createMainWindow(ui_ref) {
+export function createMainWindow(ui_ref: Panel | Window) {
   try {
     const windowRef =
       ui_ref instanceof Panel
@@ -28,23 +28,23 @@ export function createMainWindow(ui_ref) {
     windowRef.alignChildren = ["fill", "fill"];
     windowRef.margins = 5;
 
-    const btnGroup = windowRef.add("group", undefined, "ButtonGroup");
+    const btnGroup = windowRef.add("group", undefined) as Group;
     btnGroup.orientation = "row";
     btnGroup.alignChildren = ["fill", "fill"];
-    btnGroup.preferredSize.width + 20;
+    if (btnGroup.preferredSize.width) btnGroup.preferredSize.width + 20;
 
     const applyButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.apply,
+      nautilus.icons.apply ?? "",
       { style: "toolbutton" },
-    );
+    ) as IconButton;
     applyButton.helpTip = "Apply Nautilus";
 
     const basedOnButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.basedOn,
+      nautilus.icons.basedOn ?? "",
       { style: "toolbutton" },
     );
     basedOnButton.helpTip =
@@ -53,7 +53,7 @@ export function createMainWindow(ui_ref) {
     const reloadButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.reload,
+      nautilus.icons.reload ?? "",
       { style: "toolbutton" },
     );
     reloadButton.helpTip =
@@ -62,7 +62,7 @@ export function createMainWindow(ui_ref) {
     const bakeButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.bake,
+      nautilus.icons.bake ?? "",
       { style: "toolbutton" },
     );
     bakeButton.helpTip = "Bake applied Nautilus layer into keyframes";
@@ -70,7 +70,7 @@ export function createMainWindow(ui_ref) {
     const removeButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.remove,
+      nautilus.icons.remove ?? "",
       { style: "toolbutton" },
     );
     removeButton.helpTip = "Remove Nautilus from Text/Comp/Precomp Layer";
@@ -78,7 +78,7 @@ export function createMainWindow(ui_ref) {
     const extractButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.extract,
+      nautilus.icons.extract ?? "",
       { style: "toolbutton" },
     );
     extractButton.helpTip = "Extract letter from text layer into PreComp";
@@ -86,7 +86,7 @@ export function createMainWindow(ui_ref) {
     const settingsButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.settings,
+      nautilus.icons.settings ?? "",
       { style: "toolbutton" },
     );
     settingsButton.helpTip = "Settings";
@@ -94,30 +94,31 @@ export function createMainWindow(ui_ref) {
     const helpButton = btnGroup.add(
       "iconbutton",
       undefined,
-      nautilus.icons.about,
+      nautilus.icons.about ?? "",
       { style: "toolbutton" },
     );
     helpButton.helpTip = "About Nautilus";
 
-    windowRef.onResizing = windowRef.onResize = function () {
-      windowRef.layout.resize();
+    if (windowRef instanceof Window)
+      windowRef.onResizing = windowRef.onResize = function () {
+        windowRef.layout.resize();
 
-      if (windowRef.size.width < 200) {
-        if (btnGroup.orientation === "column") {
-          return;
+        if (windowRef.size.width && windowRef.size.width < 200) {
+          if (btnGroup.orientation === "column") {
+            return;
+          }
+
+          btnGroup.orientation = "column";
+          windowRef.layout.layout(true);
+        } else {
+          if (btnGroup.orientation === "row") {
+            return;
+          }
+
+          btnGroup.orientation = "row";
+          windowRef.layout.layout(true);
         }
-
-        btnGroup.orientation = "column";
-        windowRef.layout.layout(true);
-      } else {
-        if (btnGroup.orientation === "row") {
-          return;
-        }
-
-        btnGroup.orientation = "row";
-        windowRef.layout.layout(true);
-      }
-    };
+      };
 
     applyButton.onClick = function () {
       executeFunc(applyNautilus);
@@ -155,43 +156,62 @@ export function createMainWindow(ui_ref) {
 
     return windowRef;
   } catch (e) {
-    throw new Error("[createMainWindow] " + e.message);
+    if (e instanceof Error) throw new Error("[createMainWindow] " + e.message);
   }
 }
 
-export function createDialog(title, text) {
+export function createDialogWindow(title: string) {
   try {
     const windowRef = new Window("dialog", title, undefined, {
       resizeable: true,
     });
-    windowRef.spacing = 10;
-    windowRef.margin = 0;
-    windowRef.alignChildren = ["left", "left"];
 
-    windowRef.add("statictext", undefined, text, { multiline: true });
-
-    const button = windowRef.add("button", undefined, "Okay");
-    button.alignment = ["right", "right"];
-    button.onClick = function () {
-      windowRef.close();
-    };
+    windowRef.alignChildren = ["center", "center"];
 
     windowRef.onResize = function () {
       windowRef.layout.resize();
     };
+
     return windowRef;
   } catch (e) {
-    throw new Error("[createDialog] " + e.message);
+    if (e instanceof Error)
+      throw new Error(`[createDialogWindow] ${e.message}`);
   }
 }
 
-export function createProgressWindow(title, text, minValue, maxValue) {
+export function createDialog(title: string, text: string) {
+  try {
+    const windowRef = createDialogWindow(title);
+    if (!windowRef) throw new Error("Dialog window is not created (undefined)");
+
+    const panel = windowRef.add("panel", undefined, title);
+
+    panel.add("statictext", undefined, text, { multiline: true });
+
+    const button = windowRef.add("button", undefined, "Okay");
+    button.alignment = ["center", "top"];
+    button.onClick = function () {
+      windowRef.close();
+    };
+
+    return windowRef;
+  } catch (e) {
+    if (e instanceof Error) throw new Error("[createDialog] " + e.message);
+  }
+}
+
+export function createProgressWindow(
+  title: string,
+  text: string,
+  minValue: number,
+  maxValue: number,
+) {
   try {
     const windowRef = new Window("palette", title, undefined, {
       resizeable: false,
     });
     windowRef.spacing = 10;
-    windowRef.margin = 0;
+    windowRef.margins = 0;
     windowRef.alignChildren = ["center", "center"];
 
     windowRef.add("statictext", undefined, text);
@@ -211,6 +231,7 @@ export function createProgressWindow(title, text, minValue, maxValue) {
       progressBar,
     };
   } catch (e) {
-    throw new Error("[createProgressWindow] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[createProgressWindow] " + e.message);
   }
 }

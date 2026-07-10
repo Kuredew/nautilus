@@ -8,12 +8,13 @@ export function nautilusLibFolder() {
     );
     return folderObj;
   } catch (e) {
-    throw new Error("[nautilusLibFolder] " + e.message);
+    if (e instanceof Error) throw new Error("[nautilusLibFolder] " + e.message);
   }
 }
 
-export function getFile(fileName) {
+export function getFile(fileName: string) {
   const folderObj = nautilusLibFolder();
+  if (!folderObj) throw new Error("Folder object is undefined");
 
   const fileObj = new File(folderObj.fsName + "/" + fileName);
   if (!fileObj.exists) {

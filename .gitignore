@@ -1,5 +1,6 @@
-# ignore dist folder 
+# ignore dist and build folder 
 dist
+build
 
 # ignore modules
 node_modules

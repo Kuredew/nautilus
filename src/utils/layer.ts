@@ -1,10 +1,20 @@
 /* eslint-disable no-undef */
 import { getCompItem } from "./app";
 
+type ExpressionsConfig = {
+  position: string;
+  rotation: string;
+  rotationX: string;
+  rotationY: string;
+  rotationZ: string;
+  scale: string;
+  opacity: string;
+};
+
 export function getSelectedLayer() {
   const comp = getCompItem();
 
-  const selectedLayers = comp.selectedLayers;
+  const selectedLayers = comp.selectedLayers as AVLayer[];
   if (selectedLayers.length == 0) {
     throw new Error("[getSelectedLayer] Please select atleast 1 layer!");
   }
@@ -12,16 +22,17 @@ export function getSelectedLayer() {
   return selectedLayers;
 }
 
-export function isTextLayer(layer) {
+export function isTextLayer(layer: AVLayer) {
   try {
-    const dummyVar = layer.text.sourceText;
-    return true;
+    if (layer instanceof TextLayer || layer.source == null) {
+      return true;
+    } else return false;
   } catch {
     return false;
   }
 }
 
-export function isCompLayer(layer) {
+export function isCompLayer(layer: AVLayer) {
   if (layer.source instanceof CompItem) {
     return true;
   }
@@ -29,7 +40,12 @@ export function isCompLayer(layer) {
   return false;
 }
 
-export function precomposeLayers(layerIndices, name, inPoint, outPoint) {
+export function precomposeLayers(
+  layerIndices: number[],
+  name: string,
+  inPoint: number,
+  outPoint: number,
+) {
   try {
     const comp = getCompItem();
 
@@ -44,11 +60,11 @@ export function precomposeLayers(layerIndices, name, inPoint, outPoint) {
 
     return preComp;
   } catch (e) {
-    throw new Error("[precomposeLayers] " + e.message);
+    if (e instanceof Error) throw new Error("[precomposeLayers] " + e.message);
   }
 }
 
-const addExprToProperties = (layer, exprs) => {
+const addExprToProperties = (layer: AVLayer, exprs: ExpressionsConfig) => {
   try {
     const trProp = layer.property("Transform");
     const propertyMatchNames = {
@@ -61,7 +77,9 @@ const addExprToProperties = (layer, exprs) => {
       opacity: "ADBE Opacity",
     };
 
-    trProp.property(propertyMatchNames.position).dimensionSeparated = false;
+    const posProp = trProp.property(propertyMatchNames.position) as Property;
+
+    posProp.dimensionsSeparated = false;
 
     for (const key in exprs) {
       if (layer.threeDLayer) {
@@ -71,28 +89,31 @@ const addExprToProperties = (layer, exprs) => {
           continue;
       }
 
-      const prop = trProp.property(propertyMatchNames[key]);
+      const prop = trProp.property(
+        propertyMatchNames[key as keyof typeof propertyMatchNames],
+      ) as Property;
       if (prop && prop.canSetExpression) {
-        prop.expression = exprs[key];
+        prop.expression = exprs[key as keyof typeof exprs];
       }
     }
   } catch (e) {
-    throw new Error("[addExprToProperties] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[addExprToProperties] " + e.message);
   }
 };
 
 // layer, ownCompName, compName, nullName, effectNameList
-export function applyExprToLayer(layer, exprs) {
+export function applyExprToLayer(layer: AVLayer, exprs: ExpressionsConfig) {
   try {
     addExprToProperties(layer, exprs);
   } catch (e) {
-    throw new Error("[applyExprToLayer] " + e.message);
+    if (e instanceof Error) throw new Error("[applyExprToLayer] " + e.message);
   }
 }
 
-export function clearExprFromLayer(layer) {
+export function clearExprFromLayer(layer: AVLayer) {
   try {
-    const exprs = {
+    const exprs: ExpressionsConfig = {
       position: "",
       rotation: "",
       rotationX: "",
@@ -104,16 +125,17 @@ export function clearExprFromLayer(layer) {
 
     addExprToProperties(layer, exprs);
   } catch (e) {
-    throw new Error("[clearExprFromLayer] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[clearExprFromLayer] " + e.message);
   }
 }
 
-export function selectLayer(layer) {
+export function selectLayer(layer: AVLayer) {
   layer.selected = true;
   layer.selected = true;
 }
 
-export function unSelectLayer(layer) {
+export function unSelectLayer(layer: AVLayer) {
   layer.selected = false;
   layer.selected = false;
 }
@@ -123,7 +145,7 @@ export function unSelectAllLayer() {
     const selectedLayers = getSelectedLayer();
 
     selectedLayers.forEach((layer) => {
-      unSelectLayer(layer);
+      if (layer instanceof AVLayer) unSelectLayer(layer);
     });
   } catch {
     // dont do anything if getSelectedLayer throw an error
@@ -131,19 +153,19 @@ export function unSelectAllLayer() {
   }
 }
 
-export function findAbsoluteKeyframe(layer) {
+export function findAbsoluteKeyframe(layer: AVLayer) {
   try {
     const comp = getCompItem();
 
     let maxTime = 0;
     let minTime = comp.duration;
 
-    function searchProperties(group) {
+    function searchProperties(group: PropertyGroup) {
       for (let i = 1; i <= group.numProperties; i++) {
-        var prop = group.property(i);
+        var prop = group.property(i) as PropertyGroup;
 
         // eslint-disable-next-line no-undef
-        if (prop.propertyType === PropertyType.PROPERTY) {
+        if (prop instanceof Property) {
           if (prop.numKeys > 0) {
             let firstKeyTime = prop.keyTime(1);
             let lastKeyTime = prop.keyTime(prop.numKeys);
@@ -157,7 +179,8 @@ export function findAbsoluteKeyframe(layer) {
           }
         } else if (
           prop.propertyType === PropertyType.INDEXED_GROUP ||
-          prop.propertyType === PropertyType.NAMED_GROUP
+          prop.propertyType === PropertyType.NAMED_GROUP ||
+          prop instanceof PropertyGroup
         ) {
           searchProperties(prop);
         }
@@ -167,6 +190,7 @@ export function findAbsoluteKeyframe(layer) {
     searchProperties(layer);
     return { minTime: minTime, maxTime: maxTime };
   } catch (e) {
-    throw new Error("[findAbsoluteKeyframe] " + e.message);
+    if (e instanceof Error)
+      throw new Error("[findAbsoluteKeyframe] " + e.message);
   }
 }

@@ -4,7 +4,7 @@ import { getSelectedLayer } from "../utils/layer";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
 import { resetButton } from "../utils/ui";
 
-export function changeBasedOn(basedOnIndex) {
+export function changeBasedOn(basedOnIndex: number) {
   app.beginUndoGroup("changeBasedOn");
 
   try {
@@ -13,15 +13,18 @@ export function changeBasedOn(basedOnIndex) {
     selectedLayers.forEach((layer) => {
       const selectedEffect = layer.selectedProperties;
 
-      let effectNames = [];
+      let effectNames: string[] = [];
       if (selectedEffect.length > 0) {
         selectedEffect.forEach((effect) => {
           effectNames.push(effect.name);
         });
       } else {
+        const ntlsFXNames = getAllNautilusEffect(layer);
+        const ntflFXNames = getAllNautiFlowEffect(layer);
+
         effectNames = [
-          ...getAllNautilusEffect(layer).map((e) => e.name),
-          ...getAllNautiFlowEffect(layer).map((e) => e.name),
+          ...(ntlsFXNames ? ntlsFXNames.map((e) => e.name) : []),
+          ...(ntflFXNames ? ntflFXNames.map((e) => e.name) : []),
         ];
       }
 
@@ -29,36 +32,41 @@ export function changeBasedOn(basedOnIndex) {
         .property("ADBE Text Properties")
         .property("ADBE Text Animators");
       effectNames.forEach((name) => {
-        findAnimatorIndexesByEffectName(layer, name).forEach((index) => {
+        const animatorIndexes = findAnimatorIndexesByEffectName(layer, name);
+        if (!animatorIndexes) throw new Error("Animator indexes is undefined");
+
+        animatorIndexes.forEach((index) => {
           const animator = animatorsGroup.property(index);
           const selectorGroup = animator.property("ADBE Text Selectors");
           const selectorExpression = selectorGroup.property(
             "ADBE Text Expressible Selector",
           );
-          const selectorExpressionBasedOn = selectorExpression.property(1);
+          const selectorExpressionBasedOn = selectorExpression.property(
+            1,
+          ) as Property;
 
           selectorExpressionBasedOn.setValue(basedOnIndex);
         });
       });
     });
   } catch (e) {
-    throw new Error("[changeBasedOn] " + e.message);
+    if (e instanceof Error) throw new Error("[changeBasedOn] " + e.message);
   }
   app.endUndoGroup();
 }
 
-export function createBasedOnWindow() {
+export function createBasedOnWindow(this: any) {
   const windowRef = new Window("palette", "Based On", undefined, {
     resizeable: true,
   });
   windowRef.alignChildren = ["fill", "center"];
 
-  const executeBasedOn = function (basedOnIndex) {
+  const executeBasedOn = function (basedOnIndex: number) {
     try {
       changeBasedOn(basedOnIndex);
       windowRef.close();
     } catch (e) {
-      handleError("[executeBasedOn] " + e.message);
+      if (e instanceof Error) handleError("[executeBasedOn] " + e.message);
     }
   };
 

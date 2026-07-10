@@ -11,20 +11,20 @@ export function createSettingsWindow() {
   });
 
   const settingsPanel = windowRef.add("panel", undefined, "Settings");
-  settingsPanel.alignChildren = ["left", "left"];
+  settingsPanel.alignChildren = ["left", "center"];
 
   const nautilusPanel = settingsPanel.add(
     "panel",
     undefined,
     "Nautilus Options",
   );
-  nautilusPanel.alignChildren = ["left", "left"];
+  nautilusPanel.alignChildren = ["left", "center"];
 
   const keyframeInNautilus = nautilusPanel.add(
     "checkbox",
     undefined,
     "Add keyframe in to nautilus effect when first applying",
-  );
+  ) as Checkbox;
   keyframeInNautilus.value = nautilusSettings.keyframeIn;
 
   const applyAlternateAnimationNautilus = nautilusPanel.add(
@@ -47,7 +47,7 @@ export function createSettingsWindow() {
     undefined,
     "Progress Bar Window",
   );
-  progressBarPanel.alignChildren = ["left", "left"];
+  progressBarPanel.alignChildren = ["left", "center"];
 
   const displayProgress = progressBarPanel.add(
     "checkbox",
@@ -69,7 +69,6 @@ export function createSettingsWindow() {
 
   keyframeInNautilus.onClick = () => {
     nautilusSettings.keyframeIn = keyframeInNautilus.value;
-    resetButton(this);
 
     if (nautilusSettings.keyframeIn) {
       applyAlternateAnimationNautilus.enabled = true;
@@ -81,32 +80,26 @@ export function createSettingsWindow() {
   applyAlternateAnimationNautilus.onClick = () => {
     nautilusSettings.applyAlternateAnimation =
       applyAlternateAnimationNautilus.value;
-
-    resetButton(this);
   };
 
   keyframeOutNautilus.onClick = () => {
     nautilusSettings.keyframeOut = keyframeOutNautilus.value;
-    resetButton(this);
   };
 
   displayProgress.onClick = () => {
     const value = displayProgress.value;
     progressWindowSettings.displayProgressWindow = value;
     autoCloseProgress.enabled = value;
-    resetButton(this);
   };
 
   autoCloseProgress.onClick = () => {
     progressWindowSettings.autoCloseProgressWindow = autoCloseProgress.value;
-    resetButton(this);
   };
 
   const saveBtn = windowRef.add("button", undefined, "Save & Close");
   saveBtn.onClick = () => {
     save();
     windowRef.close();
-    resetButton(this);
   };
 
   windowRef.center();
