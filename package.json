@@ -36,5 +36,8 @@
     "extendscriptr": "^1.2.5",
     "globals": "^17.4.0",
     "npm-watch": "^0.13.0"
+  },
+  "dependencies": {
+    "types-for-adobe": "^7.2.5"
   }
 }
