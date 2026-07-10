@@ -16,7 +16,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "pnpm run prebuild && npm-watch build:dev",
-    "compile": "extendscriptr --script src/index.js --output dist/Nautilus.jsx",
+    "compile": "esbuild src/index.ts --bundle --outfile=build/bundle.js & extendscriptr --script build/bundle.js --output dist/Nautilus.jsx",
     "build:dev": "pnpm run compile && pnpm run postbuild",
     "prebuild": "node scripts/preBuild.js",
     "build": "pnpm run compile",
@@ -31,6 +31,7 @@
     "@babel/preset-env": "^7.29.0",
     "@eslint/js": "^10.0.1",
     "czg": "^1.12.0",
+    "esbuild": "^0.28.1",
     "eslint": "^10.0.3",
     "eslint-plugin-import": "^2.32.0",
     "extendscriptr": "^1.2.5",
@@ -38,6 +39,7 @@
     "npm-watch": "^0.13.0"
   },
   "dependencies": {
-    "types-for-adobe": "^7.2.5"
+    "types-for-adobe": "^7.2.5",
+    "typescript": "^7.0.2"
   }
 }
