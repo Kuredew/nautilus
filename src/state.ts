@@ -76,6 +76,9 @@ type settingsType = {
     displayProgressWindow: boolean;
     autoCloseProgressWindow: boolean;
   };
+  runtime: {
+    displayFullErrorMessage: boolean;
+  };
 };
 
 type stateType = {
@@ -165,6 +168,9 @@ export const nautilus: stateType = {
     progressWindow: {
       displayProgressWindow: false,
       autoCloseProgressWindow: false,
+    },
+    runtime: {
+      displayFullErrorMessage: false,
     },
   },
   palette: null,

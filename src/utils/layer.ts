@@ -24,7 +24,7 @@ export function getSelectedLayer() {
 
 export function isTextLayer(layer: AVLayer) {
   try {
-    if (layer instanceof TextLayer || layer.source == null) {
+    if (layer instanceof TextLayer) {
       return true;
     } else return false;
   } catch {

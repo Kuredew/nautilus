@@ -76,7 +76,7 @@ const bakeFromPrecomp = (compLayer: AVLayer) => {
   }
 };
 
-function bakeFromText(layer: TextLayer) {
+function bakeFromText(layer: AVLayer) {
   try {
     const ntlsFXNames = getAllNautilusEffect(layer);
     if (!ntlsFXNames) throw new Error("Nautilus effect not found (undefined)");
@@ -147,9 +147,6 @@ export function bake() {
       if (isCompLayer(layer)) {
         bakeFromPrecomp(layer);
       } else if (isTextLayer(layer)) {
-        if (!(layer instanceof TextLayer))
-          throw new Error("Layer is not instance of TextLayer");
-
         bakeFromText(layer);
       }
     });

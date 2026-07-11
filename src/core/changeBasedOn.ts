@@ -1,3 +1,4 @@
+import { createDialogWindow } from "../ui/manifest";
 import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
 import { handleError } from "../utils/error";
 import { getSelectedLayer } from "../utils/layer";
@@ -56,9 +57,8 @@ export function changeBasedOn(basedOnIndex: number) {
 }
 
 export function createBasedOnWindow(this: any) {
-  const windowRef = new Window("palette", "Based On", undefined, {
-    resizeable: true,
-  });
+  const windowRef = createDialogWindow("Change Based On");
+  if (!windowRef) throw new Error("Dialog window is not created (undefined)");
   windowRef.alignChildren = ["fill", "center"];
 
   const executeBasedOn = function (basedOnIndex: number) {
