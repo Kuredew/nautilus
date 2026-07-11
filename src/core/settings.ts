@@ -1,14 +1,14 @@
 import { nautilus } from "../state";
+import { createDialogWindow } from "../ui/manifest";
 import { save } from "../utils/settings";
-import { resetButton } from "../utils/ui";
 
 export function createSettingsWindow() {
   const nautilusSettings = nautilus.settings.nautilus;
   const progressWindowSettings = nautilus.settings.progressWindow;
+  const runtimeSettings = nautilus.settings.runtime;
 
-  const windowRef = new Window("dialog", "Settings", undefined, {
-    resizeable: true,
-  });
+  const windowRef = createDialogWindow("Settings");
+  if (!windowRef) throw new Error("Dialog window is not created (undefined)");
 
   const settingsPanel = windowRef.add("panel", undefined, "Settings");
   settingsPanel.alignChildren = ["left", "center"];
@@ -67,6 +67,14 @@ export function createSettingsWindow() {
   autoCloseProgress.value = progressWindowSettings.autoCloseProgressWindow;
   autoCloseProgress.enabled = displayProgress.value;
 
+  const runtimePanel = settingsPanel.add("panel", undefined, "Runtime");
+  const showFullErrorMessage = runtimePanel.add(
+    "checkbox",
+    undefined,
+    "Show full error message",
+  );
+  showFullErrorMessage.value = runtimeSettings.displayFullErrorMessage;
+
   keyframeInNautilus.onClick = () => {
     nautilusSettings.keyframeIn = keyframeInNautilus.value;
 
@@ -94,6 +102,10 @@ export function createSettingsWindow() {
 
   autoCloseProgress.onClick = () => {
     progressWindowSettings.autoCloseProgressWindow = autoCloseProgress.value;
+  };
+
+  showFullErrorMessage.onClick = () => {
+    runtimeSettings.displayFullErrorMessage = showFullErrorMessage.value;
   };
 
   const saveBtn = windowRef.add("button", undefined, "Save & Close");
