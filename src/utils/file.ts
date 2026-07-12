@@ -24,9 +24,12 @@ export function readFile(file: File) {
 export function readJsonFile(file: File) {
   try {
     const string = readFile(file);
-    if (!string) throw new Error("File content is undefined.");
 
-    const code = JSON.parse(string) as Record<string, any>;
+    let code = {};
+    if (string) {
+      code = JSON.parse(string) as Record<string, any>;
+    }
+
     return code;
   } catch (e) {
     throw new Error("[readJsonFile]" + String(e));
