@@ -14,14 +14,13 @@ function NautilusScript(ui_ref: Window | Panel) {
    * Shows the window
    */
   const mainWindow = createMainWindow(ui_ref);
-
   if (mainWindow instanceof Window) {
     mainWindow.center();
     mainWindow.show();
-  } else {
-    mainWindow.layout.layout(true);
-    mainWindow.layout.resize();
   }
+
+  mainWindow.layout.layout(true);
+  mainWindow.layout.resize();
 }
 
 try {

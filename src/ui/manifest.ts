@@ -29,11 +29,13 @@ export function createMainWindow(ui_ref: Panel | Window) {
         : new Window("palette", "Nautilus", undefined, { resizeable: true });
     windowRef.orientation = "column";
     windowRef.alignChildren = ["fill", "fill"];
-    windowRef.margins = 5;
+    windowRef.margins = 0;
 
     const btnGroup = windowRef.add("group", undefined) as Group;
     btnGroup.orientation = "row";
     btnGroup.alignChildren = ["fill", "fill"];
+    btnGroup.margins = 0;
+    btnGroup.spacing = 0;
     if (btnGroup.preferredSize.width) btnGroup.preferredSize.width + 20;
 
     const applyButton = btnGroup.add(
@@ -102,26 +104,26 @@ export function createMainWindow(ui_ref: Panel | Window) {
     );
     helpButton.helpTip = "About Nautilus";
 
-    if (windowRef instanceof Window)
-      windowRef.onResizing = windowRef.onResize = function () {
-        windowRef.layout.resize();
+    //@ts-ignore
+    windowRef.onResizing = windowRef.onResize = function () {
+      windowRef.layout.resize();
 
-        if (windowRef.size.width && windowRef.size.width < 200) {
-          if (btnGroup.orientation === "column") {
-            return;
-          }
-
-          btnGroup.orientation = "column";
-          windowRef.layout.layout(true);
-        } else {
-          if (btnGroup.orientation === "row") {
-            return;
-          }
-
-          btnGroup.orientation = "row";
-          windowRef.layout.layout(true);
+      if (windowRef.size.width && windowRef.size.width < 200) {
+        if (btnGroup.orientation === "column") {
+          return;
         }
-      };
+
+        btnGroup.orientation = "column";
+        windowRef.layout.layout(true);
+      } else {
+        if (btnGroup.orientation === "row") {
+          return;
+        }
+
+        btnGroup.orientation = "row";
+        windowRef.layout.layout(true);
+      }
+    };
 
     applyButton.onClick = function () {
       executeFunc(applyNautilus);
