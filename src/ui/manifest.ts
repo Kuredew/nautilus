@@ -7,14 +7,18 @@ import { reload } from "../core/reload";
 import { removeNautilus } from "../core/remove";
 import { createSettingsWindow } from "../core/settings";
 import { nautilus } from "../state";
-import { handleError } from "../utils/error";
+import { handleIssue } from "../utils/error";
 import { resetButton } from "../utils/ui";
 
 function executeFunc(func: () => void) {
   try {
     func();
   } catch (e) {
-    if (e instanceof Error) handleError("[executeFunc] " + e.message);
+    if (e instanceof Error)
+      handleIssue({
+        level: "ERROR",
+        message: "[executeFunc] " + e.message,
+      });
   }
 }
 

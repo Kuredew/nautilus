@@ -1,4 +1,5 @@
 import { getCompItem } from "../utils/app";
+import { handleIssue } from "../utils/error";
 import {
   getSelectedLayer,
   isTextLayer,
@@ -90,7 +91,13 @@ export function extractChar(layer: AVLayer) {
       textLayer.outPoint,
     );
   } catch (e) {
-    if (e instanceof Error) throw new Error("[extractChar] " + e.message);
+    if (e instanceof Error)
+      handleIssue({
+        level: "WARNING",
+        message:
+          "The Extract Character function for Text Layer encountered an error: " +
+          e.message,
+      });
   }
 }
 

@@ -1,45 +1,66 @@
 import { nautilus } from "../state";
 import { createDialog } from "../ui/manifest";
 
-export function handleError(msg: string) {
+type SeverityType = {
+  WARNING: "WARNING";
+  ERROR: "ERROR";
+  FATAL: "FATAL";
+};
+
+export const Severity: SeverityType = {
+  WARNING: "WARNING",
+  ERROR: "ERROR",
+  FATAL: "FATAL",
+};
+
+export function displayError(msg: string) {
   if (!nautilus.settings.runtime.displayFullErrorMessage) {
     const findActualError = msg.match(/\[.+\] (.+)/);
 
-    if (!findActualError) {
-      alert(
-        "Nautilus is error, but we can found the actual error message, please report this to github repository issue",
+    if (findActualError && findActualError[1]) {
+      const actualErrorMessage = findActualError[1];
+      const windowRef = createDialog(
+        "Nautilus Runtime Error",
+        actualErrorMessage,
       );
+
+      windowRef?.show();
       return;
     }
-
-    const actualErrorMessage = findActualError[1];
-    const windowRef = createDialog(
-      "Nautilus Runtime Error",
-      actualErrorMessage,
-    );
-
-    windowRef?.show();
-
-    return;
   }
 
   const windowRef = createDialog(
     "Nautilus Runtime Error",
-    "One function of Nautilus gives an Error.\n\nDetail:\n" +
+    "The core function was forced to stop due to an unexpected error.\n\nDetail:\n" +
       msg +
-      "\n\nYou can open an issue at\nhttps://github.com/Kuredew/nautilus\nif the problem persist.",
+      "\n\nif the problem persists, please open a github issue.",
   );
 
   windowRef?.show();
 }
 
-export function handleLoadError(msg: string) {
+export function displayWarning(msg: string) {
+  const windowRef = createDialog("Nautilus Warning", msg);
+
+  windowRef?.show();
+}
+
+function displayFatal(msg: string) {
   const windowRef = createDialog(
-    "Nautilus Load Error",
-    "There was a problem loading Nautilus into After Effects.\n\nDetail:\n" +
+    "Nautilus Fatal Error",
+    "Nautilus was forced to close due to an unexpected error.\n\nDetail:\n" +
       msg +
-      "\n\nOpen an issue at\nhttps://github.com/Kuredew/nautilus\nif the problem persist.",
+      "\n\nMake sure you install nautilus correctly, if the problem persists, please open a github issue.",
   );
 
   windowRef?.show();
+}
+
+export function handleIssue(options: {
+  level: keyof SeverityType;
+  message: string;
+}) {
+  if (options.level == "ERROR") displayError(options.message);
+  else if (options.level == "FATAL") displayFatal(options.message);
+  else if (options.level == "WARNING") displayWarning(options.message);
 }

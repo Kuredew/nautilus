@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import { copy, getCompItem, paste } from "../utils/app";
 import { getAllNautilusEffect } from "../utils/effect";
+import { handleIssue } from "../utils/error";
 import {
   findAbsoluteKeyframe,
   getSelectedLayer,
@@ -72,7 +73,13 @@ const bakeFromPrecomp = (compLayer: AVLayer) => {
 
     progress.close();
   } catch (e) {
-    if (e instanceof Error) throw new Error("[bakeFromPrecomp] " + e.message);
+    if (e instanceof Error)
+      handleIssue({
+        level: "WARNING",
+        message:
+          "The Bake function for Composition encountered an error: " +
+          e.message,
+      });
   }
 };
 
@@ -80,6 +87,11 @@ function bakeFromText(layer: AVLayer) {
   try {
     const ntlsFXNames = getAllNautilusEffect(layer);
     if (!ntlsFXNames) throw new Error("Nautilus effect not found (undefined)");
+
+    if (ntlsFXNames.length <= 0)
+      throw new Error(
+        "This Bake function only works for nautilus applied text layer.",
+      );
 
     ntlsFXNames.forEach((effect) => (effect.selected = true));
 
@@ -134,7 +146,12 @@ function bakeFromText(layer: AVLayer) {
 
     nautilusEffects.forEach((effect) => applyTextLayer(layer, effect.name));
   } catch (e) {
-    if (e instanceof Error) throw new Error("[bakeFromText] " + e.message);
+    if (e instanceof Error)
+      handleIssue({
+        level: "WARNING",
+        message:
+          "The Bake function for text encountered an error: " + e.message,
+      });
   }
 }
 
@@ -148,6 +165,11 @@ export function bake() {
         bakeFromPrecomp(layer);
       } else if (isTextLayer(layer)) {
         bakeFromText(layer);
+      } else {
+        handleIssue({
+          level: "WARNING",
+          message: `The layer you selected (${layer.name}) is ignored because it is not a Composition or Text Layer`,
+        });
       }
     });
   } catch (e) {
