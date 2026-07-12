@@ -10,6 +10,7 @@ import {
   applyTextLayer as nautilusExprApply,
 } from "./nautilusExpr";
 import { applyTextLayer as nautiflowExprApply } from "./nautiflowExpr";
+import { handleIssue } from "../utils/error";
 
 export function applyComp(compLayer: AVLayer) {
   try {
@@ -18,12 +19,19 @@ export function applyComp(compLayer: AVLayer) {
     const appliedNautilusEffectNames = getAllNautilusEffect(compLayer);
     if (!appliedNautilusEffectNames)
       throw new Error("Nautilus effect not found");
+
     applyLayers(
       compLayer,
       appliedNautilusEffectNames.map((e) => e.name),
     );
   } catch (e) {
-    if (e instanceof Error) throw new Error(`[applyComp] ${e.message}`);
+    if (e instanceof Error)
+      handleIssue({
+        level: "WARNING",
+        message:
+          "The Apply function for Composition encountered an error: " +
+          e.message,
+      });
   }
 }
 
@@ -46,7 +54,13 @@ export function applyText(textLayer: AVLayer) {
     app.executeCommand(2387);
   } catch (e) {
     app.endUndoGroup();
-    if (e instanceof Error) throw new Error(`[applyText] ${e.message}`);
+    if (e instanceof Error)
+      handleIssue({
+        level: "WARNING",
+        message:
+          "The Apply function for Text Layer encountered an error: " +
+          e.message,
+      });
   }
 }
 
@@ -60,6 +74,11 @@ export function applyNautilus() {
         applyComp(layer);
       } else if (isTextLayer(layer)) {
         applyText(layer);
+      } else {
+        handleIssue({
+          level: "WARNING",
+          message: `The layer you selected (${layer.name}) is ignored because it is not a Composition or Text Layer`,
+        });
       }
     });
   } catch (e) {

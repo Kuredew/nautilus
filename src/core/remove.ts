@@ -1,5 +1,6 @@
 import { clearExprFromAllLayers } from "../utils/comp";
 import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
+import { handleIssue } from "../utils/error";
 import { getSelectedLayer, isTextLayer } from "../utils/layer";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
 import { applyLayers } from "./nautilusExpr";
@@ -26,6 +27,15 @@ export function removeNautilus() {
           ...(ntlsFXNames ? ntlsFXNames.map((e) => e.name) : []),
           ...(ntflFXNames ? ntflFXNames.map((e) => e.name) : []),
         ];
+      }
+
+      if (effectNames.length <= 0) {
+        handleIssue({
+          level: "WARNING",
+          message: `We didn't find any Nautilus or Nautiflow effects in this layer (${layer.name}); this layer was skipped`,
+        });
+
+        return;
       }
 
       effectNames.forEach((effectName) => {

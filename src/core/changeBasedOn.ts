@@ -1,6 +1,6 @@
 import { createDialogWindow } from "../ui/manifest";
 import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
-import { handleError } from "../utils/error";
+import { handleIssue } from "../utils/error";
 import { getSelectedLayer } from "../utils/layer";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
 import { resetButton } from "../utils/ui";
@@ -28,13 +28,27 @@ export function changeBasedOn(basedOnIndex: number) {
           ...(ntflFXNames ? ntflFXNames.map((e) => e.name) : []),
         ];
       }
+      if (effectNames.length <= 0) {
+        handleIssue({
+          level: "WARNING",
+          message: `We didn't find any Nautilus or Nautiflow effects in this layer (${layer.name}); this layer was skipped`,
+        });
+
+        return;
+      }
 
       const animatorsGroup = layer
         .property("ADBE Text Properties")
         .property("ADBE Text Animators");
       effectNames.forEach((name) => {
         const animatorIndexes = findAnimatorIndexesByEffectName(layer, name);
-        if (!animatorIndexes) throw new Error("Animator indexes is undefined");
+        if (!animatorIndexes) {
+          handleIssue({
+            level: "WARNING",
+            message: `An error occurred while changing the “based on” parameter of the effect (${name}); this effect was skipped`,
+          });
+          return;
+        }
 
         animatorIndexes.forEach((index) => {
           const animator = animatorsGroup.property(index);
@@ -66,7 +80,11 @@ export function createBasedOnWindow(this: any) {
       changeBasedOn(basedOnIndex);
       windowRef.close();
     } catch (e) {
-      if (e instanceof Error) handleError("[executeBasedOn] " + e.message);
+      if (e instanceof Error)
+        handleIssue({
+          level: "ERROR",
+          message: "[executeBasedOn] " + e.message,
+        });
     }
   };
 

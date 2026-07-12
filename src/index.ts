@@ -5,7 +5,7 @@
 
 import { load } from "./state.js";
 import { createMainWindow } from "./ui/manifest.js";
-import { handleLoadError } from "./utils/error.js";
+import { handleIssue } from "./utils/error.js";
 
 function NautilusScript(ui_ref: Window | Panel) {
   load();
@@ -31,5 +31,9 @@ try {
 
   NautilusScript(uiReference);
 } catch (e) {
-  if (e instanceof Error) handleLoadError(e.message);
+  if (e instanceof Error)
+    handleIssue({
+      level: "FATAL",
+      message: e.message,
+    });
 }
