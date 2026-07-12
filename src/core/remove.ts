@@ -3,7 +3,7 @@ import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
 import { handleIssue } from "../utils/error";
 import { getSelectedLayer, isTextLayer } from "../utils/layer";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
-import { applyLayers } from "./nautilusExpr";
+import { applyLayers } from "../utils/nautilusExpr";
 
 export function removeNautilus() {
   app.beginUndoGroup("removeNautilus");
@@ -53,8 +53,6 @@ export function removeNautilus() {
             layer,
             effectName,
           );
-          if (!animatorIndexes)
-            throw new Error("Animator indexes is undefined");
 
           animatorIndexes.forEach((index) =>
             animatorsGroup.property(index).remove(),
@@ -70,7 +68,7 @@ export function removeNautilus() {
     });
   } catch (e) {
     app.endUndoGroup();
-    if (e instanceof Error) throw new Error("[removeNautilus] " + e.message);
+    throw new Error("[removeNautilus] " + String(e));
   }
   app.endUndoGroup();
 }

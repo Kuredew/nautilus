@@ -15,6 +15,6 @@ export function getExpr(
 
     return expr;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[getExpr] " + e.message);
+    throw new Error("[getExpr] " + String(e));
   }
 }

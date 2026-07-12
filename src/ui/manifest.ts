@@ -14,11 +14,10 @@ function executeFunc(func: () => void) {
   try {
     func();
   } catch (e) {
-    if (e instanceof Error)
-      handleIssue({
-        level: "ERROR",
-        message: "[executeFunc] " + e.message,
-      });
+    handleIssue({
+      level: "ERROR",
+      message: "[executeFunc] " + String(e),
+    });
   }
 }
 
@@ -160,7 +159,7 @@ export function createMainWindow(ui_ref: Panel | Window) {
 
     return windowRef;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[createMainWindow] " + e.message);
+    throw new Error("[createMainWindow] " + String(e));
   }
 }
 
@@ -178,8 +177,7 @@ export function createDialogWindow(title: string) {
 
     return windowRef;
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error(`[createDialogWindow] ${e.message}`);
+    throw new Error(`[createDialogWindow] ${String(e)}`);
   }
 }
 
@@ -200,7 +198,7 @@ export function createDialog(title: string, text: string) {
 
     return windowRef;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[createDialog] " + e.message);
+    throw new Error("[createDialog] " + String(e));
   }
 }
 
@@ -235,7 +233,6 @@ export function createProgressWindow(
       progressBar,
     };
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[createProgressWindow] " + e.message);
+    throw new Error("[createProgressWindow] " + String(e));
   }
 }

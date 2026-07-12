@@ -2,11 +2,11 @@ import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
 import { handleIssue } from "../utils/error";
 import { getSelectedLayer, isCompLayer, isTextLayer } from "../utils/layer";
 import { removeAnimatorByEffectName } from "../utils/textLayer";
-import { applyTextLayer as nautiflowTextLayerApply } from "./nautiflowExpr";
+import { applyTextLayer as nautiflowTextLayerApply } from "../utils/nautiflowExpr";
 import {
   applyLayers,
   applyTextLayer as nautilusTextLayerApply,
-} from "./nautilusExpr";
+} from "../utils/nautilusExpr";
 
 export function reload() {
   try {
@@ -87,6 +87,6 @@ export function reload() {
   } catch (e) {
     app.endUndoGroup();
 
-    if (e instanceof Error) throw new Error("[core/reload] " + e.message);
+    throw new Error("[core/reload] " + String(e));
   }
 }

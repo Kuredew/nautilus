@@ -12,7 +12,7 @@ import {
 import { createProgress } from "../utils/progress";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
 import { extractChar } from "./extract";
-import { applyLayers, applyTextLayer } from "./nautilusExpr";
+import { applyLayers, applyTextLayer } from "../utils/nautilusExpr";
 
 const bakeFromPrecomp = (compLayer: AVLayer) => {
   try {
@@ -31,7 +31,6 @@ const bakeFromPrecomp = (compLayer: AVLayer) => {
       "Baking expression into keyframes...",
       { minValue: startTime, maxValue: endTime },
     );
-    if (!progress) throw new Error("Progress window not created (undefined)");
 
     for (let i = 1; i <= innerComp.numLayers; i++) {
       const layer = innerComp.layer(i);
@@ -73,27 +72,23 @@ const bakeFromPrecomp = (compLayer: AVLayer) => {
 
     progress.close();
   } catch (e) {
-    if (e instanceof Error)
-      handleIssue({
-        level: "WARNING",
-        message:
-          "The Bake function for Composition encountered an error: " +
-          e.message,
-      });
+    handleIssue({
+      level: "WARNING",
+      message:
+        "The Bake function for Composition encountered an error: " + String(e),
+    });
   }
 };
 
 function bakeFromText(layer: AVLayer) {
   try {
-    const ntlsFXNames = getAllNautilusEffect(layer);
-    if (!ntlsFXNames) throw new Error("Nautilus effect not found (undefined)");
-
-    if (ntlsFXNames.length <= 0)
+    const ntlsFX = getAllNautilusEffect(layer);
+    if (ntlsFX.length <= 0)
       throw new Error(
         "This Bake function only works for nautilus applied text layer.",
       );
 
-    ntlsFXNames.forEach((effect) => (effect.selected = true));
+    ntlsFX.forEach((effect) => (effect.selected = true));
 
     copy();
 
@@ -105,9 +100,6 @@ function bakeFromText(layer: AVLayer) {
       .property("ADBE Text Properties")
       .property("ADBE Text Animators");
     const nautilusEffects = getAllNautilusEffect(layer);
-
-    if (!nautilusEffects)
-      throw new Error("Nautilus effect not found (undefined)");
 
     nautilusEffects.forEach((effect) => {
       const animatorIndexes = findAnimatorIndexesByEffectName(
@@ -121,18 +113,12 @@ function bakeFromText(layer: AVLayer) {
     });
 
     const preComp = extractChar(layer);
-    if (!preComp)
-      throw new Error(
-        "Character not extracted successfully (precomp undefined)",
-      );
 
     const compLayer = comp.layer(preComp.name) as AVLayer;
 
     unSelectAllLayer();
     compLayer.selected = true;
     const absoluteKeyframes = findAbsoluteKeyframe(layer);
-    if (!absoluteKeyframes)
-      throw new Error("Absolute keyframes not found (undefined)");
 
     comp.time = absoluteKeyframes.minTime;
     paste();
@@ -146,12 +132,10 @@ function bakeFromText(layer: AVLayer) {
 
     nautilusEffects.forEach((effect) => applyTextLayer(layer, effect.name));
   } catch (e) {
-    if (e instanceof Error)
-      handleIssue({
-        level: "WARNING",
-        message:
-          "The Bake function for text encountered an error: " + e.message,
-      });
+    handleIssue({
+      level: "WARNING",
+      message: "The Bake function for text encountered an error: " + String(e),
+    });
   }
 }
 
@@ -174,7 +158,7 @@ export function bake() {
     });
   } catch (e) {
     app.endUndoGroup();
-    if (e instanceof Error) throw new Error("[bake] " + e.message);
+    throw new Error("[bake] " + String(e));
   }
   app.endUndoGroup();
 }

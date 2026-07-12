@@ -8,7 +8,6 @@ export function createSettingsWindow() {
   const runtimeSettings = nautilus.settings.runtime;
 
   const windowRef = createDialogWindow("Settings");
-  if (!windowRef) throw new Error("Dialog window is not created (undefined)");
 
   const settingsPanel = windowRef.add("panel", undefined, "Settings");
   settingsPanel.alignChildren = ["left", "center"];

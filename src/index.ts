@@ -34,6 +34,6 @@ try {
   if (e instanceof Error)
     handleIssue({
       level: "FATAL",
-      message: e.message,
+      message: String(e),
     });
 }

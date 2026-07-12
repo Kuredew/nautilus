@@ -1,5 +1,5 @@
 import { nautilus } from "../state";
-import { getExpr } from "../utils/expression";
+import { getExpr } from "./expression";
 import { addAnimatorWithExprs } from "./textLayer";
 
 export function applyTextLayer(textLayer: AVLayer) {

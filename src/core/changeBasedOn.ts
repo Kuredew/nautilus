@@ -24,8 +24,8 @@ export function changeBasedOn(basedOnIndex: number) {
         const ntflFXNames = getAllNautiFlowEffect(layer);
 
         effectNames = [
-          ...(ntlsFXNames ? ntlsFXNames.map((e) => e.name) : []),
-          ...(ntflFXNames ? ntflFXNames.map((e) => e.name) : []),
+          ...ntlsFXNames.map((e) => e.name),
+          ...ntflFXNames.map((e) => e.name),
         ];
       }
       if (effectNames.length <= 0) {
@@ -42,13 +42,6 @@ export function changeBasedOn(basedOnIndex: number) {
         .property("ADBE Text Animators");
       effectNames.forEach((name) => {
         const animatorIndexes = findAnimatorIndexesByEffectName(layer, name);
-        if (!animatorIndexes) {
-          handleIssue({
-            level: "WARNING",
-            message: `An error occurred while changing the “based on” parameter of the effect (${name}); this effect was skipped`,
-          });
-          return;
-        }
 
         animatorIndexes.forEach((index) => {
           const animator = animatorsGroup.property(index);
@@ -65,14 +58,13 @@ export function changeBasedOn(basedOnIndex: number) {
       });
     });
   } catch (e) {
-    if (e instanceof Error) throw new Error("[changeBasedOn] " + e.message);
+    throw new Error("[changeBasedOn] " + String(e));
   }
   app.endUndoGroup();
 }
 
 export function createBasedOnWindow(this: any) {
   const windowRef = createDialogWindow("Change Based On");
-  if (!windowRef) throw new Error("Dialog window is not created (undefined)");
   windowRef.alignChildren = ["fill", "center"];
 
   const executeBasedOn = function (basedOnIndex: number) {
@@ -80,11 +72,10 @@ export function createBasedOnWindow(this: any) {
       changeBasedOn(basedOnIndex);
       windowRef.close();
     } catch (e) {
-      if (e instanceof Error)
-        handleIssue({
-          level: "ERROR",
-          message: "[executeBasedOn] " + e.message,
-        });
+      handleIssue({
+        level: "ERROR",
+        message: "[executeBasedOn] " + String(e),
+      });
     }
   };
 

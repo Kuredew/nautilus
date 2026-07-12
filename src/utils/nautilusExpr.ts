@@ -1,7 +1,7 @@
 import { nautilus } from "../state";
-import { getCompItem } from "../utils/app";
-import { getExpr } from "../utils/expression";
-import { applyExprToLayer } from "../utils/layer";
+import { getCompItem } from "./app";
+import { getExpr } from "./expression";
+import { applyExprToLayer } from "./layer";
 import { addAnimatorWithExprs } from "./textLayer";
 
 export function applyLayer(
@@ -60,7 +60,7 @@ export function applyLayers(compLayer: AVLayer, effectNames: string[]) {
       });
     }
   } catch (e) {
-    if (e instanceof Error) throw new Error("[applyNautilusAll] " + e.message);
+    throw new Error("[applyNautilusAll] " + String(e));
   }
 }
 
@@ -140,6 +140,6 @@ export function applyTextLayer(textLayer: AVLayer, effectName: string) {
 
     configs.forEach((config) => addAnimatorWithExprs(textLayer, config));
   } catch (e) {
-    if (e instanceof Error) throw new Error("[applyTextLayer] " + e.message);
+    throw new Error("[applyTextLayer] " + String(e));
   }
 }
