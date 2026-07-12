@@ -1,83 +1,81 @@
-import fs from "fs"
-import Logger from "./utils/log.js"
-import path from "path"
+import fs from "fs";
+import Logger from "./utils/log.js";
+import path from "path";
 
-const sourcePath = "src"
-const libFolderName = "lib"
-const outputFolderName = "dist"
+const sourcePath = "src";
+const libFolderName = "lib";
+const outputFolderName = "dist";
 
-const libFolderPath = path.join(sourcePath, libFolderName)
+const libFolderPath = path.join(sourcePath, libFolderName);
 
 const otherFiles = [
   {
     name: "nautilusLib",
     from: libFolderPath,
-    to: ""
+    to: "",
   },
   {
     name: "HOW_TO_INSTALL.txt",
     from: "HOW_TO_INSTALL.txt",
-    to: ""
+    to: "",
   },
   {
     name: "package.json",
     from: "package.json",
-    to: "nautilusLib"
+    to: "nautilusLib",
   },
   {
     name: "LICENSE.txt",
     from: "LICENSE.txt",
-    to: ""
-  }
-]
-
+    to: "",
+  },
+];
 
 const build = async (onLog = () => {}) => {
-  const logInstance = new Logger(build.name)
+  const logInstance = new Logger(build.name);
 
   const log = (log) => {
-    onLog(logInstance.parse(log))
-  }
+    onLog(logInstance.parse(log));
+  };
 
   try {
-    log("starting build...")
+    log("starting build...");
 
-    log(`copying other files`)
-    otherFiles.forEach(file => {
-      const finalOutput = path.join(outputFolderName, file.to, file.name)
+    log(`copying other files`);
+    otherFiles.forEach((file) => {
+      const finalOutput = path.join(outputFolderName, file.to, file.name);
 
-      log(`copying ${file.from} to ${finalOutput}`)
-      fs.cpSync(file.from, finalOutput, { recursive: true })
-    })
-    log("copied!")
+      log(`copying ${file.from} to ${finalOutput}`);
+      fs.cpSync(file.from, finalOutput, { recursive: true });
+    });
+    log("copied!");
 
     // log(`building ${nautilusJSXPath} to ${sourcePath}`)
     // await jsxbin(nautilusJSXPath, sourcePath)
 
-    log("build complete")
+    log("build complete");
   } catch (e) {
-    throw new Error(logInstance.parse(e.message))
+    throw new Error(logInstance.parse(String(e)));
   }
-}
+};
 
 async function main(onLog = () => {}) {
-  const logInstance = new Logger(main.name) 
+  const logInstance = new Logger(main.name);
 
   try {
-    onLog(logInstance.parse("script started"))
-    onLog(logInstance.parse("calling build function..."))
+    onLog(logInstance.parse("script started"));
+    onLog(logInstance.parse("calling build function..."));
 
     await build((log) => {
-      onLog(logInstance.parse(log))
-    })
+      onLog(logInstance.parse(log));
+    });
 
-    onLog(logInstance.parse("done!"))
+    onLog(logInstance.parse("done!"));
   } catch (e) {
-    throw new Error(logInstance.parse(e.message))
+    throw new Error(logInstance.parse(String(e)));
   }
 }
 
-const logInstance = new Logger("root")
+const logInstance = new Logger("root");
 
-
-main((log) => logInstance.log(log)).catch((e) => logInstance.error(e.message))
+main((log) => logInstance.log(log)).catch((e) => logInstance.error(String(e)));

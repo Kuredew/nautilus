@@ -8,8 +8,8 @@ import {
 import {
   applyLayers,
   applyTextLayer as nautilusExprApply,
-} from "./nautilusExpr";
-import { applyTextLayer as nautiflowExprApply } from "./nautiflowExpr";
+} from "../utils/nautilusExpr";
+import { applyTextLayer as nautiflowExprApply } from "../utils/nautiflowExpr";
 import { handleIssue } from "../utils/error";
 
 export function applyComp(compLayer: AVLayer) {
@@ -17,28 +17,23 @@ export function applyComp(compLayer: AVLayer) {
     applyNautilusEffect(compLayer);
 
     const appliedNautilusEffectNames = getAllNautilusEffect(compLayer);
-    if (!appliedNautilusEffectNames)
-      throw new Error("Nautilus effect not found");
 
     applyLayers(
       compLayer,
       appliedNautilusEffectNames.map((e) => e.name),
     );
   } catch (e) {
-    if (e instanceof Error)
-      handleIssue({
-        level: "WARNING",
-        message:
-          "The Apply function for Composition encountered an error: " +
-          e.message,
-      });
+    handleIssue({
+      level: "WARNING",
+      message:
+        "The Apply function for Composition encountered an error: " + String(e),
+    });
   }
 }
 
 export function applyText(textLayer: AVLayer) {
   try {
     const ntlsFXNames = getAllNautilusEffect(textLayer);
-    if (!ntlsFXNames) throw new Error("Nautilus effect not found");
 
     if (ntlsFXNames.length === 0) {
       applyNautiFLowEffect(textLayer);
@@ -46,21 +41,17 @@ export function applyText(textLayer: AVLayer) {
     }
 
     const lastNautilusEffect = applyNautilusEffect(textLayer);
-    if (!lastNautilusEffect)
-      throw new Error("Nautilus effect not applied correctly!");
 
     nautilusExprApply(textLayer, lastNautilusEffect.name);
 
     app.executeCommand(2387);
   } catch (e) {
     app.endUndoGroup();
-    if (e instanceof Error)
-      handleIssue({
-        level: "WARNING",
-        message:
-          "The Apply function for Text Layer encountered an error: " +
-          e.message,
-      });
+    handleIssue({
+      level: "WARNING",
+      message:
+        "The Apply function for Text Layer encountered an error: " + String(e),
+    });
   }
 }
 
@@ -82,7 +73,7 @@ export function applyNautilus() {
       }
     });
   } catch (e) {
-    if (e instanceof Error) throw new Error(`[applyNautilus] ${e.message}`);
+    throw new Error(`[applyNautilus] ${String(e)}`);
   }
   app.endUndoGroup();
 }

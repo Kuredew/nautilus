@@ -60,7 +60,7 @@ export function precomposeLayers(
 
     return preComp;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[precomposeLayers] " + e.message);
+    throw new Error("[precomposeLayers] " + String(e));
   }
 }
 
@@ -97,8 +97,7 @@ const addExprToProperties = (layer: AVLayer, exprs: ExpressionsConfig) => {
       }
     }
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[addExprToProperties] " + e.message);
+    throw new Error("[addExprToProperties] " + String(e));
   }
 };
 
@@ -107,7 +106,7 @@ export function applyExprToLayer(layer: AVLayer, exprs: ExpressionsConfig) {
   try {
     addExprToProperties(layer, exprs);
   } catch (e) {
-    if (e instanceof Error) throw new Error("[applyExprToLayer] " + e.message);
+    throw new Error("[applyExprToLayer] " + String(e));
   }
 }
 
@@ -125,8 +124,7 @@ export function clearExprFromLayer(layer: AVLayer) {
 
     addExprToProperties(layer, exprs);
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[clearExprFromLayer] " + e.message);
+    throw new Error("[clearExprFromLayer] " + String(e));
   }
 }
 
@@ -190,7 +188,6 @@ export function findAbsoluteKeyframe(layer: AVLayer) {
     searchProperties(layer);
     return { minTime: minTime, maxTime: maxTime };
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[findAbsoluteKeyframe] " + e.message);
+    throw new Error("[findAbsoluteKeyframe] " + String(e));
   }
 }

@@ -8,7 +8,7 @@ export function nautilusLibFolder() {
     );
     return folderObj;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[nautilusLibFolder] " + e.message);
+    throw new Error("[nautilusLibFolder] " + String(e));
   }
 }
 

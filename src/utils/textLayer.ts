@@ -35,8 +35,7 @@ export function findAnimatorIndexesByEffectName(
 
     return indexes;
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[findAnimatorIndexesByEffectName] " + e.message);
+    throw new Error("[findAnimatorIndexesByEffectName] " + String(e));
   }
 }
 
@@ -58,8 +57,7 @@ export function removeAnimatorByEffectName(
         animatorsGroup.property(index).remove(),
       );
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[removeAnimatorByEffectName] " + e.message);
+    throw new Error("[removeAnimatorByEffectName] " + String(e));
   }
 }
 
@@ -104,6 +102,29 @@ export function createAnimator(
       selectorExpr: selectorExpr.property(2) as Property,
     };
   } catch (e) {
-    if (e instanceof Error) throw new Error("[createAnimator] " + e.message);
+    throw new Error("[createAnimator] " + String(e));
+  }
+}
+
+export function addAnimatorWithExprs(
+  textLayer: AVLayer,
+  config: {
+    name: string;
+    propertyName: string;
+    propertyExpr: string;
+    selectorExpr: string;
+  },
+) {
+  try {
+    const animator = createAnimator(textLayer, {
+      name: config.name,
+      propertyName: config.propertyName,
+    });
+    if (!animator) throw new Error("Animator is not created (undefined)");
+
+    animator.property.expression = config.propertyExpr;
+    animator.selectorExpr.expression = config.selectorExpr;
+  } catch (e) {
+    throw new Error("[applyText] " + String(e));
   }
 }

@@ -57,6 +57,6 @@ export function createProgress(
       close,
     };
   } catch (e) {
-    if (e instanceof Error) throw new Error("[createProgress] " + e.message);
+    throw new Error("[createProgress] " + String(e));
   }
 }

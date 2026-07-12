@@ -39,7 +39,6 @@ export function extractChar(layer: AVLayer) {
       "Extracting text into shapes...",
       { minValue: 0, maxValue: groupNames.length },
     );
-    if (!progressWindow) throw new Error("Progress window is undefined");
 
     const layerIndices: number[] = [];
     groupNames.forEach((groupName, index) => {
@@ -91,13 +90,7 @@ export function extractChar(layer: AVLayer) {
       textLayer.outPoint,
     );
   } catch (e) {
-    if (e instanceof Error)
-      handleIssue({
-        level: "WARNING",
-        message:
-          "The Extract Character function for Text Layer encountered an error: " +
-          e.message,
-      });
+    throw new Error("[extractChar]" + String(e));
   }
 }
 
@@ -107,10 +100,17 @@ export function extract() {
     const selectedLayers = getSelectedLayer();
 
     selectedLayers.forEach((layer) => {
-      extractChar(layer);
+      try {
+        extractChar(layer);
+      } catch (e) {
+        handleIssue({
+          level: "WARNING",
+          message: "Extract character encountered error: " + String(e),
+        });
+      }
     });
   } catch (e) {
-    if (e instanceof Error) throw new Error("[extract] " + e.message);
+    throw new Error("[extract] " + String(e));
   }
   app.endUndoGroup();
 }

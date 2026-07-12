@@ -2,7 +2,7 @@ export function getFile(path: string) {
   try {
     return new File(path);
   } catch (e) {
-    if (e instanceof Error) throw new Error("[getFileObj] " + e.message);
+    throw new Error("[getFileObj] " + String(e));
   }
 }
 
@@ -13,8 +13,7 @@ export function readFile(file: File) {
     file.open("r");
     code = file.read();
   } catch (e) {
-    if (e instanceof Error)
-      throw new Error("[readFile] I couldn't read the file: " + e.message);
+    throw new Error("[readFile] I couldn't read the file: " + String(e));
   } finally {
     file.close();
   }
@@ -30,7 +29,7 @@ export function readJsonFile(file: File) {
     const code = JSON.parse(string) as Record<string, any>;
     return code;
   } catch (e) {
-    if (e instanceof Error) throw new Error("[readJsonFile]" + e.message);
+    throw new Error("[readJsonFile]" + String(e));
   }
 }
 

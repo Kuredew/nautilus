@@ -212,6 +212,6 @@ export function load() {
 
     settingsLoad();
   } catch (e) {
-    if (e instanceof Error) throw new Error("[load] " + e.message);
+    throw new Error("[load] " + String(e));
   }
 }

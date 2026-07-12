@@ -23,7 +23,7 @@ export function load() {
 
     if (settings) nautilus.settings = { ...nautilus.settings, ...settings };
   } catch (e) {
-    if (e instanceof Error) throw new Error("[load] " + e.message);
+    throw new Error("[load] " + String(e));
   }
 }
 
@@ -34,6 +34,6 @@ export function save() {
 
     writeFile(file, JSON.stringify(nautilus.settings));
   } catch (e) {
-    if (e instanceof Error) throw new Error("[save] " + e.message);
+    throw new Error("[save] " + String(e));
   }
 }
