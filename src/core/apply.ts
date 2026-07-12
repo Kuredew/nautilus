@@ -41,8 +41,6 @@ export function applyText(textLayer: AVLayer) {
     }
 
     const lastNautilusEffect = applyNautilusEffect(textLayer);
-    if (!lastNautilusEffect)
-      throw new Error("Nautilus effect not applied correctly!");
 
     nautilusExprApply(textLayer, lastNautilusEffect.name);
 

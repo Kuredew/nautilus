@@ -184,7 +184,6 @@ export function createDialogWindow(title: string) {
 export function createDialog(title: string, text: string) {
   try {
     const windowRef = createDialogWindow(title);
-    if (!windowRef) throw new Error("Dialog window is not created (undefined)");
 
     const panel = windowRef.add("panel", undefined, title);
 

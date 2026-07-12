@@ -14,7 +14,6 @@ function NautilusScript(ui_ref: Window | Panel) {
    * Shows the window
    */
   const mainWindow = createMainWindow(ui_ref);
-  if (!mainWindow) throw new Error("Window not created (undefined)");
 
   if (mainWindow instanceof Window) {
     mainWindow.center();

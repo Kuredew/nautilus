@@ -54,8 +54,6 @@ export function applyNautilusEffect(ctrlLayer: AVLayer) {
     ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default);
 
     const appliedNautilusEffect = getAllNautilusEffect(ctrlLayer);
-    if (!appliedNautilusEffect)
-      throw new Error("Nautilus effect not found in this layer");
 
     const lastNtlsFX = appliedNautilusEffect[
       appliedNautilusEffect.length - 1

@@ -39,7 +39,6 @@ export function extractChar(layer: AVLayer) {
       "Extracting text into shapes...",
       { minValue: 0, maxValue: groupNames.length },
     );
-    if (!progressWindow) throw new Error("Progress window is undefined");
 
     const layerIndices: number[] = [];
     groupNames.forEach((groupName, index) => {
