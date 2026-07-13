@@ -1,4 +1,3 @@
-import { getFile } from "./utils/nautilusLib";
 import { load as settingsLoad } from "./utils/settings";
 import { stateType } from "./type";
 
@@ -40,6 +39,7 @@ import layerRotationX from "./lib/layer/rotationX.jsx";
 import layerRotationY from "./lib/layer/rotationY.jsx";
 import layerRotationZ from "./lib/layer/rotationZ.jsx";
 import layerScale from "./lib/layer/scale.jsx";
+import { binaryStringToFileObj } from "./utils/file";
 
 export const nautilus: stateType = {
   mode: "text",
@@ -50,13 +50,12 @@ export const nautilus: stateType = {
   applyToCompLayers: true,
   effectObj: {
     nautilus: {
-      default: null,
-      in: null,
-      inAlternate: null,
-      out: null,
+      binary: BUILD_ENV.nautilus_ffx,
+      object: null,
     },
     nautiflow: {
-      default: null,
+      binary: BUILD_ENV.nautiflow_ffx,
+      object: null,
     },
   },
   expression: {
@@ -94,16 +93,16 @@ export const nautilus: stateType = {
     },
   },
   icons: {
-    text: null,
-    comp: null,
-    about: null,
-    extract: null,
-    apply: null,
-    basedOn: null,
-    reload: null,
-    bake: null,
-    remove: null,
-    settings: null,
+    text: BUILD_ENV.text_png,
+    comp: BUILD_ENV.comp_png,
+    about: BUILD_ENV.about_png,
+    extract: BUILD_ENV.extract_png,
+    apply: BUILD_ENV.apply_png,
+    basedOn: BUILD_ENV.basedon_png,
+    reload: BUILD_ENV.reload_png,
+    bake: BUILD_ENV.bake_png,
+    remove: BUILD_ENV.remove_png,
+    settings: BUILD_ENV.settings_png,
   },
   settings: {
     nautilus: {
@@ -124,17 +123,14 @@ export const nautilus: stateType = {
 
 export function load() {
   try {
-    nautilus.effectObj.nautiflow.default = getFile(
-      "effect/nautiflow/default.ffx",
+    nautilus.effectObj.nautilus.object = binaryStringToFileObj(
+      nautilus.effectObj.nautilus.binary,
+      "nautilus.ffx",
     );
-
-    // Load button Icon
-    Object.keys(nautilus.icons).forEach((key) => {
-      nautilus.icons[key as keyof typeof nautilus.icons] = getFile(
-        `icons/${key}.png`,
-      );
-    });
-
+    nautilus.effectObj.nautiflow.object = binaryStringToFileObj(
+      nautilus.effectObj.nautiflow.binary,
+      "nautiflow.ffx",
+    );
     settingsLoad();
   } catch (e) {
     throw new Error("[load] " + String(e));

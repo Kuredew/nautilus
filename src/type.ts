@@ -1,12 +1,11 @@
 export type NautilusEffectObjectType = {
-  default: null | File;
-  in: null | File;
-  inAlternate: null | File;
-  out: null | File;
+  binary: string;
+  object: null | File;
 };
 
 export type NautiflowEffectObjectType = {
-  default: null | File;
+  binary: string;
+  object: null | File;
 };
 
 export type EffectObjectType = {
@@ -50,16 +49,16 @@ export type ExpressionType = {
 };
 
 export type iconsType = {
-  text: null | File;
-  comp: null | File;
-  about: null | File;
-  extract: null | File;
-  apply: null | File;
-  basedOn: null | File;
-  reload: null | File;
-  bake: null | File;
-  remove: null | File;
-  settings: null | File;
+  text: string;
+  comp: string;
+  about: string;
+  extract: string;
+  apply: string;
+  basedOn: string;
+  reload: string;
+  bake: string;
+  remove: string;
+  settings: string;
 };
 
 export type settingsType = {

@@ -49,9 +49,9 @@ export function applyNautilusEffect(ctrlLayer: AVLayer) {
     ctrlLayer.selected = true;
     const ctrlLayerEffects = getAllNautilusEffect(ctrlLayer);
 
-    if (!nautilus.effectObj.nautilus.default)
+    if (!nautilus.effectObj.nautilus.object)
       throw new Error("Nautilus effect for default animation is undefined");
-    ctrlLayer.applyPreset(nautilus.effectObj.nautilus.default);
+    ctrlLayer.applyPreset(nautilus.effectObj.nautilus.object);
 
     const appliedNautilusEffect = getAllNautilusEffect(ctrlLayer);
 
@@ -98,8 +98,8 @@ export function applyNautilusEffect(ctrlLayer: AVLayer) {
 
 export function applyNautiFLowEffect(layer: AVLayer) {
   try {
-    if (nautilus.effectObj.nautiflow.default)
-      layer.applyPreset(nautilus.effectObj.nautiflow.default);
+    if (nautilus.effectObj.nautiflow.object)
+      layer.applyPreset(nautilus.effectObj.nautiflow.object);
   } catch (e) {
     throw new Error("[applyNautiFlowEffect] " + String(e));
   }
