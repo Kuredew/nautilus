@@ -1,163 +1,108 @@
-import { readFile, readJsonFile } from "./utils/file";
-import { getFile } from "./utils/nautilusLib";
 import { load as settingsLoad } from "./utils/settings";
+import { stateType } from "./type";
 
-type NautilusEffectObjectType = {
-  default: null | File;
-  in: null | File;
-  inAlternate: null | File;
-  out: null | File;
-};
+import pkg from "../package.json";
+import about from "./lib/about.txt";
 
-type NautiflowEffectObjectType = {
-  default: null | File;
-};
+import textTemplate from "./lib/text/template.jsx";
 
-type EffectObjectType = {
-  nautilus: NautilusEffectObjectType;
-  nautiflow: NautiflowEffectObjectType;
-};
+import tracking from "./lib/text/tracking.jsx";
+import trackingValue from "./lib/text/trackingValue.jsx";
+import trackingMask from "./lib/text/trackingMask.jsx";
+import trackingMaskValue from "./lib/text/trackingMaskValue.jsx";
 
-type ExpressionType = {
-  text: {
-    template: string;
-    tracking: string;
-    trackingValue: string;
-    trackingMaskValue: string;
-    trackingMask: string;
-    position: string;
-    positionValue: string;
-    positionMask: string;
-    positionMaskValue: string;
-    skew: string;
-    skewValue: string;
-    rotation: string;
-    rotationValue: string;
-    rotationMask: string;
-    rotationMaskValue: string;
-    scale: string;
-    scaleValue: string;
-    scaleMask: string;
-    scaleMaskValue: string;
-    opacity: string;
-    opacityValue: string;
-  };
-  layer: {
-    template: string;
-    position: string;
-    rotationX: string;
-    rotationY: string;
-    rotationZ: string;
-    scale: string;
-    opacity: string;
-  };
-};
+import textPosition from "./lib/text/position.jsx";
+import textPositionValue from "./lib/text/positionValue.jsx";
+import textPositionMask from "./lib/text/positionMask.jsx";
+import textPositionMaskValue from "./lib/text/positionMaskValue.jsx";
 
-type iconsType = {
-  text: null | File;
-  comp: null | File;
-  about: null | File;
-  extract: null | File;
-  apply: null | File;
-  basedOn: null | File;
-  reload: null | File;
-  bake: null | File;
-  remove: null | File;
-  settings: null | File;
-};
+import textSkew from "./lib/text/skew.jsx";
+import textSkewValue from "./lib/text/skewValue.jsx";
 
-type settingsType = {
-  nautilus: {
-    keyframeIn: boolean;
-    applyAlternateAnimation: boolean;
-    keyframeOut: boolean;
-  };
-  progressWindow: {
-    displayProgressWindow: boolean;
-    autoCloseProgressWindow: boolean;
-  };
-  runtime: {
-    displayFullErrorMessage: boolean;
-  };
-};
+import textRotation from "./lib/text/rotation.jsx";
+import textRotationValue from "./lib/text/rotationValue.jsx";
+import textRotationMask from "./lib/text/rotationMask.jsx";
+import textRotationMaskValue from "./lib/text/rotationMaskValue.jsx";
 
-type stateType = {
-  mode: string;
-  effectName: string;
-  nautiFlowEffectName: "NautiFlow";
-  version: string;
-  aboutStr: string;
-  applyToCompLayers: true;
-  effectObj: EffectObjectType;
-  expression: ExpressionType;
-  icons: iconsType;
-  settings: settingsType;
-  palette: null | Window;
-};
+import textScale from "./lib/text/rotation.jsx";
+import textScaleValue from "./lib/text/scaleValue.jsx";
+import textScaleMask from "./lib/text/scaleMask.jsx";
+import textScaleMaskValue from "./lib/text/scaleMaskValue.jsx";
+
+import textOpacity from "./lib/text/opacity.jsx";
+import textOpacityValue from "./lib/text/opacityValue.jsx";
+
+import layerTemplate from "./lib/layer/template.jsx";
+import layerOpacity from "./lib/layer/opacity.jsx";
+import layerPosition from "./lib/layer/position.jsx";
+import layerRotationX from "./lib/layer/rotationX.jsx";
+import layerRotationY from "./lib/layer/rotationY.jsx";
+import layerRotationZ from "./lib/layer/rotationZ.jsx";
+import layerScale from "./lib/layer/scale.jsx";
+import { binaryStringToFileObj } from "./utils/file";
 
 export const nautilus: stateType = {
   mode: "text",
   effectName: "Nautilus",
   nautiFlowEffectName: "NautiFlow",
-  version: "",
-  aboutStr: "",
+  version: pkg.version,
+  aboutStr: about,
   applyToCompLayers: true,
   effectObj: {
     nautilus: {
-      default: null,
-      in: null,
-      inAlternate: null,
-      out: null,
+      binary: BUILD_ENV.nautilus_ffx,
+      object: null,
     },
     nautiflow: {
-      default: null,
+      binary: BUILD_ENV.nautiflow_ffx,
+      object: null,
     },
   },
   expression: {
     text: {
-      template: "",
-      tracking: "",
-      trackingValue: "",
-      trackingMaskValue: "",
-      trackingMask: "",
-      position: "",
-      positionValue: "",
-      positionMask: "",
-      positionMaskValue: "",
-      skew: "",
-      skewValue: "",
-      rotation: "",
-      rotationValue: "",
-      rotationMask: "",
-      rotationMaskValue: "",
-      scale: "",
-      scaleValue: "",
-      scaleMask: "",
-      scaleMaskValue: "",
-      opacity: "",
-      opacityValue: "",
+      template: textTemplate,
+      tracking: tracking,
+      trackingValue: trackingValue,
+      trackingMaskValue: trackingMaskValue,
+      trackingMask: trackingMask,
+      position: textPosition,
+      positionValue: textPositionValue,
+      positionMask: textPositionMask,
+      positionMaskValue: textPositionMaskValue,
+      skew: textSkew,
+      skewValue: textSkewValue,
+      rotation: textRotation,
+      rotationValue: textRotationValue,
+      rotationMask: textRotationMask,
+      rotationMaskValue: textRotationMaskValue,
+      scale: textScale,
+      scaleValue: textScaleValue,
+      scaleMask: textScaleMask,
+      scaleMaskValue: textScaleMaskValue,
+      opacity: textOpacity,
+      opacityValue: textOpacityValue,
     },
     layer: {
-      template: "",
-      position: "",
-      rotationX: "",
-      rotationY: "",
-      rotationZ: "",
-      scale: "",
-      opacity: "",
+      template: layerTemplate,
+      position: layerPosition,
+      rotationX: layerRotationX,
+      rotationY: layerRotationY,
+      rotationZ: layerRotationZ,
+      scale: layerScale,
+      opacity: layerOpacity,
     },
   },
   icons: {
-    text: null,
-    comp: null,
-    about: null,
-    extract: null,
-    apply: null,
-    basedOn: null,
-    reload: null,
-    bake: null,
-    remove: null,
-    settings: null,
+    text: BUILD_ENV.text_png,
+    comp: BUILD_ENV.comp_png,
+    about: BUILD_ENV.about_png,
+    extract: BUILD_ENV.extract_png,
+    apply: BUILD_ENV.apply_png,
+    basedOn: BUILD_ENV.basedon_png,
+    reload: BUILD_ENV.reload_png,
+    bake: BUILD_ENV.bake_png,
+    remove: BUILD_ENV.remove_png,
+    settings: BUILD_ENV.settings_png,
   },
   settings: {
     nautilus: {
@@ -178,38 +123,14 @@ export const nautilus: stateType = {
 
 export function load() {
   try {
-    const packageObj = readJsonFile(getFile("package.json"));
-    nautilus.version = packageObj ? packageObj.version : "";
-    nautilus.aboutStr = readFile(getFile("about.txt")) ?? "";
-
-    Object.keys(nautilus.effectObj.nautilus).forEach((key) => {
-      nautilus.effectObj.nautilus[
-        key as keyof typeof nautilus.effectObj.nautilus
-      ] = getFile(`effect/nautilus/${key}.ffx`);
-    });
-
-    // Load expression for Comp Mode
-    Object.keys(nautilus.expression.layer).forEach((key) => {
-      nautilus.expression.layer[key as keyof typeof nautilus.expression.layer] =
-        readFile(getFile(`layer/${key}.jsx`)) ?? "";
-    });
-
-    nautilus.effectObj.nautiflow.default = getFile(
-      "effect/nautiflow/default.ffx",
+    nautilus.effectObj.nautilus.object = binaryStringToFileObj(
+      nautilus.effectObj.nautilus.binary,
+      "nautilus.ffx",
     );
-    // Load expression for Text layer mode
-    Object.keys(nautilus.expression.text).forEach((key) => {
-      nautilus.expression.text[key as keyof typeof nautilus.expression.text] =
-        readFile(getFile(`text/${key}.jsx`)) ?? "";
-    });
-
-    // Load button Icon
-    Object.keys(nautilus.icons).forEach((key) => {
-      nautilus.icons[key as keyof typeof nautilus.icons] = getFile(
-        `icons/${key}.png`,
-      );
-    });
-
+    nautilus.effectObj.nautiflow.object = binaryStringToFileObj(
+      nautilus.effectObj.nautiflow.binary,
+      "nautiflow.ffx",
+    );
     settingsLoad();
   } catch (e) {
     throw new Error("[load] " + String(e));

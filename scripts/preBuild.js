@@ -1,33 +1,20 @@
 import fs from "fs";
 import Logger from "./utils/log.js";
-import path from "path";
-
-const sourcePath = "src";
-const libFolderName = "lib";
-const outputFolderName = "dist";
-
-const libFolderPath = path.join(sourcePath, libFolderName);
+import path, { join } from "path";
+import {
+  libFolderName,
+  libFolderPath,
+  outputFolderName,
+} from "./utils/pathHelper.js";
 
 const otherFiles = [
   {
-    name: "nautilusLib",
-    from: libFolderPath,
-    to: "",
-  },
-  {
-    name: "HOW_TO_INSTALL.txt",
     from: "HOW_TO_INSTALL.txt",
-    to: "",
+    to: "HOW_TO_INSTALL.txt",
   },
   {
-    name: "package.json",
-    from: "package.json",
-    to: "nautilusLib",
-  },
-  {
-    name: "LICENSE.txt",
     from: "LICENSE.txt",
-    to: "",
+    to: "LICENSE.txt",
   },
 ];
 
@@ -43,7 +30,7 @@ const build = async (onLog = () => {}) => {
 
     log(`copying other files`);
     otherFiles.forEach((file) => {
-      const finalOutput = path.join(outputFolderName, file.to, file.name);
+      const finalOutput = path.join(outputFolderName, file.to);
 
       log(`copying ${file.from} to ${finalOutput}`);
       fs.cpSync(file.from, finalOutput, { recursive: true });

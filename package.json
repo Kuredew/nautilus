@@ -16,7 +16,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "pnpm run prebuild && npm-watch build:dev",
-    "compile": "esbuild src/index.ts --bundle --outfile=build/bundle.js & extendscriptr --script build/bundle.js --output dist/Nautilus.jsx",
+    "compile": "node ./scripts/build.js & extendscriptr --script build/bundle.js --output dist/Nautilus.jsx",
     "build:dev": "pnpm run compile && pnpm run postbuild",
     "prebuild": "node scripts/preBuild.js",
     "build": "pnpm run compile",

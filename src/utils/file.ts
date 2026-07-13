@@ -1,3 +1,5 @@
+import { getFolderByName } from "./myDocuments";
+
 export function getFile(path: string) {
   try {
     return new File(path);
@@ -42,5 +44,21 @@ export function writeFile(file: File, content: string) {
     file.close();
   } else {
     alert("Error opening file for writing.");
+  }
+}
+
+export function binaryStringToFileObj(binaryString: string, fileName: string) {
+  try {
+    const folderObj = getFolderByName("effect");
+    const filePath = `${folderObj.fsName}/${fileName}`;
+
+    const fileObj = getFile(filePath);
+    fileObj.encoding = "BINARY";
+
+    writeFile(fileObj, binaryString);
+
+    return getFile(filePath);
+  } catch (e) {
+    throw new Error(`[binaryStringToFileObj] ${String(e)}`);
   }
 }
