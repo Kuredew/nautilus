@@ -24,7 +24,7 @@ function NautilusScript(ui_ref: Window | Panel) {
 }
 
 try {
-  // @ts-ignore
+  // @ts-expect-error ui_ref should present in build result
   const uiReference = ui_ref as Window | Panel;
 
   NautilusScript(uiReference);

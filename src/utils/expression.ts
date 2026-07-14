@@ -15,6 +15,6 @@ export function getExpr(
 
     return expr;
   } catch (e) {
-    throw new Error("[getExpr] " + String(e));
+    throw new Error("[getExpr] " + String(e), { cause: e });
   }
 }

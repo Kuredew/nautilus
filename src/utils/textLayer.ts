@@ -35,7 +35,9 @@ export function findAnimatorIndexesByEffectName(
 
     return indexes;
   } catch (e) {
-    throw new Error("[findAnimatorIndexesByEffectName] " + String(e));
+    throw new Error("[findAnimatorIndexesByEffectName] " + String(e), {
+      cause: e,
+    });
   }
 }
 
@@ -57,7 +59,7 @@ export function removeAnimatorByEffectName(
         animatorsGroup.property(index).remove(),
       );
   } catch (e) {
-    throw new Error("[removeAnimatorByEffectName] " + String(e));
+    throw new Error("[removeAnimatorByEffectName] " + String(e), { cause: e });
   }
 }
 
@@ -102,7 +104,7 @@ export function createAnimator(
       selectorExpr: selectorExpr.property(2) as Property,
     };
   } catch (e) {
-    throw new Error("[createAnimator] " + String(e));
+    throw new Error("[createAnimator] " + String(e), { cause: e });
   }
 }
 
@@ -125,6 +127,6 @@ export function addAnimatorWithExprs(
     animator.property.expression = config.propertyExpr;
     animator.selectorExpr.expression = config.selectorExpr;
   } catch (e) {
-    throw new Error("[applyText] " + String(e));
+    throw new Error("[applyText] " + String(e), { cause: e });
   }
 }
