@@ -3,6 +3,7 @@ import { bake } from "../core/bake";
 import { createBasedOnWindow } from "../core/changeBasedOn";
 import { extract } from "../core/extract";
 import { createAboutWindow } from "../core/help";
+import { preset } from "../core/preset";
 import { reload } from "../core/reload";
 import { removeNautilus } from "../core/remove";
 import { createSettingsWindow } from "../core/settings";
@@ -88,6 +89,14 @@ export function createMainWindow(ui_ref: Panel | Window) {
     );
     extractButton.helpTip = "Extract letter from text layer into PreComp";
 
+    const presetButton = btnGroup.add(
+      "iconbutton",
+      undefined,
+      nautilus.icons.preset,
+      { style: "toolbutton" },
+    );
+    presetButton.helpTip = "Open preset list window";
+
     const settingsButton = btnGroup.add(
       "iconbutton",
       undefined,
@@ -131,6 +140,10 @@ export function createMainWindow(ui_ref: Panel | Window) {
     };
     basedOnButton.onClick = function () {
       executeFunc(createBasedOnWindow);
+      resetButton(this);
+    };
+    presetButton.onClick = function () {
+      executeFunc(preset);
       resetButton(this);
     };
     settingsButton.onClick = function () {
@@ -200,6 +213,20 @@ export function createDialog(title: string, text: string) {
     return windowRef;
   } catch (e) {
     throw new Error("[createDialog] " + String(e));
+  }
+}
+
+export function createWindow(title: string) {
+  try {
+    const windowRef = new Window("window", title, undefined, {
+      resizeable: true,
+    });
+    windowRef.onResize = function () {
+      windowRef.layout.resize();
+    };
+    return windowRef;
+  } catch (e) {
+    throw new Error("[createWindow] " + String(e));
   }
 }
 

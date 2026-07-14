@@ -94,6 +94,7 @@ export const nautilus: stateType = {
   },
   icons: {
     text: BUILD_ENV.text_png,
+    preset: BUILD_ENV.preset_png,
     comp: BUILD_ENV.comp_png,
     about: BUILD_ENV.about_png,
     extract: BUILD_ENV.extract_png,

@@ -50,6 +50,7 @@ export type ExpressionType = {
 
 export type iconsType = {
   text: string;
+  preset: string;
   comp: string;
   about: string;
   extract: string;
