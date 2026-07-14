@@ -16,8 +16,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "pnpm run prebuild && npm-watch build:dev",
+    "start": "node ./scripts/run.js",
     "compile": "node ./scripts/build.js & extendscriptr --script build/bundle.js --output dist/Nautilus.jsx",
-    "build:dev": "pnpm run compile && pnpm run postbuild",
+    "build:dev": "pnpm run compile && pnpm run postbuild && pnpm run start",
     "prebuild": "node scripts/preBuild.js",
     "build": "pnpm run compile",
     "postbuild": "node scripts/postBuild.js"
@@ -36,10 +37,11 @@
     "eslint-plugin-import": "^2.32.0",
     "extendscriptr": "^1.2.5",
     "globals": "^17.4.0",
-    "npm-watch": "^0.13.0"
+    "jiti": "^2.7.0",
+    "npm-watch": "^0.13.0",
+    "typescript-eslint": "^8.64.0"
   },
   "dependencies": {
-    "types-for-adobe": "^7.2.5",
-    "typescript": "^7.0.2"
+    "types-for-adobe": "^7.2.5"
   }
 }
