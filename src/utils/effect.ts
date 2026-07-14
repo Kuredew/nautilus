@@ -20,7 +20,7 @@ export function getAllNautilusEffect(layer: AVLayer): PropertyGroup[] {
   try {
     return findEffects(layer, nautilus.effectName);
   } catch (e) {
-    throw new Error("[getAllNautilusEffect] " + String(e));
+    throw new Error("[getAllNautilusEffect] " + String(e), { cause: e });
   }
 }
 
@@ -32,7 +32,7 @@ export function getAllNautiFlowEffect(layer: AVLayer) {
   try {
     return findEffects(layer, nautilus.nautiFlowEffectName);
   } catch (e) {
-    throw new Error("[getAllNautilusEffect] " + String(e));
+    throw new Error("[getAllNautilusEffect] " + String(e), { cause: e });
   }
 }
 
@@ -92,7 +92,7 @@ export function applyNautilusEffect(ctrlLayer: AVLayer) {
 
     return lastNtlsFX;
   } catch (e) {
-    throw new Error("[applyNautilusEffect] " + String(e));
+    throw new Error("[applyNautilusEffect] " + String(e), { cause: e });
   }
 }
 
@@ -101,6 +101,6 @@ export function applyNautiFLowEffect(layer: AVLayer) {
     if (nautilus.effectObj.nautiflow.object)
       layer.applyPreset(nautilus.effectObj.nautiflow.object);
   } catch (e) {
-    throw new Error("[applyNautiFlowEffect] " + String(e));
+    throw new Error("[applyNautiFlowEffect] " + String(e), { cause: e });
   }
 }

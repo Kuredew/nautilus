@@ -2,13 +2,12 @@ import { EXPRESSION_FOLDER } from "../config";
 
 export function nautilusLibFolder() {
   try {
-    // eslint-disable-next-line no-undef
     const folderObj = new Folder(
       new File($.fileName).parent.fsName + "/" + EXPRESSION_FOLDER,
     );
     return folderObj;
   } catch (e) {
-    throw new Error("[nautilusLibFolder] " + String(e));
+    throw new Error("[nautilusLibFolder] " + String(e), { cause: e });
   }
 }
 

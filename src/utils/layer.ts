@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { getCompItem } from "./app";
 
 type ExpressionsConfig = {
@@ -60,7 +59,7 @@ export function precomposeLayers(
 
     return preComp;
   } catch (e) {
-    throw new Error("[precomposeLayers] " + String(e));
+    throw new Error("[precomposeLayers] " + String(e), { cause: e });
   }
 }
 
@@ -97,7 +96,7 @@ const addExprToProperties = (layer: AVLayer, exprs: ExpressionsConfig) => {
       }
     }
   } catch (e) {
-    throw new Error("[addExprToProperties] " + String(e));
+    throw new Error("[addExprToProperties] " + String(e), { cause: e });
   }
 };
 
@@ -106,7 +105,7 @@ export function applyExprToLayer(layer: AVLayer, exprs: ExpressionsConfig) {
   try {
     addExprToProperties(layer, exprs);
   } catch (e) {
-    throw new Error("[applyExprToLayer] " + String(e));
+    throw new Error("[applyExprToLayer] " + String(e), { cause: e });
   }
 }
 
@@ -124,7 +123,7 @@ export function clearExprFromLayer(layer: AVLayer) {
 
     addExprToProperties(layer, exprs);
   } catch (e) {
-    throw new Error("[clearExprFromLayer] " + String(e));
+    throw new Error("[clearExprFromLayer] " + String(e), { cause: e });
   }
 }
 
@@ -147,7 +146,6 @@ export function unSelectAllLayer() {
     });
   } catch {
     // dont do anything if getSelectedLayer throw an error
-    null;
   }
 }
 
@@ -160,13 +158,12 @@ export function findAbsoluteKeyframe(layer: AVLayer) {
 
     function searchProperties(group: PropertyGroup) {
       for (let i = 1; i <= group.numProperties; i++) {
-        var prop = group.property(i) as PropertyGroup;
+        const prop = group.property(i) as PropertyGroup;
 
-        // eslint-disable-next-line no-undef
         if (prop instanceof Property) {
           if (prop.numKeys > 0) {
-            let firstKeyTime = prop.keyTime(1);
-            let lastKeyTime = prop.keyTime(prop.numKeys);
+            const firstKeyTime = prop.keyTime(1);
+            const lastKeyTime = prop.keyTime(prop.numKeys);
             if (lastKeyTime > maxTime) {
               maxTime = lastKeyTime;
             }
@@ -188,6 +185,6 @@ export function findAbsoluteKeyframe(layer: AVLayer) {
     searchProperties(layer);
     return { minTime: minTime, maxTime: maxTime };
   } catch (e) {
-    throw new Error("[findAbsoluteKeyframe] " + String(e));
+    throw new Error("[findAbsoluteKeyframe] " + String(e), { cause: e });
   }
 }

@@ -9,7 +9,7 @@ export function nautilusFolder() {
     }
     return folder;
   } catch (e) {
-    throw new Error("[myDocument/nautilusFolder] " + String(e));
+    throw new Error("[myDocument/nautilusFolder] " + String(e), { cause: e });
   }
 }
 
@@ -26,6 +26,6 @@ export function getFolderByName(folderName: string) {
 
     return folderPathObj;
   } catch (e) {
-    throw new Error("[myDocument/getFolderPath] " + String(e));
+    throw new Error("[myDocument/getFolderPath] " + String(e), { cause: e });
   }
 }

@@ -9,6 +9,6 @@ export function createAboutWindow() {
     windowRef.center();
     windowRef.show();
   } catch (e) {
-    throw new Error("[help] " + String(e));
+    throw new Error("[help] " + String(e), { cause: e });
   }
 }

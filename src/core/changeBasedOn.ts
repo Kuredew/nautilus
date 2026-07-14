@@ -58,12 +58,12 @@ export function changeBasedOn(basedOnIndex: number) {
       });
     });
   } catch (e) {
-    throw new Error("[changeBasedOn] " + String(e));
+    throw new Error("[changeBasedOn] " + String(e), { cause: e });
   }
   app.endUndoGroup();
 }
 
-export function createBasedOnWindow(this: any) {
+export function createBasedOnWindow() {
   const windowRef = createDialogWindow("Change Based On");
   windowRef.alignChildren = ["fill", "center"];
 

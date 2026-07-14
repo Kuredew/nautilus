@@ -60,7 +60,7 @@ export function applyLayers(compLayer: AVLayer, effectNames: string[]) {
       });
     }
   } catch (e) {
-    throw new Error("[applyNautilusAll] " + String(e));
+    throw new Error("[applyNautilusAll] " + String(e), { cause: e });
   }
 }
 
@@ -140,6 +140,6 @@ export function applyTextLayer(textLayer: AVLayer, effectName: string) {
 
     configs.forEach((config) => addAnimatorWithExprs(textLayer, config));
   } catch (e) {
-    throw new Error("[applyTextLayer] " + String(e));
+    throw new Error("[applyTextLayer] " + String(e), { cause: e });
   }
 }

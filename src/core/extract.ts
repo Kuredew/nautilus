@@ -90,7 +90,7 @@ export function extractChar(layer: AVLayer) {
       textLayer.outPoint,
     );
   } catch (e) {
-    throw new Error("[extractChar]" + String(e));
+    throw new Error("[extractChar]" + String(e), { cause: e });
   }
 }
 
@@ -110,7 +110,7 @@ export function extract() {
       }
     });
   } catch (e) {
-    throw new Error("[extract] " + String(e));
+    throw new Error("[extract] " + String(e), { cause: e });
   }
   app.endUndoGroup();
 }
