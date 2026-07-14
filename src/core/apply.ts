@@ -73,7 +73,7 @@ export function applyNautilus() {
       }
     });
   } catch (e) {
-    throw new Error(`[applyNautilus] ${String(e)}`);
+    throw new Error(`[applyNautilus] ${String(e)}`, { cause: e });
   }
   app.endUndoGroup();
 }

@@ -4,7 +4,7 @@ export function getFile(path: string) {
   try {
     return new File(path);
   } catch (e) {
-    throw new Error("[getFileObj] " + String(e));
+    throw new Error("[getFileObj] " + String(e), { cause: e });
   }
 }
 
@@ -15,7 +15,9 @@ export function readFile(file: File) {
     file.open("r");
     code = file.read();
   } catch (e) {
-    throw new Error("[readFile] I couldn't read the file: " + String(e));
+    throw new Error("[readFile] I couldn't read the file: " + String(e), {
+      cause: e,
+    });
   } finally {
     file.close();
   }
@@ -29,12 +31,12 @@ export function readJsonFile(file: File) {
 
     let code = {};
     if (string) {
-      code = JSON.parse(string) as Record<string, any>;
+      code = JSON.parse(string) as Record<string, unknown>;
     }
 
     return code;
   } catch (e) {
-    throw new Error("[readJsonFile]" + String(e));
+    throw new Error("[readJsonFile]" + String(e), { cause: e });
   }
 }
 
@@ -59,6 +61,6 @@ export function binaryStringToFileObj(binaryString: string, fileName: string) {
 
     return getFile(filePath);
   } catch (e) {
-    throw new Error(`[binaryStringToFileObj] ${String(e)}`);
+    throw new Error(`[binaryStringToFileObj] ${String(e)}`, { cause: e });
   }
 }

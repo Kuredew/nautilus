@@ -12,10 +12,10 @@ export function createProgress(
   try {
     const progressWindowSettings = nautilus.settings.progressWindow;
 
-    let setMinValue = (value: number) => {};
-    let setMaxValue = (value: number) => {};
-    let setProgress = (progress: number) => {};
-    let close = () => {};
+    let setMinValue: (value?: number) => void = () => {};
+    let setMaxValue: (value: number) => void = () => {};
+    let setProgress: (progress: number) => void = () => {};
+    let close: () => void = () => {};
 
     if (progressWindowSettings.displayProgressWindow) {
       const progressWindow = createProgressWindow(
@@ -57,6 +57,6 @@ export function createProgress(
       close,
     };
   } catch (e) {
-    throw new Error("[createProgress] " + String(e));
+    throw new Error("[createProgress] " + String(e), { cause: e });
   }
 }

@@ -134,6 +134,6 @@ export function load() {
     );
     settingsLoad();
   } catch (e) {
-    throw new Error("[load] " + String(e));
+    throw new Error("[load] " + String(e), { cause: e });
   }
 }

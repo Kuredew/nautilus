@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { copy, getCompItem, paste } from "../utils/app";
 import { getAllNautilusEffect } from "../utils/effect";
 import { handleIssue } from "../utils/error";
@@ -158,7 +157,7 @@ export function bake() {
     });
   } catch (e) {
     app.endUndoGroup();
-    throw new Error("[bake] " + String(e));
+    throw new Error("[bake] " + String(e), { cause: e });
   }
   app.endUndoGroup();
 }

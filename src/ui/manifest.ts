@@ -37,7 +37,7 @@ export function createMainWindow(ui_ref: Panel | Window) {
     btnGroup.alignChildren = ["fill", "fill"];
     btnGroup.margins = 0;
     btnGroup.spacing = 0;
-    if (btnGroup.preferredSize.width) btnGroup.preferredSize.width + 20;
+    if (btnGroup.preferredSize.width) btnGroup.preferredSize.width += 20;
 
     const applyButton = btnGroup.add(
       "iconbutton",
@@ -113,7 +113,7 @@ export function createMainWindow(ui_ref: Panel | Window) {
     );
     helpButton.helpTip = "About Nautilus";
 
-    //@ts-ignore
+    // @ts-expect-error onResizing and onResize should in panel instance
     windowRef.onResizing = windowRef.onResize = function () {
       windowRef.layout.resize();
 
@@ -174,7 +174,7 @@ export function createMainWindow(ui_ref: Panel | Window) {
 
     return windowRef;
   } catch (e) {
-    throw new Error("[createMainWindow] " + String(e));
+    throw new Error("[createMainWindow] " + String(e), { cause: e });
   }
 }
 
@@ -192,7 +192,7 @@ export function createDialogWindow(title: string) {
 
     return windowRef;
   } catch (e) {
-    throw new Error(`[createDialogWindow] ${String(e)}`);
+    throw new Error(`[createDialogWindow] ${String(e)}`, { cause: e });
   }
 }
 
@@ -212,7 +212,7 @@ export function createDialog(title: string, text: string) {
 
     return windowRef;
   } catch (e) {
-    throw new Error("[createDialog] " + String(e));
+    throw new Error("[createDialog] " + String(e), { cause: e });
   }
 }
 
@@ -261,6 +261,6 @@ export function createProgressWindow(
       progressBar,
     };
   } catch (e) {
-    throw new Error("[createProgressWindow] " + String(e));
+    throw new Error("[createProgressWindow] " + String(e), { cause: e });
   }
 }

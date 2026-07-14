@@ -3,7 +3,6 @@ import { getAllNautiFlowEffect, getAllNautilusEffect } from "../utils/effect";
 import { handleIssue } from "../utils/error";
 import { getSelectedLayer, isTextLayer } from "../utils/layer";
 import { findAnimatorIndexesByEffectName } from "../utils/textLayer";
-import { applyLayers } from "../utils/nautilusExpr";
 
 export function removeNautilus() {
   app.beginUndoGroup("removeNautilus");
@@ -68,7 +67,7 @@ export function removeNautilus() {
     });
   } catch (e) {
     app.endUndoGroup();
-    throw new Error("[removeNautilus] " + String(e));
+    throw new Error("[removeNautilus] " + String(e), { cause: e });
   }
   app.endUndoGroup();
 }

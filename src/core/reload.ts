@@ -87,6 +87,6 @@ export function reload() {
   } catch (e) {
     app.endUndoGroup();
 
-    throw new Error("[core/reload] " + String(e));
+    throw new Error("[core/reload] " + String(e), { cause: e });
   }
 }
