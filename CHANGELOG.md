@@ -1,5 +1,58 @@
 # Changelog
 
+## [2.1.0](https://github.com/Kuredew/nautilus/compare/v2.0.0...v2.1.0) (2026-07-15)
+
+
+### 🎉 New Features
+
+* add a script to run the script directly from the build script ([60a06c2](https://github.com/Kuredew/nautilus/commit/60a06c2f4dcc6d0bf2b25b5710c00dbc225a37dd))
+* add an initial prototype of the preset feature ([36300e3](https://github.com/Kuredew/nautilus/commit/36300e3f690a2220128fa6a26871a063c61b965a))
+* add preset feature logic ([3e3db46](https://github.com/Kuredew/nautilus/commit/3e3db465aa24c8862dac557bfb69825a77f565c8))
+* added again default alternate animation ([ca18f88](https://github.com/Kuredew/nautilus/commit/ca18f8840f18a80841bbeee8071c5044da826114))
+* added again default alternate animation ([2b5f9b9](https://github.com/Kuredew/nautilus/commit/2b5f9b900b2c75d71463dc1f36d07c7eab57007b))
+* simplify apply nautilus for text and comp layer ([#76](https://github.com/Kuredew/nautilus/issues/76)) ([916b42d](https://github.com/Kuredew/nautilus/commit/916b42d10c11f3683ca1988da32587d6ce6c250e))
+
+
+### 🔨 Bug Fixes
+
+* Broken script ui panel ([68bcf16](https://github.com/Kuredew/nautilus/commit/68bcf168b44a6550a54b01d148acb10ee619dc91))
+* Crash if settings.json is not present ([cb1cd69](https://github.com/Kuredew/nautilus/commit/cb1cd696dcd125ababf411a45110a8466db88420))
+* **layer:** Expression error if mask point is undefined ([efeab3b](https://github.com/Kuredew/nautilus/commit/efeab3b551ca37d2fddcb9d5b921053aaa4f1a08))
+* **layer:** Expression error if mask point is undefined ([4f9b972](https://github.com/Kuredew/nautilus/commit/4f9b972f991b4ef121251871861efbbad78293cf))
+* Opacity slider is difficult to adjust ([2b02d1a](https://github.com/Kuredew/nautilus/commit/2b02d1a48fc09bc5ad85c870011ffd2c388590db))
+* resolve the package conflicts required by ESLint ([1695eab](https://github.com/Kuredew/nautilus/commit/1695eab52701f1d010089add92cd86219dc28e06))
+
+
+### 🩹 Refactors
+
+* Change all code syntax to typescript to make it typesafe ([113fb09](https://github.com/Kuredew/nautilus/commit/113fb09c8cb394254f83fddf55534769f43e9c05))
+* Clean up the error output ([4f56d87](https://github.com/Kuredew/nautilus/commit/4f56d872a64b03f0c406a66fb497e5cbda48cb5a))
+* correct all syntax errors ([ffcfe38](https://github.com/Kuredew/nautilus/commit/ffcfe38b405c47817e7bc910883cb6801e949276))
+* Declare disable no-undef eslint ([cf27819](https://github.com/Kuredew/nautilus/commit/cf2781916e2c6d309de3318137b20385833cd39f))
+* Fix the throwing error ([55d5dff](https://github.com/Kuredew/nautilus/commit/55d5dff08af014cbb7e6ac27fecf4985071eeb48))
+* Fix the throwing error ([2276235](https://github.com/Kuredew/nautilus/commit/22762353f786f95d986544eeb51e6a0ec49444b0))
+* Make the process of applying other Nautilus types more programmatic ([d2471a2](https://github.com/Kuredew/nautilus/commit/d2471a2a3300408ee553fe342740fd2af7da64dc))
+* merge expression file library to jsx script build result ([4af016c](https://github.com/Kuredew/nautilus/commit/4af016c072d6c842abdf61458520052d2f2d5692))
+* merge preset file to jsx script build result ([9bbbe71](https://github.com/Kuredew/nautilus/commit/9bbbe71a3d1049701366af00aa7550d9ebaa16f8))
+* move execute func to utils ([4d2ba69](https://github.com/Kuredew/nautilus/commit/4d2ba691de495566580d768f069c25daae642fee))
+* revert "refactor: simplify library loading" ([#74](https://github.com/Kuredew/nautilus/issues/74)) ([6a8cddb](https://github.com/Kuredew/nautilus/commit/6a8cddbe3e3f19f10809853fcfc291c0b6dd60e7))
+* simplify library loading ([83ec356](https://github.com/Kuredew/nautilus/commit/83ec3567e6226f50d99643fe047ecfe8ac8c7883))
+* simplify library loading ([b15f2e5](https://github.com/Kuredew/nautilus/commit/b15f2e528255c0aeb5291b8e00e26c96325a40aa))
+* simplify library loading and file naming ([#75](https://github.com/Kuredew/nautilus/issues/75)) ([a05b32c](https://github.com/Kuredew/nautilus/commit/a05b32cd0ecd35c27143573e1135d7899946436c))
+* Simplify window dialog logic ([4e31872](https://github.com/Kuredew/nautilus/commit/4e31872da37a30f378516ba078f81d96d88c78df))
+* Tidy up all code writing with prettier ([#78](https://github.com/Kuredew/nautilus/issues/78)) ([505da2e](https://github.com/Kuredew/nautilus/commit/505da2ee30dae225556c2f1db4ae0e43e676a827))
+
+
+### 📃 Documentation
+
+* simplify readme and documentation ([#77](https://github.com/Kuredew/nautilus/issues/77)) ([f890e66](https://github.com/Kuredew/nautilus/commit/f890e66aeecdba5899707e8229b925f40bd6d9a0))
+
+
+### 🎧 Maintenance
+
+* Add adobe types package for development ([5f64ab4](https://github.com/Kuredew/nautilus/commit/5f64ab4e5fb8b232c1fcc8ffb2bd49f84334ddc5))
+* Setup typescript to prepare for syntax changes ([9a07780](https://github.com/Kuredew/nautilus/commit/9a077805fc3d78a1c63d899cb9c23354c8a5f479))
+
 ## [2.0.0](https://github.com/Kuredew/nautilus/compare/v1.4.1...v2.0.0) (2026-04-25)
 
 
