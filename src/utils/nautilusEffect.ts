@@ -106,21 +106,3 @@ export const nautilusFXTransformer = (options: {
       break;
   }
 };
-
-type Prop = {
-  index: number;
-  value: number;
-};
-
-export const nautilusFXToObject = (nautilusFX: PropertyGroup) => {
-  const props: Prop[] = [];
-
-  for (let i = 0; i <= nautilusFX.numProperties; i++) {
-    const property = nautilusFX.property(i) as Property;
-
-    props.push({
-      index: i,
-      value: property.value,
-    });
-  }
-};
