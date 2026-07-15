@@ -8,19 +8,8 @@ import { reload } from "../core/reload";
 import { removeNautilus } from "../core/remove";
 import { createSettingsWindow } from "../core/settings";
 import { nautilus } from "../state";
-import { handleIssue } from "../utils/error";
+import { executeFunc } from "../utils/execute";
 import { resetButton } from "../utils/ui";
-
-function executeFunc(func: () => void) {
-  try {
-    func();
-  } catch (e) {
-    handleIssue({
-      level: "ERROR",
-      message: "[executeFunc] " + String(e),
-    });
-  }
-}
 
 export function createMainWindow(ui_ref: Panel | Window) {
   try {
@@ -135,40 +124,40 @@ export function createMainWindow(ui_ref: Panel | Window) {
     };
 
     applyButton.onClick = function () {
-      executeFunc(applyNautilus);
+      executeFunc(applyNautilus, []);
       resetButton(this);
     };
     basedOnButton.onClick = function () {
-      executeFunc(createBasedOnWindow);
+      executeFunc(createBasedOnWindow, []);
       resetButton(this);
     };
     presetButton.onClick = function () {
-      executeFunc(preset);
+      executeFunc(preset, []);
       resetButton(this);
     };
     settingsButton.onClick = function () {
-      executeFunc(createSettingsWindow);
+      executeFunc(createSettingsWindow, []);
       resetButton(this);
     };
 
     reloadButton.onClick = function () {
-      executeFunc(reload);
+      executeFunc(reload, []);
       resetButton(this);
     };
     bakeButton.onClick = function () {
-      executeFunc(bake);
+      executeFunc(bake, []);
       resetButton(this);
     };
     removeButton.onClick = function () {
-      executeFunc(removeNautilus);
+      executeFunc(removeNautilus, []);
       resetButton(this);
     };
     extractButton.onClick = function () {
-      executeFunc(extract);
+      executeFunc(extract, []);
       resetButton(this);
     };
     helpButton.onClick = function () {
-      executeFunc(createAboutWindow);
+      executeFunc(createAboutWindow, []);
       resetButton(this);
     };
 
@@ -226,7 +215,7 @@ export function createWindow(title: string) {
     };
     return windowRef;
   } catch (e) {
-    throw new Error("[createWindow] " + String(e));
+    throw new Error("[createWindow] " + String(e), { cause: e });
   }
 }
 
@@ -263,4 +252,23 @@ export function createProgressWindow(
   } catch (e) {
     throw new Error("[createProgressWindow] " + String(e), { cause: e });
   }
+}
+
+export function alertDialog(text: string, yesCallback: () => void = () => {}) {
+  const windowRef = createDialogWindow("Alert");
+
+  windowRef.add("statictext", undefined, text);
+  const buttonGroup = windowRef.add("group", undefined);
+  const noButton = buttonGroup.add("button", undefined, "No");
+  const yesButton = buttonGroup.add("button", undefined, "Yes");
+
+  noButton.onClick = () => {
+    windowRef.close();
+  };
+  yesButton.onClick = () => {
+    windowRef.close();
+    yesCallback();
+  };
+
+  windowRef.show();
 }
