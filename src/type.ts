@@ -50,6 +50,7 @@ export type ExpressionType = {
 
 export type iconsType = {
   text: string;
+  preset: string;
   comp: string;
   about: string;
   extract: string;
@@ -88,4 +89,34 @@ export type stateType = {
   icons: iconsType;
   settings: settingsType;
   palette: null | Window;
+};
+
+export type Ease = {
+  speed: number;
+  influence: number;
+};
+
+export type Keyframe = {
+  timeOffset: number;
+  value: number[];
+  inType: KeyframeInterpolationType;
+  outType: KeyframeInterpolationType;
+  easeOut: Ease[];
+  easeIn: Ease[];
+};
+
+export type EffectProp = {
+  effectName: "nautilus" | "nautiflow";
+  props: Prop[];
+};
+
+export type PresetType = {
+  presets: EffectProp[];
+};
+
+export type Prop = {
+  name: string;
+  index: number;
+  value: number;
+  keyframes: Keyframe[];
 };

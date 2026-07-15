@@ -9,6 +9,10 @@ const filesToBin = [
     path: join(libFolderPath, "icons", "about.png"),
   },
   {
+    key: "preset_png",
+    path: join(libFolderPath, "icons", "preset.png"),
+  },
+  {
     key: "apply_png",
     path: join(libFolderPath, "icons", "apply.png"),
   },

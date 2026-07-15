@@ -4,6 +4,7 @@ type BUILD_ENV = {
   nautilus_ffx: string;
   nautiflow_ffx: string;
   apply_png: string;
+  preset_png: string;
   reload_png: string;
   text_png: string;
   comp_png: string;
